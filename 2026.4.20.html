@@ -1,0 +1,928 @@
+<!DOCTYPE html>
+<html lang="zh-TW">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Minecraft Scratch 啟動器</title>
+    <style>
+        /* 載入麥塊專用的像素字體供儲存面板使用 */
+        @import url('https://fonts.googleapis.com/css2?family=VT323&display=swap');
+
+        /* ================= 基礎設定 ================= */
+        body, html {
+            margin: 0; padding: 0; height: 100%; overflow: hidden;
+            background-color: #1E1E1E; font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            color: white; user-select: none;
+        }
+
+        /* 🔥 確保所有的輸入框和文字區域都可以正常點擊、反白與打字 🔥 */
+        input, textarea {
+            user-select: text;
+        }
+
+        #game-container { position: absolute; top: 0; left: 0; width: 100%; height: 100%; z-index: 1; }
+        #game-frame { width: 100%; height: 100%; border: none; outline: none; }
+
+        /* ================= 密碼解鎖畫面 ================= */
+        #password-screen {
+            position: absolute; top: 0; left: 0; width: 100%; height: 100%;
+            background: linear-gradient(rgba(0, 0, 0, 0.7), rgba(0, 0, 0, 0.7)), url('minecraft-key-art-feature.avif') center/cover;
+            display: flex; justify-content: center; align-items: center; z-index: 20;
+        }
+
+        .password-box {
+            background-color: #282828; padding: 35px 30px; border: 2px solid #555;
+            border-radius: 4px; text-align: center; box-shadow: 0px 8px 15px rgba(0, 0, 0, 0.8); width: 300px;
+        }
+        .password-box h2 { margin-top: 0; color: #fff; margin-bottom: 20px; font-size: 24px; }
+        .password-box input {
+            width: 80%; padding: 12px; margin-bottom: 20px; background-color: #1E1E1E;
+            border: 2px solid #555; color: white; font-size: 20px; text-align: center;
+            outline: none; border-radius: 2px;
+        }
+        .password-box input:focus { border-color: #3C8527; }
+
+        /* ================= 啟動器 UI 介面 ================= */
+        #launcher-ui {
+            position: absolute; top: 0; left: 0; width: 100%; height: 100%;
+            display: none; z-index: 10; background-color: #1E1E1E;
+        }
+
+        .sidebar {
+            width: 280px; background-color: #232323; border-right: 1px solid #333;
+            display: flex; flex-direction: column;
+        }
+        .profile-area { padding: 20px; display: flex; align-items: center; gap: 15px; border-bottom: 1px solid #333; }
+        .profile-icon { width: 40px; height: 40px; background-color: #555; border-radius: 4px; }
+        .profile-name { font-size: 16px; font-weight: bold; }
+        .game-list { padding: 10px; flex-grow: 1; }
+        .game-item {
+            padding: 12px 15px; border-radius: 5px; cursor: pointer; font-weight: 600;
+            margin-bottom: 5px; transition: 0.2s; color: #ccc;
+        }
+        .game-item.active { background-color: #3B3B3B; border-left: 4px solid #3C8527; color: white; }
+        .game-item:hover:not(.active) { background-color: #2A2A2A; color: white; }
+
+        .main-content { flex-grow: 1; display: flex; flex-direction: column; position: relative; }
+        .hero-banner {
+            flex-grow: 1; background: linear-gradient(to bottom, rgba(0, 0, 0, 0) 60%, #282828 100%), url('minecraft-key-art-feature.avif');
+            background-size: cover; background-position: center; background-repeat: no-repeat;
+        }
+        .play-bar { height: 100px; background-color: #282828; border-top: 1px solid #333; display: flex; align-items: center; justify-content: center; position: relative; }
+        .play-bar-content { display: none; width: 100%; height: 100%; align-items: center; justify-content: center; position: relative; }
+        .play-bar-content.active { display: flex; }
+        .version-selector { position: absolute; left: 30px; display: flex; flex-direction: column; gap: 5px; }
+        .version-selector label { font-size: 12px; color: #AAA; font-weight: bold; }
+        .version-selector select {
+            background-color: #3C3C3C; color: white; border: 1px solid #555; padding: 8px 12px;
+            border-radius: 3px; font-size: 14px; cursor: pointer; outline: none; width: 180px;
+        }
+        .version-selector select:hover { background-color: #4A4A4A; }
+
+        .play-button {
+            width: 280px; height: 55px; background-color: #3C8527; color: white; font-size: 22px; font-weight: 900;
+            letter-spacing: 2px; border: none; border-radius: 2px; cursor: pointer;
+            box-shadow: inset 0px 4px 0px rgba(255, 255, 255, 0.2), inset 0px -4px 0px rgba(0, 0, 0, 0.2), 0px 4px 6px rgba(0, 0, 0, 0.5);
+            transition: all 0.1s ease; display: flex; align-items: center; justify-content: center;
+        }
+        .play-button:hover { background-color: #43962B; }
+        .play-button:active { box-shadow: inset 0px 4px 0px rgba(0, 0, 0, 0.3), inset 0px -4px 0px rgba(255, 255, 255, 0.1); transform: translateY(2px); }
+
+        .info-message {
+            color: #ffaa00; font-weight: bold; font-size: 16px; background-color: rgba(255, 170, 0, 0.1);
+            padding: 15px 25px; border-radius: 5px; border: 1px solid #ffaa00;
+        }
+
+        /* --- 彈出確認視窗樣式 --- */
+        .modal-overlay {
+            display: none; position: absolute; top: 0; left: 0; width: 100%; height: 100%;
+            background: rgba(0, 0, 0, 0.85); z-index: 999999; justify-content: center; align-items: center;
+        }
+        .modal-box {
+            background-color: #282828; padding: 30px; border: 2px solid #555; border-radius: 4px;
+            text-align: center; max-width: 450px; box-shadow: 0px 8px 15px rgba(0, 0, 0, 0.8);
+        }
+        .modal-box h3 { margin-top: 0; color: white; }
+        .modal-box p { color: #ccc; margin-bottom: 25px; line-height: 1.5; }
+        .modal-btn-group { display: flex; gap: 15px; justify-content: center; }
+        .modal-btn { padding: 10px 20px; font-size: 16px; font-weight: bold; border: none; cursor: pointer; border-radius: 2px; color: white; text-decoration: none; display: flex; align-items: center; justify-content: center; box-sizing: border-box;}
+        .btn-cancel { background-color: #555; }
+        .btn-cancel:hover { background-color: #666; }
+        .btn-confirm { background-color: #3C8527; }
+        .btn-confirm:hover { background-color: #43962B; }
+        .btn-export { background-color: #0078D7; }
+        .btn-export:hover { background-color: #005A9E; }
+        
+        .file-upload-label {
+            display: inline-block; padding: 10px 20px; font-size: 16px; font-weight: bold;
+            background-color: #D38200; color: white; border-radius: 2px; cursor: pointer; transition: 0.1s;
+        }
+        .file-upload-label:hover { background-color: #b57000; }
+        #file-input { display: none; }
+        
+        #save-data-textarea {
+            width: 100%; height: 80px; background: #111; color: #0f0; border: 1px solid #555;
+            padding: 10px; box-sizing: border-box; margin-bottom: 15px; resize: none; font-family: monospace;
+        }
+
+        /* ================= 專屬存檔面板與結束遊戲的麥塊風格 ================= */
+        #save-load-modal .modal-box, #local-storage-modal .modal-box, #quit-modal .modal-box, #java-modal .modal-box {
+            background-color: #313233; border: 4px solid #111; border-radius: 0px; 
+            box-shadow: inset 4px 4px 0px 0px #4A4B4C, inset -4px -4px 0px 0px #1A1A1A, 0px 10px 20px rgba(0,0,0,0.8);
+            font-family: 'VT323', monospace; letter-spacing: 1px;
+        }
+
+        #save-load-modal h3, #local-storage-modal h3, #quit-modal h3, #java-modal h3 { font-size: 32px; text-shadow: 2px 2px 0px #000; font-weight: normal; margin-bottom: 15px; }
+        #save-load-modal p, #local-storage-modal p, #quit-modal p, #java-modal p { font-size: 20px; text-shadow: 1px 1px 0px #000; }
+
+        #save-load-modal textarea, #local-storage-modal textarea {
+            background-color: #000; border: 2px solid #A0A0A0; border-bottom-color: #3F3F3F; border-right-color: #3F3F3F;
+            color: #55FF55; font-size: 22px; padding: 10px; outline: none; font-family: 'VT323', monospace; 
+        }
+        #save-load-modal textarea:focus, #local-storage-modal textarea:focus { border-color: #FFF; }
+        
+        #save-load-modal textarea::placeholder, #local-storage-modal textarea::placeholder {
+            color: #1a5c1a;
+        }
+
+        #save-load-modal .modal-btn, #save-load-modal .file-upload-label,
+        #local-storage-modal .modal-btn, #quit-modal .modal-btn, #java-modal .modal-btn {
+            font-size: 22px; border: 4px solid #111; border-radius: 0px; font-weight: normal;
+            font-family: 'VT323', monospace; text-shadow: 2px 2px 0px #000;
+        }
+
+        #save-load-modal .btn-cancel, #local-storage-modal .btn-cancel, #quit-modal .btn-cancel, #java-modal .btn-cancel { background-color: #737373; box-shadow: inset 4px 4px 0px 0px #9E9E9E, inset -4px -4px 0px 0px #3A3A3A; }
+        #save-load-modal .btn-cancel:hover, #local-storage-modal .btn-cancel:hover, #quit-modal .btn-cancel:hover, #java-modal .btn-cancel:hover { background-color: #828282; box-shadow: inset 4px 4px 0px 0px #B0B0B0, inset -4px -4px 0px 0px #424242; }
+        #save-load-modal .btn-cancel:active, #local-storage-modal .btn-cancel:active, #quit-modal .btn-cancel:active, #java-modal .btn-cancel:active { box-shadow: inset 4px 4px 0px 0px #3A3A3A, inset -4px -4px 0px 0px #9E9E9E; transform: translateY(2px); }
+
+        #local-storage-modal .btn-confirm, #java-modal .btn-confirm { background-color: #3C8527; box-shadow: inset 4px 4px 0px 0px #58A834, inset -4px -4px 0px 0px #1E4D12; }
+        #local-storage-modal .btn-confirm:hover, #java-modal .btn-confirm:hover { background-color: #4C9A2F; box-shadow: inset 4px 4px 0px 0px #6CC742, inset -4px -4px 0px 0px #225915; }
+        #local-storage-modal .btn-confirm:active, #java-modal .btn-confirm:active { box-shadow: inset 4px 4px 0px 0px #1E4D12, inset -4px -4px 0px 0px #58A834; transform: translateY(2px); }
+
+        #save-load-modal .btn-export, #local-storage-modal .btn-export { background-color: #0078D7; box-shadow: inset 4px 4px 0px 0px #3399FF, inset -4px -4px 0px 0px #005A9E; }
+        #save-load-modal .btn-export:hover, #local-storage-modal .btn-export:hover { background-color: #1A8CDD; box-shadow: inset 4px 4px 0px 0px #4DB8FF, inset -4px -4px 0px 0px #006AB5; }
+        #save-load-modal .btn-export:active, #local-storage-modal .btn-export:active { box-shadow: inset 4px 4px 0px 0px #005A9E, inset -4px -4px 0px 0px #3399FF; transform: translateY(2px); }
+
+        #save-load-modal .file-upload-label { background-color: #D38200; box-shadow: inset 4px 4px 0px 0px #FFAA33, inset -4px -4px 0px 0px #995500; display: inline-block; }
+        #save-load-modal .file-upload-label:hover { background-color: #E69500; box-shadow: inset 4px 4px 0px 0px #FFC14D, inset -4px -4px 0px 0px #B36B00; }
+        #save-load-modal .file-upload-label:active { box-shadow: inset 4px 4px 0px 0px #995500, inset -4px -4px 0px 0px #FFAA33; transform: translateY(2px); }
+        
+        .btn-danger { background-color: #D32F2F; box-shadow: inset 4px 4px 0px 0px #F44336, inset -4px -4px 0px 0px #B71C1C; color: white;}
+        .btn-danger:hover { background-color: #E53935; box-shadow: inset 4px 4px 0px 0px #EF5350, inset -4px -4px 0px 0px #C62828; }
+        .btn-danger:active { box-shadow: inset 4px 4px 0px 0px #B71C1C, inset -4px -4px 0px 0px #F44336; transform: translateY(2px); }
+
+        /* --- ✨ 浮動離開按鈕 (原版麥塊縮小風格) --- */
+        #floating-quit-btn {
+            display: none; position: absolute; top: 20px; right: 20px; z-index: 999998;
+            background-color: #737373; color: white; border: 2px solid #000;
+            padding: 6px 20px; font-size: 18px; font-family: 'VT323', monospace; cursor: pointer;
+            box-shadow: inset 2px 2px 0px 0px #9E9E9E, inset -2px -2px 0px 0px #3A3A3A, 0px 4px 6px rgba(0,0,0,0.5);
+            text-shadow: 2px 2px 0px #3F3F3F; transition: 0.1s; opacity: 0.85;
+        }
+        #floating-quit-btn:hover {
+            opacity: 1; background-color: #828282;
+            box-shadow: inset 2px 2px 0px 0px #B0B0B0, inset -2px -2px 0px 0px #424242, 0px 4px 6px rgba(0,0,0,0.5);
+        }
+        #floating-quit-btn:active {
+            transform: translateY(2px); 
+            box-shadow: inset 2px 2px 0px 0px #3A3A3A, inset -2px -2px 0px 0px #9E9E9E;
+        }
+
+        /* ✨ 儲存槽下拉選單樣式 ✨ */
+        #save-slot-select {
+            width: 100%; margin-bottom: 10px; background: #000; color: #55FFFF; 
+            border: 2px solid #A0A0A0; border-bottom-color: #3F3F3F; border-right-color: #3F3F3F;
+            padding: 8px; font-family: 'VT323', monospace; font-size: 22px; outline: none; cursor: pointer;
+        }
+        #save-slot-select:focus { border-color: #FFF; }
+        #save-slot-select option { font-family: 'VT323', monospace; }
+    </style>
+</head>
+
+<body>
+
+    <div id="password-screen">
+        <div class="password-box">
+            <h2>請輸入啟動密碼</h2>
+            <input type="password" id="password-input" placeholder="密碼">
+            <button class="play-button" id="password-submit" style="width: 85%; height: 45px; font-size: 18px; margin: 0 auto;">解鎖啟動器</button>
+            <p id="password-error" style="color: #ff5555; display: none; margin-top: 15px; font-weight: bold; font-size: 14px;">密碼錯誤，請再試一次！</p>
+        </div>
+    </div>
+
+    <div id="launcher-ui">
+
+        <div class="sidebar">
+            <div class="profile-area">
+                <div class="profile-icon"></div>
+                <div class="profile-name">玩家 Player</div>
+            </div>
+            <div class="game-list">
+                <div class="game-item active" data-target="scratch">Minecraft: Scratch 版</div>
+                <div class="game-item" data-target="2d">Minecraft: 2D 版</div>
+                <div class="game-item" data-target="mcjs">Minecraft: JS 網頁版</div>
+                <div class="game-item" data-target="bedrock">Minecraft for Windows</div>
+            </div>
+        </div>
+
+        <div class="main-content">
+            <div class="hero-banner"></div>
+
+            <div id="version-warning" class="info-message" style="display: none; position: absolute; bottom: 115px; left: 50%; transform: translateX(-50%); z-index: 15; background-color: rgba(255, 85, 85, 0.15); border-color: #ff5555; color: #ff5555; box-shadow: 0px 4px 10px rgba(0,0,0,0.5);">
+                ⚠️ 警告：本版本有諸多問題，建議不要遊玩。
+            </div>
+            <div id="warning-2d" class="info-message" style="display: none; position: absolute; bottom: 115px; left: 50%; transform: translateX(-50%); z-index: 15; background-color: rgba(255, 170, 0, 0.15); border-color: #ffaa00; color: #ffaa00; box-shadow: 0px 4px 10px rgba(0,0,0,0.5);">
+                ⚠️ 提示：本玩法為實驗性功能可能有問題。
+            </div>
+
+            <div class="play-bar">
+                <div id="content-scratch" class="play-bar-content active">
+                    <div class="version-selector">
+                        <label>選擇遊戲版本</label>
+                        <select id="version-dropdown">
+                            <option value="game_v0.6.html">最新版本 (v0.6)</option>
+                            <option value="game_v0.5.html">舊版 v0.5.1</option>
+                            <option value="game_v0.4.html">舊版 v0.4.3</option>
+                            <option value="game_v0.3.html">舊版 v0.4.1</option>
+                        </select>
+                    </div>
+                    <button class="play-button" id="start-btn">開始遊戲</button>
+                </div>
+
+                <div id="content-2d" class="play-bar-content">
+                    <div class="version-selector">
+                        <label>選擇遊戲版本</label>
+                        <select id="version-dropdown-2d">
+                            <option value="game 2d v1.html">V1 版本</option>
+                        </select>
+                    </div>
+                    <button class="play-button" id="start-btn-2d">開始遊戲</button>
+                </div>
+
+                <div id="content-mcjs" class="play-bar-content">
+                    <div class="version-selector">
+                        <label>選擇遊戲版本</label>
+                        <select id="version-dropdown-mcjs">
+                            <option value="EaglercraftX_1.8.html">EaglercraftX 1.8</option>
+                            <option value="eaglercraftx-194.html">EaglercraftX 1.9.4</option>
+                            <option value="Eaglercraft_1.12.html">Eaglercraft 1.12</option>
+                            <option value="EaglercraftX_1.5.2.html">EaglercraftX 1.5.2</option>
+                            <option value="Eaglercraft_Alpha_1.3.html">Eaglercraft Alpha 1.3</option>
+                            <option value="Eaglercraft_Beta_1.3.html">Eaglercraft Beta 1.3</option>
+                            <option value="forge1.8.html">Forge 1.8</option>
+                            <option value="forge1.12.html">Forge 1.12</option>
+                        </select>
+                    </div>
+                    <button class="play-button" id="start-btn-mcjs">開始遊戲</button>
+                </div>
+
+                <div id="content-bedrock" class="play-bar-content">
+                    <button class="play-button" id="bedrock-start-btn">啟動基岩版</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- 遊戲畫面容器與浮動退出按鈕 -->
+    <div id="game-container">
+        <!-- 🔥 新增 tabindex="0" 以及 pointer-lock 權限，確保 JS 遊戲能捕捉鍵盤 🔥 -->
+        <iframe id="game-frame" src="" allow="fullscreen; pointer-lock;" allowfullscreen="true" scrolling="no" tabindex="0"></iframe>
+        <button id="floating-quit-btn">離開遊戲</button>
+    </div>
+
+    <div id="bedrock-modal" class="modal-overlay">
+        <div class="modal-box">
+            <h3>確認啟動基岩版？</h3>
+            <p>請確認你的電腦中已經安裝了「Minecraft for Windows（基岩版）」。</p>
+            <div class="modal-btn-group">
+                <button id="modal-cancel-btn" class="modal-btn btn-cancel">取消</button>
+                <button id="modal-confirm-btn" class="modal-btn btn-confirm">確認啟動</button>
+            </div>
+        </div>
+    </div>
+
+    <div id="save-load-modal" class="modal-overlay">
+        <div class="modal-box">
+            <h3 style="color: #55FF55;">⌨️ 開發者存檔系統</h3>
+            <p style="font-size: 18px; margin-bottom: 10px;">目前儲存的文字資料 (可手動修改測試)：</p>
+            <textarea id="save-data-textarea" spellcheck="false">這裡放你要存檔的遊戲資料，例如：{"coins": 100, "level": 5}</textarea>
+            
+            <div class="modal-btn-group" style="margin-top: 15px;">
+                <button id="btn-download-txt" class="modal-btn btn-export">🟩 下載純二進位 .mc 檔</button>
+                
+                <label class="file-upload-label">
+                    📂 讀取 .mc 檔
+                    <input type="file" id="file-input" accept=".mc">
+                </label>
+            </div>
+            <button id="close-save-modal" class="modal-btn btn-cancel" style="margin-top: 20px; width: 100%;">關閉面板</button>
+        </div>
+    </div>
+
+    <div id="local-storage-modal" class="modal-overlay">
+        <div class="modal-box">
+            <h3 style="color: #55FFFF;">💾 瀏覽器記憶系統</h3>
+            <p style="font-size: 18px; margin-bottom: 10px;">請選擇槽位並存取此瀏覽器的資料：</p>
+            <select id="save-slot-select">
+                <option value="1">📂 存檔槽位 1</option>
+                <option value="2">📂 存檔槽位 2</option>
+                <option value="3">📂 存檔槽位 3</option>
+            </select>
+            <textarea id="local-save-data-textarea" spellcheck="false" placeholder="等待輸入... (請貼上你的存檔資料，或點擊「讀取」按鈕來載入檔案)"></textarea>
+            
+            <div class="modal-btn-group" style="margin-top: 15px;">
+                <button id="btn-save-local" class="modal-btn btn-confirm">📥 覆寫此槽位</button>
+                <button id="btn-load-local" class="modal-btn btn-export">📤 讀取此槽位</button>
+            </div>
+            <button id="close-local-modal" class="modal-btn btn-cancel" style="margin-top: 20px; width: 100%;">關閉面板</button>
+        </div>
+    </div>
+
+    <div id="quit-modal" class="modal-overlay">
+        <div class="modal-box">
+            <h3 style="color: #FF5555;">⚠️ 強制結束遊戲？</h3>
+            <p style="margin-bottom: 25px;">你確定要強制結束目前的遊戲並回到啟動器嗎？<br>未儲存的進度將會遺失！</p>
+            <div class="modal-btn-group">
+                <button id="quit-cancel-btn" class="modal-btn btn-cancel">取消</button>
+                <button id="quit-confirm-btn" class="modal-btn btn-danger">確認結束</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- 自訂訊息視窗 -->
+    <div id="message-modal" class="modal-overlay">
+        <div class="modal-box">
+            <h3 id="message-modal-title" style="color: #55FF55;">提示</h3>
+            <p id="message-modal-text" style="white-space: pre-wrap; font-size: 18px; margin-bottom: 25px; text-align: left;"></p>
+            <div class="modal-btn-group">
+                <button id="message-modal-btn" class="modal-btn btn-confirm" style="width: 100%;">確定</button>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // --- 密碼解鎖 ---
+        const passwordScreen = document.getElementById('password-screen');
+        const passwordInput = document.getElementById('password-input');
+        const passwordSubmit = document.getElementById('password-submit');
+        const passwordError = document.getElementById('password-error');
+        const launcherUI = document.getElementById('launcher-ui');
+
+        function checkPassword() {
+            if (passwordInput.value === '0213') {
+                passwordScreen.style.display = 'none';
+                launcherUI.style.display = 'flex';
+            } else {
+                passwordError.style.display = 'block';
+                passwordInput.value = '';
+                passwordInput.focus(); 
+            }
+        }
+        passwordSubmit.addEventListener('click', checkPassword);
+        passwordInput.addEventListener('keypress', (e) => { if (e.key === 'Enter') checkPassword(); });
+
+        // --- 頁籤切換邏輯 ---
+        const tabs = document.querySelectorAll('.game-item');
+        const contents = document.querySelectorAll('.play-bar-content');
+        const versionWarning = document.getElementById('version-warning');
+        const warning2d = document.getElementById('warning-2d');
+        const versionDropdown = document.getElementById('version-dropdown');
+
+        tabs.forEach(tab => {
+            tab.addEventListener('click', () => {
+                tabs.forEach(t => t.classList.remove('active'));
+                tab.classList.add('active');
+                contents.forEach(c => c.classList.remove('active'));
+                versionWarning.style.display = 'none';
+                warning2d.style.display = 'none';
+
+                const targetId = 'content-' + tab.getAttribute('data-target');
+                document.getElementById(targetId).classList.add('active');
+
+                if (tab.getAttribute('data-target') === '2d') {
+                    warning2d.style.display = 'block';
+                } else if (tab.getAttribute('data-target') === 'scratch') {
+                    const selectedText = versionDropdown.options[versionDropdown.selectedIndex].text;
+                    if (selectedText.includes('v0.4')) versionWarning.style.display = 'block';
+                }
+            });
+        });
+
+        // 浮動按鈕控制
+        const floatingQuitBtn = document.getElementById('floating-quit-btn');
+        floatingQuitBtn.addEventListener('click', () => {
+            document.getElementById('quit-modal').style.display = 'flex';
+        });
+
+        // 追蹤目前執行的遊戲版本
+        let currentGameMode = null;
+
+        // --- Scratch 版啟動 ---
+        const playBtn = document.getElementById('start-btn');
+        const gameFrame = document.getElementById('game-frame');
+        versionDropdown.addEventListener('change', (e) => {
+            const selectedText = e.target.options[e.target.selectedIndex].text;
+            if (selectedText.includes('v0.4')) versionWarning.style.display = 'block';
+            else versionWarning.style.display = 'none';
+        });
+        playBtn.addEventListener('click', () => {
+            currentGameMode = 'scratch';
+            gameFrame.src = versionDropdown.value;
+            launcherUI.style.display = 'none';
+            versionWarning.style.display = 'none'; 
+            
+            const selectedText = versionDropdown.options[versionDropdown.selectedIndex].text;
+            if (selectedText.includes('v0.5') || selectedText.includes('v0.4')) {
+                floatingQuitBtn.style.display = 'none';
+            } else {
+                floatingQuitBtn.style.display = 'block';
+            }
+            
+            const docElm = document.documentElement;
+            try {
+                let fullscreenPromise;
+                if (docElm.requestFullscreen) fullscreenPromise = docElm.requestFullscreen();
+                else if (docElm.webkitRequestFullscreen) fullscreenPromise = docElm.webkitRequestFullscreen();
+                else if (docElm.mozRequestFullScreen) fullscreenPromise = docElm.mozRequestFullScreen();
+                else if (docElm.msRequestFullscreen) fullscreenPromise = docElm.msRequestFullscreen();
+
+                if (fullscreenPromise && fullscreenPromise.catch) {
+                    fullscreenPromise.catch(err => console.warn("全螢幕受限：", err));
+                }
+            } catch (err) {
+                console.warn("全螢幕錯誤：", err);
+            }
+        });
+
+        // --- 2D 版啟動 ---
+        const playBtn2d = document.getElementById('start-btn-2d');
+        const versionDropdown2d = document.getElementById('version-dropdown-2d');
+        playBtn2d.addEventListener('click', () => {
+            currentGameMode = '2d';
+            gameFrame.src = versionDropdown2d.value;
+            launcherUI.style.display = 'none';
+            warning2d.style.display = 'none'; 
+            floatingQuitBtn.style.display = 'block'; 
+            
+            const docElm = document.documentElement;
+            try {
+                let fullscreenPromise;
+                if (docElm.requestFullscreen) fullscreenPromise = docElm.requestFullscreen();
+                else if (docElm.webkitRequestFullscreen) fullscreenPromise = docElm.webkitRequestFullscreen();
+                else if (docElm.mozRequestFullScreen) fullscreenPromise = docElm.mozRequestFullScreen();
+                else if (docElm.msRequestFullscreen) fullscreenPromise = docElm.msRequestFullscreen();
+
+                if (fullscreenPromise && fullscreenPromise.catch) {
+                    fullscreenPromise.catch(err => console.warn("全螢幕受限：", err));
+                }
+            } catch (err) {
+                console.warn("全螢幕錯誤：", err);
+            }
+        });
+
+        // --- MC JS (Eaglercraft) 版啟動 ---
+        const playBtnMcjs = document.getElementById('start-btn-mcjs');
+        const versionDropdownMcjs = document.getElementById('version-dropdown-mcjs');
+        playBtnMcjs.addEventListener('click', () => {
+            currentGameMode = 'mcjs';
+            gameFrame.src = versionDropdownMcjs.value;
+            launcherUI.style.display = 'none';
+            warning2d.style.display = 'none'; 
+            versionWarning.style.display = 'none';
+            floatingQuitBtn.style.display = 'block'; 
+
+            // 🔥 只需要給 iframe 本身焦點即可，不要去動 contentWindow，否則會把內部的 Canvas 焦點搶走 🔥
+            setTimeout(() => {
+                try { gameFrame.focus(); } catch(e) {}
+            }, 100);
+            
+            const docElm = document.documentElement;
+            try {
+                let fullscreenPromise;
+                if (docElm.requestFullscreen) fullscreenPromise = docElm.requestFullscreen();
+                else if (docElm.webkitRequestFullscreen) fullscreenPromise = docElm.webkitRequestFullscreen();
+                else if (docElm.mozRequestFullScreen) fullscreenPromise = docElm.mozRequestFullScreen();
+                else if (docElm.msRequestFullscreen) fullscreenPromise = docElm.msRequestFullscreen();
+
+                if (fullscreenPromise && fullscreenPromise.catch) {
+                    fullscreenPromise.catch(err => console.warn("全螢幕受限：", err));
+                }
+            } catch (err) {
+                console.warn("全螢幕錯誤：", err);
+            }
+        });
+
+        // --- 基岩版確認 ---
+        const bedrockStartBtn = document.getElementById('bedrock-start-btn');
+        const bedrockModal = document.getElementById('bedrock-modal');
+        document.getElementById('modal-cancel-btn').addEventListener('click', () => bedrockModal.style.display = 'none');
+        
+        document.getElementById('modal-confirm-btn').addEventListener('click', () => {
+            const iframe = document.createElement('iframe');
+            iframe.style.display = 'none';
+            iframe.src = 'minecraft://';
+            document.body.appendChild(iframe);
+
+            setTimeout(() => { 
+                bedrockModal.style.display = 'none'; 
+                launcherUI.style.display = 'none'; 
+            }, 500); 
+        });
+        bedrockStartBtn.addEventListener('click', () => bedrockModal.style.display = 'flex');
+
+        // 🚨 ================= 隱藏密技與跨視窗按鍵偵測 ================= 🚨
+        let secretCode = ""; 
+        const saveLoadModal = document.getElementById('save-load-modal');
+        const closeSaveModal = document.getElementById('close-save-modal');
+        const btnDownloadTxt = document.getElementById('btn-download-txt');
+        const fileInput = document.getElementById('file-input');
+        const saveDataTextarea = document.getElementById('save-data-textarea');
+        const localStorageModal = document.getElementById('local-storage-modal');
+        const closeLocalModal = document.getElementById('close-local-modal');
+        const btnSaveLocal = document.getElementById('btn-save-local');
+        const btnLoadLocal = document.getElementById('btn-load-local');
+        const localSaveDataTextarea = document.getElementById('local-save-data-textarea');
+        const saveSlotSelect = document.getElementById('save-slot-select'); 
+        const quitModal = document.getElementById('quit-modal');
+        const quitCancelBtn = document.getElementById('quit-cancel-btn');
+        const quitConfirmBtn = document.getElementById('quit-confirm-btn');
+
+        function handleKeySequence(key) {
+            secretCode += key;
+            if (secretCode.length > 10) secretCode = secretCode.slice(-10);
+            
+            const codeLower = secretCode.toLowerCase();
+
+            if (codeLower.endsWith("12345")) {
+                saveLoadModal.style.display = 'flex'; 
+                secretCode = ""; 
+            } else if (codeLower.endsWith("678")) {
+                localStorageModal.style.display = 'flex';
+                localSaveDataTextarea.value = ""; 
+                secretCode = ""; 
+            }
+        }
+
+        function triggerQuitMenu() {
+            if (currentGameMode === 'mcjs') return;
+
+            if (launcherUI.style.display === 'none' && passwordScreen.style.display === 'none') {
+                if (document.exitPointerLock) document.exitPointerLock(); 
+                
+                window.focus();
+                if (document.activeElement) document.activeElement.blur();
+                document.getElementById('game-frame').style.pointerEvents = 'none';
+
+                quitModal.style.display = 'flex';
+                setTimeout(() => { document.getElementById('quit-cancel-btn').focus(); }, 50);
+            }
+        }
+
+        window.addEventListener('keydown', (e) => {
+            if (e.key === 'F1') {
+                if (currentGameMode !== 'mcjs') {
+                    e.preventDefault(); 
+                    triggerQuitMenu();
+                }
+                return;
+            }
+            
+            if (e.target.tagName === 'INPUT' || e.target.tagName === 'TEXTAREA') {
+                return;
+            }
+
+            if (launcherUI.style.display === 'none' && passwordScreen.style.display === 'none') {
+                return;
+            }
+
+            handleKeySequence(e.key);
+        });
+
+        gameFrame.onload = function() {
+            // 🔥 遊戲載入完畢後，立刻把鍵盤焦點轉移給 iframe 🔥
+            try {
+                gameFrame.focus();
+            } catch(e) {}
+
+            if (currentGameMode === 'mcjs') return;
+
+            try {
+                gameFrame.contentWindow.addEventListener('keydown', (e) => {
+                    if (e.key === 'F1') {
+                        e.preventDefault();
+                        if (gameFrame.contentDocument && gameFrame.contentDocument.exitPointerLock) {
+                            gameFrame.contentDocument.exitPointerLock(); 
+                        }
+                    }
+                    window.postMessage({ type: 'iframe-keydown', key: e.key }, '*');
+                }, true);
+
+                const injectedScript = gameFrame.contentDocument.createElement('script');
+                injectedScript.textContent = `
+                    window.addEventListener('keydown', function(e) {
+                        if (e.key === 'F1') {
+                            e.preventDefault(); 
+                            if (document.exitPointerLock) document.exitPointerLock(); 
+                        }
+                        if (window.parent) {
+                            window.parent.postMessage({ type: 'iframe-keydown', key: e.key }, '*');
+                        }
+                    }, true);
+                `;
+                gameFrame.contentDocument.body.appendChild(injectedScript);
+            } catch(e) {
+                console.warn("⚠️ 瀏覽器安全限制，無法自動注入腳本。", e);
+            }
+        };
+
+        window.addEventListener('message', (e) => {
+            if (e.data && e.data.type === 'iframe-keydown') {
+                if (e.data.key === 'F1') triggerQuitMenu();
+                else handleKeySequence(e.data.key);
+            }
+        });
+
+        closeSaveModal.addEventListener('click', () => saveLoadModal.style.display = 'none');
+        closeLocalModal.addEventListener('click', () => localStorageModal.style.display = 'none');
+
+        quitCancelBtn.addEventListener('click', () => {
+            quitModal.style.display = 'none'; 
+            document.getElementById('game-frame').style.pointerEvents = 'auto';
+            try { document.getElementById('game-frame').focus(); } catch(e) {}
+        });
+
+        quitConfirmBtn.addEventListener('click', () => {
+            quitModal.style.display = 'none';
+            floatingQuitBtn.style.display = 'none'; 
+            document.getElementById('game-frame').style.pointerEvents = 'auto';
+            
+            currentGameMode = null; 
+            gameFrame.src = "";
+            launcherUI.style.display = 'flex';
+            if (document.fullscreenElement) {
+                document.exitFullscreen().catch(err => console.warn(err));
+            }
+        });
+
+        // 自訂訊息視窗邏輯
+        function showMessage(title, text, color = "#55FF55") {
+            const modal = document.getElementById('message-modal');
+            document.getElementById('message-modal-title').innerText = title;
+            document.getElementById('message-modal-title').style.color = color;
+            document.getElementById('message-modal-text').innerText = text;
+            modal.style.display = 'flex';
+        }
+        document.getElementById('message-modal-btn').addEventListener('click', () => {
+            document.getElementById('message-modal').style.display = 'none';
+        });
+
+        // 💥 ================= 真・物理二進位壓縮引擎 ================= 💥
+
+        async function compressToRawBinary(str) {
+            const blob = new Blob([str], { type: 'text/plain;charset=utf-8' });
+            const compressedStream = blob.stream().pipeThrough(new CompressionStream('gzip'));
+            const compressedBlob = await new Response(compressedStream).blob();
+            return new Uint8Array(await compressedBlob.arrayBuffer());
+        }
+
+        async function decompressFromRawBinary(uint8array) {
+            const stream = new Blob([uint8array]).stream();
+            const decompressedStream = stream.pipeThrough(new DecompressionStream('gzip'));
+            return await new Response(decompressedStream).text();
+        }
+
+        function binaryToSafeString(bytes) {
+            let packed = "MCGZ:";
+            let bitBuf = 0;
+            let bits = 0;
+            let chars = [];
+            for (let i = 0; i < bytes.length; i++) {
+                bitBuf = (bitBuf << 8) | bytes[i];
+                bits += 8;
+                while (bits >= 15) {
+                    bits -= 15;
+                    chars.push(String.fromCharCode(0x3000 + ((bitBuf >> bits) & 0x7FFF)));
+                }
+                if (chars.length > 5000) { packed += chars.join(""); chars = []; }
+            }
+            if (bits > 0) chars.push(String.fromCharCode(0x3000 + ((bitBuf << (15 - bits)) & 0x7FFF)));
+            packed += chars.join("");
+            return packed;
+        }
+
+        async function universalDecode(str) {
+            if (str.startsWith("MCGZ:")) {
+                const data = str.substring(5);
+                let bytes = [];
+                let bitBuf = 0;
+                let bits = 0;
+                for (let i = 0; i < data.length; i++) {
+                    let val = data.charCodeAt(i) - 0x3000;
+                    bitBuf = (bitBuf << 15) | val;
+                    bits += 15;
+                    while (bits >= 8) {
+                        bits -= 8;
+                        bytes.push((bitBuf >> bits) & 0xFF);
+                    }
+                }
+                return await decompressFromRawBinary(new Uint8Array(bytes));
+            }
+            if (str.startsWith("ULTRA:")) {
+                const firstColon = str.indexOf(":", 6);
+                const data = str.substring(firstColon + 1);
+                let bytes = [];
+                let bitBuf = 0;
+                let bits = 0;
+                for (let i = 0; i < data.length; i++) {
+                    let val = data.charCodeAt(i) - 0x3000;
+                    bitBuf = (bitBuf << 15) | val;
+                    bits += 15;
+                    while (bits >= 8) { bits -= 8; bytes.push((bitBuf >> bits) & 0xFF); }
+                }
+                let decomp = await decompressFromRawBinary(new Uint8Array(bytes));
+                return decomp.replace(/✂️([\s\S]*?)✖(\d+)✂️/g, (m, p1, c) => p1.repeat(parseInt(c, 10)));
+            }
+            if (str.startsWith("EXTREME:") || str.startsWith("GZIP:")) {
+                try {
+                    const base64 = str.split(":")[1];
+                    const res = await fetch("data:application/octet-stream;base64," + base64);
+                    const ds = res.body.pipeThrough(new DecompressionStream('gzip'));
+                    let text = await new Response(ds).text();
+                    if (str.startsWith("EXTREME:")) text = text.replace(/✂️([\s\S]*?)✖(\d+)✂️/g, (m, p1, c) => p1.repeat(parseInt(c, 10)));
+                    return text;
+                } catch(e) {}
+            }
+            try { return decodeURIComponent(atob(str)); } catch(e) { return str; }
+        }
+
+        // 💾 檔案讀寫邏輯
+        btnDownloadTxt.addEventListener('click', async () => {
+            const rawData = saveDataTextarea.value; 
+            if (!rawData.trim()) return showMessage("錯誤", "輸入框是空的！請先貼上存檔。", "#FF5555");
+
+            const uint8array = await compressToRawBinary(rawData);
+            const fileData = new Uint8Array(2 + uint8array.length);
+            fileData[0] = 0x4D; 
+            fileData[1] = 0x43; 
+            fileData.set(uint8array, 2);
+
+            const blob = new Blob([fileData], { type: 'application/octet-stream' });
+            const url = URL.createObjectURL(blob);
+            const a = document.createElement('a');
+            a.href = url;
+            a.download = "minecraft_save.mc"; 
+            document.body.appendChild(a);
+            a.click();
+            document.body.removeChild(a);
+            URL.revokeObjectURL(url);
+        });
+
+        fileInput.addEventListener('change', (e) => {
+            const file = e.target.files[0];
+            if (!file) return;
+            const reader = new FileReader();
+            
+            reader.onload = async function(event) {
+                try {
+                    const buffer = event.target.result;
+                    const bytes = new Uint8Array(buffer);
+                    
+                    if (bytes.length >= 2 && bytes[0] === 0x4D && bytes[1] === 0x43) {
+                        const gzipBytes = bytes.slice(2);
+                        saveDataTextarea.value = await decompressFromRawBinary(gzipBytes);
+                        showMessage("讀取成功", "📂 存檔讀取成功！\n【純二進位 .mc 檔案】已完美解壓縮還原。");
+                    } else {
+                        const decoder = new TextDecoder('utf-8');
+                        const text = decoder.decode(bytes);
+                        saveDataTextarea.value = await universalDecode(text);
+                        showMessage("讀取成功", "📂 存檔讀取成功！\n【舊版文字檔案】已自動轉換還原。");
+                    }
+                } catch(err) {
+                    showMessage("讀取失敗", "檔案讀取失敗！這可能不是正確的 .mc 存檔。", "#FF5555");
+                    console.error(err);
+                }
+            };
+            reader.readAsArrayBuffer(file);
+            fileInput.value = ''; 
+        });
+
+        // 💾 多槽位記憶系統邏輯
+        function getStorageKey(slot) {
+            return slot === '1' ? 'minecraft_scratch_save' : 'minecraft_scratch_save_slot_' + slot;
+        }
+
+        saveSlotSelect.addEventListener('change', () => {
+            localSaveDataTextarea.value = "";
+        });
+
+        btnSaveLocal.addEventListener('click', async () => {
+            const slot = saveSlotSelect.value;
+            const storageKey = getStorageKey(slot);
+            const rawData = localSaveDataTextarea.value;
+            
+            if (!rawData.trim()) {
+                showMessage("錯誤", "⚠️ 錯誤：輸入框是空的！\n請先貼上你想儲存的遊戲資料！", "#FF5555");
+                return;
+            }
+
+            const originalBytes = new Blob([rawData]).size;
+            const originalChars = rawData.length;
+            
+            const uint8array = await compressToRawBinary(rawData);
+            const compressedBytes = uint8array.length;
+            
+            const packedSafeString = binaryToSafeString(uint8array);
+            const packedChars = packedSafeString.length;
+
+            const byteRatio = originalBytes > 0 ? ((compressedBytes / originalBytes) * 100).toFixed(2) : 0;
+            const charRatio = originalChars > 0 ? ((packedChars / originalChars) * 100).toFixed(2) : 0;
+
+            localStorage.setItem(storageKey, packedSafeString);
+            
+            showMessage(`✅ 成功強制覆寫 [槽位 ${slot}]！`, `🗜️ 物理二進位報告 (GZIP)：
+原本大小：${originalBytes} Bytes
+壓至極限：${compressedBytes} Bytes (約 ${byteRatio}%)
+💡 提示：因為原作者的存檔「本身就已經高度壓縮過」了，這就是物理極限！
+
+💾 瀏覽器記憶體節省報告 (15-bit 黑科技)：
+原本佔用：${originalChars} 個字元額度
+現在佔用：${packedChars} 個字元額度
+(成功幫瀏覽器省下超過一半空間！佔用率：${charRatio}%)`, "#55FFFF");
+        });
+
+        btnLoadLocal.addEventListener('click', async () => {
+            const slot = saveSlotSelect.value;
+            const storageKey = getStorageKey(slot);
+            const savedData = localStorage.getItem(storageKey);
+            
+            if (savedData) {
+                localSaveDataTextarea.value = await universalDecode(savedData);
+                showMessage("📂 讀取成功！", `[槽位 ${slot}] 的進度已載入。\n\n你可以把這些文字全選複製，貼回遊戲裡了！`);
+            } else {
+                showMessage("找不到存檔", `⚠️ 目前 [槽位 ${slot}] 裡面沒有找到任何存檔紀錄喔！`, "#FFAA00");
+            }
+        });
+
+        // 💡 以下為你提供的焦點與打字防護機制程式碼
+
+        // 取得遊戲的 iframe 元素
+        // const gameFrame = document.getElementById('game-frame'); // (已在上方宣告過，故註解避免報錯)
+
+        // 1. 解決「按鈕」與「下拉選單」搶走焦點的問題
+        
+        // 【按鈕處理】點擊後立刻取消焦點，把鍵盤控制權還給遊戲。
+        document.querySelectorAll('button').forEach(element => {
+            // 監聽滑鼠點擊
+            element.addEventListener('click', () => {
+                element.blur(); // 取消按鈕的焦點
+                if (gameFrame) {
+                    gameFrame.focus(); // 把焦點還給遊戲 iframe
+                }
+            });
+            
+            // 防護：如果使用者是用鍵盤（Enter 或 空白鍵）觸發按鈕，也一樣取消焦點
+            element.addEventListener('keyup', (e) => {
+                if (e.key === 'Enter' || e.key === ' ') {
+                    element.blur();
+                    if (gameFrame) gameFrame.focus();
+                }
+            });
+        });
+
+        // 🔥 關鍵修正：【下拉選單處理】必須獨立出來！
+        // 必須等玩家「選擇完畢 (change)」後才可以取消焦點，否則點開會立刻閃退關閉
+        document.querySelectorAll('select').forEach(element => {
+            element.addEventListener('change', () => {
+                element.blur(); 
+                if (gameFrame) {
+                    gameFrame.focus(); 
+                }
+            });
+        });
+
+        // 2. 保護「輸入框」的正常打字功能
+        // 確保在輸入密碼或貼上存檔代碼時，你的按鍵（如 Backspace、空白鍵）不會觸發遊戲或其他快捷鍵
+        document.querySelectorAll('input, textarea').forEach(element => {
+            element.addEventListener('keydown', (e) => {
+                e.stopPropagation(); // 阻止事件向上冒泡，讓按鍵專心用於打字
+            });
+        });
+
+        // 3. 全局點擊防護
+        // ⚠️ 關鍵修正：如果玩家已經點擊了「遊戲畫面 (iframe) 本身」，絕對不可以再呼叫 focus()！
+        // 否則會把遊戲內部真正的控制權 (Canvas) 給重置掉，這就是導致 WASD 失靈的元凶！
+        document.addEventListener('click', (e) => {
+            const isInput = e.target.tagName === 'INPUT' || e.target.tagName === 'TEXTAREA';
+            const isGameFrame = e.target === gameFrame; // 判斷點擊的是不是遊戲畫面
+            
+            // 只有點擊「啟動器的空白處」，且不在輸入框時，才把焦點塞給遊戲
+            if (!isInput && !isGameFrame && gameFrame && launcherUI.style.display === 'none') {
+                gameFrame.focus();
+            }
+        });
+
+    </script>
+</body>
+
+</html>
