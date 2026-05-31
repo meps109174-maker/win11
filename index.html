@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Windows 11 網頁版 - GitHub Pages 直開</title>
+    <title>Windows 11 網頁版</title>
     <!-- 引入 Tailwind CSS 用於精美版面 -->
     <script src="https://cdn.tailwindcss.com"></script>
     <!-- 引入 Font Awesome 圖示 -->
@@ -30,6 +30,8 @@
                 svgStr = `<svg class="w-10 h-10" viewBox="0 0 24 24" fill="none"><rect x="4" y="3" width="16" height="18" rx="2" fill="#0078d4"/><path d="M8 7h8M8 11h8M8 15h5" stroke="white" stroke-width="2" stroke-linecap="round"/></svg>`;
             } else if (type === 'store') {
                 svgStr = `<svg class="w-10 h-10" viewBox="0 0 48 48" fill="none"><path d="M40 14H8V41C8 42.1046 8.89543 43 10 43H38C39.1046 43 40 42.1046 40 41V14Z" fill="#0078D4"/><path d="M30 14C30 10.6863 27.3137 8 24 8C20.6863 8 18 10.6863 18 14" stroke="#F1F1F1" stroke-width="3" stroke-linecap="round"/><path d="M8 14H40V18H8V14Z" fill="#50E6FF"/></svg>`;
+            } else if (type === 'tetris') {
+                svgStr = `<div class="w-10 h-10 bg-red-600 rounded-lg flex items-center justify-center font-bold text-[10px] text-white border-2 border-red-500 shadow-md">T</div>`;
             }
             container.innerHTML = svgStr;
         }
@@ -58,6 +60,9 @@
 
         // 監聽 F11 按鍵
         window.addEventListener('keydown', (e) => {
+            // 🔥 鎖定防搶機制：如果焦點在 Minecraft iframe 內，不要讓外部 Win11 系統搶走
+            if (activeWindow === 'minecraft') return;
+            
             if (e.key === 'F11') {
                 e.preventDefault(); // 阻擋瀏覽器預設的 F11 畫面變動
                 toggleFullscreen(); // 改用我們自訂的完美無縫全螢幕
@@ -133,7 +138,7 @@
             <span class="text-white text-xs text-center drop-shadow-md truncate w-full mt-1">檔案</span>
         </div>
 
-        <!-- Microsoft Store 桌面圖示 (已完美對接您的 store.png 檔案) -->
+        <!-- Microsoft Store 桌面圖示 (優先讀取您的 store.png 檔案) -->
         <div onclick="openWindow('store')" class="w-20 h-22 flex flex-col items-center justify-center rounded hover:bg-white/10 active:bg-white/20 cursor-pointer transition p-1">
             <div class="w-10 h-10 flex items-center justify-center">
                 <img src="store.png" class="w-9 h-9 object-contain" onerror="fallbackIcon(this, 'store')">
@@ -185,8 +190,7 @@
             <span class="text-white text-xs text-center drop-shadow-md truncate w-full mt-1">小算盤</span>
         </div>
 
-        <!-- =================== 🔥 桌面區域：Minecraft 預設顯現於主畫面！ =================== -->
-        <!-- Minecraft 桌面 (預設直接啟動，不需要進入 Store 下載) -->
+        <!-- =================== 🔥 桌面區域：Minecraft 預設直接加載，並具有強制最前台鎖定機制！ =================== -->
         <div id="desktop-app-minecraft" class="w-20 h-22 flex flex-col items-center justify-center rounded hover:bg-white/10 active:bg-white/20 cursor-pointer transition p-1">
             <div class="w-10 h-10 flex items-center justify-center" onclick="openWindow('minecraft')">
                 <img src="minecraft.png" class="w-full h-full object-contain rounded-md" onerror="fallbackIcon(this, 'minecraft')">
@@ -194,21 +198,29 @@
             <span class="text-white text-xs text-center drop-shadow-md truncate w-full mt-1">Minecraft</span>
         </div>
 
-        <!-- =================== 🔥 動態商店下載 App 桌面欄位 (預設隱藏，安裝完成由 JS 自動顯現) =================== -->
+        <!-- =================== 🔥 動態商店下載 App 桌面欄位 (安裝完成由 JS 自動顯現) =================== -->
         <!-- 2048 桌面 -->
         <div id="desktop-app-game2048" class="w-20 h-22 hidden flex-col items-center justify-center rounded hover:bg-white/10 active:bg-white/20 cursor-pointer transition p-1">
             <div class="w-10 h-10 bg-amber-500 rounded-lg flex items-center justify-center font-extrabold text-white text-lg" onclick="openWindow('game2048')">2048</div>
             <span class="text-white text-xs text-center drop-shadow-md truncate w-full mt-1">2048 遊戲</span>
         </div>
 
-        <!-- 小恐龍 桌面 (全新升級為超高質感綠色像素畫向量圖案) -->
+        <!-- 小恐龍 桌面 -->
         <div id="desktop-app-gamedino" class="w-20 h-22 hidden flex-col items-center justify-center rounded hover:bg-white/10 active:bg-white/20 cursor-pointer transition p-1">
             <div class="w-10 h-10 bg-zinc-800/80 border border-zinc-700/60 rounded-lg flex items-center justify-center shadow-md cursor-pointer" onclick="openWindow('gamedino')">
                 <svg class="w-6 h-6" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
-                    <path d="M14,2h6v2h1v3h-3v1h-1v1h-2V7h-1V6h-1V4h2V2z M17,3h1v1h-1V3z M11,6h1v1h-1V6z M10,7h1v1h-1V7z M9,8h1v1h-1V8z M8,9h1v3h-1V9z M7,10h1v4h-1V10z M6,11h1v4h-1V11z M5,12h1v4h-1V12z M2,14h3v1H2v-1z M1,15h3v1H1v-1z M0,16h3v1H0v-1z M1,17h1v1H1v-1z M2,18h1v1H2v-1z M3,19h2v1H3v-1z M5,15h1v1H5v-1z M6,14h1v1H6v-1z M11,10h2v1h-2v-1z M12,11h1v1h-1v-1z M13,12h2v1h-2v-1z M14,13h1v2h-1v-2z M10,16h2v1h-2v-1z M9,17h1v1H9v-1z M8,18h1v3h-1v-3z M7,21h2v1H7v-1z M11,18h1v3h-1v-3z M10,21h2v1h-2v-1z" fill="#10b981"/>
+                    <path d="M14,2h6v2h1v3h-3v1h-1v1h-2V7h-1V6h-1V4h2V2z M17,3h1v1h-1V3z M11,6h1v1h-1V6z M10,7h1v1h-1V7z M9,8h1v1h-1V8z M8,9h1v3h-1V9z M7,10h1v4h-1V10z M6,11h1v4h-1V11z M5,12h1v4h-1V12z M2,14h3v1H2v-1z M1,15h3v1H1v-1z M0,16h3v1H0v-1z M1,17h1v1H1v-1z M2,18h1v1H2v-1z M3,19h2v1H3v-1z M5,15h1v1H5v-1z M6,14h1v1H6v-1z M11,10h2v1h-2v-1z M12,11h1v1h-1v-1z M13,12h2v1h-2v-1z M14,13h1v2h-1v-2z M10,16h2v1h-2v-1z M9,17h1v1H9v-1z M8,18h1v3h-1v-3z M7,21h2v1H7v-1z M11,18h1v3h-1v-3z M10,21h2v1H7v-1z" fill="#10b981"/>
                 </svg>
             </div>
             <span class="text-white text-xs text-center drop-shadow-md truncate w-full mt-1">跳躍小恐龍</span>
+        </div>
+
+        <!-- 俄羅斯方塊 桌面 -->
+        <div id="desktop-app-tetris" class="w-20 h-22 hidden flex-col items-center justify-center rounded hover:bg-white/10 active:bg-white/20 cursor-pointer transition p-1">
+            <div class="w-10 h-10 bg-red-600 rounded-lg flex items-center justify-center font-black text-white text-lg cursor-pointer shadow-md" onclick="openWindow('tetris')">
+                <i class="fa-solid fa-shapes text-white"></i>
+            </div>
+            <span class="text-white text-xs text-center drop-shadow-md truncate w-full mt-1">俄羅斯方塊</span>
         </div>
     </div>
 
@@ -241,7 +253,7 @@
     </div>
 
 
-    <!-- ================= 視窗：Microsoft Store (官方正版視覺優化商店) ================= -->
+    <!-- ================= 視窗：Microsoft Store ================= -->
     <div id="win-store" class="window-transition window-hidden absolute glass rounded-lg overflow-hidden win-shadow text-white flex flex-col border border-white/10" style="width: 820px; height: 560px; top: 11%; left: 19%; z-index: 10;">
         <div class="h-10 bg-[#0f0f0f] flex justify-between items-center px-4 cursor-move" onmousedown="dragStart(event, 'win-store')">
             <div class="flex items-center gap-2">
@@ -278,13 +290,12 @@
             </h3>
             <div class="grid grid-cols-3 gap-6">
                 
-                <!-- 應用 1：Minecraft (預設為已擁有 / 已安裝狀態) -->
+                <!-- 應用 1：Minecraft (預設已安裝) -->
                 <div class="bg-[#1c1c1f]/80 rounded-xl p-5 border border-white/5 flex flex-col items-center text-center shadow-md hover:scale-[1.02] transition">
                     <img src="minecraft.png" class="w-16 h-16 object-contain rounded-lg mb-4 shadow-lg" onerror="fallbackIcon(this, 'minecraft')">
                     <h4 class="text-sm font-bold text-white mb-1 flex items-center gap-1">Minecraft 2D <i class="fa-solid fa-circle-check text-blue-400 text-[10px]"></i></h4>
                     <p class="text-[10px] text-gray-400 mb-4 h-12 flex items-center">高度整合 Scratch 麥塊系統！一鍵進入原汁原味的方塊搭建世界。</p>
                     
-                    <!-- 安裝與進度按鈕 (Minecraft 預設為可直接啟動) -->
                     <div class="w-full" id="store-action-minecraft">
                         <button onclick="openWindow('minecraft'); closeWindow('store');" class="w-full py-2 bg-emerald-600 hover:bg-emerald-500 text-white rounded text-xs font-bold transition flex items-center justify-center gap-1">
                             <i class="fa-solid fa-play"></i> 啟動遊戲
@@ -303,22 +314,34 @@
                     </div>
                 </div>
 
-                <!-- 應用 3：小恐龍 (已升級為超高質感精美綠色像素 dinosaur SVG 圖像) -->
+                <!-- 應用 3：小恐龍 -->
                 <div class="bg-[#1c1c1f]/80 rounded-xl p-5 border border-white/5 flex flex-col items-center text-center shadow-md hover:scale-[1.02] transition">
                     <div class="w-16 h-16 bg-zinc-800 rounded-xl flex items-center justify-center mb-4 shadow-lg border border-zinc-700/30">
                         <svg class="w-10 h-10" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
-                            <path d="M14,2h6v2h1v3h-3v1h-1v1h-2V7h-1V6h-1V4h2V2z M17,3h1v1h-1V3z M11,6h1v1h-1V6z M10,7h1v1h-1V7z M9,8h1v1h-1V8z M8,9h1v3h-1V9z M7,10h1v4h-1V10z M6,11h1v4h-1V11z M5,12h1v4h-1V12z M2,14h3v1H2v-1z M1,15h3v1H1v-1z M0,16h3v1H0v-1z M1,17h1v1H1v-1z M2,18h1v1H2v-1z M3,19h2v1H3v-1z M5,15h1v1H5v-1z M6,14h1v1H6v-1z M11,10h2v1h-2v-1z M12,11h1v1h-1v-1z M13,12h2v1h-2v-1z M14,13h1v2h-1v-2z M10,16h2v1h-2v-1z M9,17h1v1H9v-1z M8,18h1v3h-1v-3z M7,21h2v1H7v-1z M11,18h1v3h-1v-3z M10,21h2v1h-2v-1z" fill="#10b981"/>
-                        </svg>
-                    </div>
-                    <h4 class="text-sm font-bold text-white mb-1 flex items-center gap-1">跳躍小恐龍 <i class="fa-solid fa-circle-check text-blue-400 text-[10px]"></i></h4>
-                    <p class="text-[10px] text-gray-400 mb-4 h-12 flex items-center">點擊跳躍來躲避障礙仙人掌。最純粹好玩的全年齡像素運動遊戲。</p>
-                    
-                    <div class="w-full" id="store-action-gamedino">
-                        <button onclick="installApp('gamedino')" class="w-full py-2 bg-blue-600 hover:bg-blue-500 text-white rounded text-xs font-bold transition">取得 (免費安裝)</button>
-                    </div>
+                            <path d="M14,2h6v2h1v3h-3v1h-1v1h-2V7h-1V6h-1V4h2V2z M17,3h1v1h-1V3z M11,6h1v1h-1V6z M10,7h1v1h-1V7z M9,8h1v1h-1V8z M8,9h1v3h-1V9z M7,10h1v4h-1V10z M6,11h1v4h-1V11z M5,12h1v4h-1V12z M2,14h3v1H2v-1z M1,15h3v1H1v-1z M0,16h3v1H0v-1z M1,17h1v1H1v-1z M2,18h1v1H2v-1z M3,19h2v1H3v-1z M5,15h1v1H5v-1z M6,14h1v1H6v-1z M11,10h2v1h-2v-1z M12,11h1v1h-1v-1z M13,12h2v1h-2v-1z M14,13h1v2h-1v-2z M10,16h2v1h-2v-1z M9,17h1v1H9v-1z M8,18h1v3h-1v-3z M7,21h2v1H7v-1z M11,18h1v3h-1v-3z M10,21h2v1H7v-1z" fill="#10b981"/>
+                    </svg>
                 </div>
-
+                <h4 class="text-sm font-bold text-white mb-1 flex items-center gap-1">跳躍小恐龍 <i class="fa-solid fa-circle-check text-blue-400 text-[10px]"></i></h4>
+                <p class="text-[10px] text-gray-400 mb-4 h-12 flex items-center">點擊跳躍來躲避障礙仙人掌。經典綠色像素像素風格。</p>
+                
+                <div class="w-full" id="store-action-gamedino">
+                    <button onclick="installApp('gamedino')" class="w-full py-2 bg-blue-600 hover:bg-blue-500 text-white rounded text-xs font-bold transition">取得 (免費安裝)</button>
+                </div>
             </div>
+
+            <!-- 應用 4：俄羅斯方塊 (Tetris) -->
+            <div class="bg-[#1c1c1f]/80 rounded-xl p-5 border border-white/5 flex flex-col items-center text-center shadow-md hover:scale-[1.02] transition mt-6">
+                <div class="w-16 h-16 bg-red-600 rounded-xl flex items-center justify-center mb-4 shadow-lg border border-red-500/30 text-white text-3xl">
+                    <i class="fa-solid fa-shapes"></i>
+                </div>
+                <h4 class="text-sm font-bold text-white mb-1 flex items-center gap-1">俄羅斯方塊 <i class="fa-solid fa-circle-check text-blue-400 text-[10px]"></i></h4>
+                <p class="text-[10px] text-gray-400 mb-4 h-12 flex items-center">經典自製高流暢堆疊與消行挑戰！支援鍵盤極限操作與即時計分。</p>
+                
+                <div class="w-full" id="store-action-tetris">
+                    <button onclick="installApp('tetris')" class="w-full py-2 bg-blue-600 hover:bg-blue-500 text-white rounded text-xs font-bold transition">取得 (免費安裝)</button>
+                </div>
+            </div>
+
         </div>
     </div>
 
@@ -372,7 +395,7 @@
     </div>
 
 
-    <!-- ================= 視窗：Microsoft Word (自製版) ================= -->
+    <!-- ================= 視窗：Microsoft Word ================= -->
     <div id="win-word" class="window-transition window-hidden absolute glass rounded-lg overflow-hidden win-shadow text-white flex flex-col border border-white/10" style="width: 820px; height: 560px; top: 10%; left: 18%; z-index: 10;">
         <div class="h-10 bg-[#185abd] flex justify-between items-center px-4 cursor-move" onmousedown="dragStart(event, 'win-word')">
             <div class="flex items-center gap-2">
@@ -423,7 +446,7 @@
     </div>
 
 
-    <!-- ================= 視窗：Microsoft Excel (自製版) ================= -->
+    <!-- ================= 視窗：Microsoft Excel ================= -->
     <div id="win-excel" class="window-transition window-hidden absolute glass rounded-lg overflow-hidden win-shadow text-white flex flex-col border border-white/10" style="width: 820px; height: 560px; top: 12%; left: 20%; z-index: 10;">
         <div class="h-10 bg-[#107c41] flex justify-between items-center px-4 cursor-move" onmousedown="dragStart(event, 'win-excel')">
             <div class="flex items-center gap-2">
@@ -474,7 +497,7 @@
     </div>
 
 
-    <!-- ================= 視窗：Microsoft PowerPoint (自製版) ================= -->
+    <!-- ================= 視窗：Microsoft PowerPoint ================= -->
     <div id="win-powerpoint" class="window-transition window-hidden absolute glass rounded-lg overflow-hidden win-shadow text-white flex flex-col border border-white/10" style="width: 820px; height: 560px; top: 14%; left: 22%; z-index: 10;">
         <div class="h-10 bg-[#c43e1c] flex justify-between items-center px-4 cursor-move" onmousedown="dragStart(event, 'win-powerpoint')">
             <div class="flex items-center gap-2">
@@ -536,6 +559,7 @@
         </div>
         <!-- 嵌入外部 Minecraft html -->
         <div class="flex-1 bg-black relative">
+            <!-- 添加 keydown 攔截與焦點管理 -->
             <iframe id="minecraft-iframe" src="2026.4.20.html" class="w-full h-full border-none" allow="autoplay; fullscreen; keyboard" sandbox="allow-same-origin allow-scripts allow-popups allow-forms"></iframe>
         </div>
     </div>
@@ -563,12 +587,12 @@
     </div>
 
 
-    <!-- ================= 視窗：小恐龍獨立遊戲視窗 (全新極致升級版) ================= -->
+    <!-- ================= 視窗：小恐龍獨立遊戲視窗 ================= -->
     <div id="win-gamedino" class="window-transition window-hidden absolute glass rounded-lg overflow-hidden win-shadow text-white flex flex-col border border-white/10" style="width: 500px; height: 400px; top: 15%; left: 28%; z-index: 10;">
         <div class="h-10 bg-zinc-800 flex justify-between items-center px-4 cursor-move" onmousedown="dragStart(event, 'win-gamedino')">
             <div class="flex items-center gap-2">
                 <svg class="w-4 h-4 text-green-500" viewBox="0 0 24 24" fill="currentColor">
-                    <path d="M14,2h6v2h1v3h-3v1h-1v1h-2V7h-1V6h-1V4h2V2z M17,3h1v1h-1V3z M11,6h1v1h-1V6z M10,7h1v1h-1V7z M9,8h1v1h-1V8z M8,9h1v3h-1V9z M7,10h1v4h-1V10z M6,11h1v4h-1V11z M5,12h1v4h-1V12z M2,14h3v1H2v-1z M1,15h3v1H1v-1z M0,16h3v1H0v-1z M1,17h1v1H1v-1z M2,18h1v1H2v-1z M3,19h2v1H3v-1z M5,15h1v1H5v-1z M6,14h1v1H6v-1z M11,10h2v1h-2v-1z M12,11h1v1h-1v-1z M13,12h2v1h-2v-1z M14,13h1v2h-1v-2z M10,16h2v1h-2v-1z M9,17h1v1H9v-1z M8,18h1v3h-1v-3z M7,21h2v1H7v-1z M11,18h1v3h-1v-3z M10,21h2v1h-2v-1z"/>
+                    <path d="M14,2h6v2h1v3h-3v1h-1v1h-2V7h-1V6h-1V4h2V2z M17,3h1v1h-1V3z M11,6h1v1h-1V6z M10,7h1v1h-1V7z M9,8h1v1h-1V8z M8,9h1v3h-1V9z M7,10h1v4h-1V10z M6,11h1v4h-1V11z M5,12h1v4h-1V12z M2,14h3v1H2v-1z M1,15h3v1H1v-1z M0,16h3v1H0v-1z M1,17h1v1H1v-1z M2,18h1v1H2v-1z M3,19h2v1H3v-1z M5,15h1v1H5v-1z M6,14h1v1H6v-1z M11,10h2v1h-2v-1z M12,11h1v1h-1v-1z M13,12h2v1h-2v-1z M14,13h1v2h-1v-2z M10,16h2v1h-2v-1z M9,17h1v1H9v-1z M8,18h1v3h-1v-3z M7,21h2v1H7v-1z M11,18h1v3h-1v-3z M10,21h2v1H7v-1z"/>
                 </svg>
                 <span class="text-xs font-semibold text-gray-200">跳躍小恐龍</span>
             </div>
@@ -580,13 +604,13 @@
         <div class="flex-1 bg-zinc-900 p-6 flex flex-col items-center justify-center">
             <div class="relative bg-zinc-850 w-full h-48 rounded overflow-hidden" id="dino-container">
                 <div class="absolute bottom-4 left-0 right-0 h-0.5 bg-gray-500"></div>
-                <!-- 像素綠色小恐龍替代原本的 🦖 EMOJI -->
+                <!-- 像素綠色小恐龍 -->
                 <div id="dino-char" class="absolute bottom-4 left-10 w-8 h-8 flex items-center justify-center" style="bottom: 16px;">
                     <svg class="w-full h-full" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
                         <path d="M14,2h6v2h1v3h-3v1h-1v1h-2V7h-1V6h-1V4h2V2z M17,3h1v1h-1V3z M11,6h1v1h-1V6z M10,7h1v1h-1V7z M9,8h1v1h-1V8z M8,9h1v3h-1V9z M7,10h1v4h-1V10z M6,11h1v4h-1V11z M5,12h1v4h-1V12z M2,14h3v1H2v-1z M1,15h3v1H1v-1z M0,16h3v1H0v-1z M1,17h1v1H1v-1z M2,18h1v1H2v-1z M3,19h2v1H3v-1z M5,15h1v1H5v-1z M6,14h1v1H6v-1z M11,10h2v1h-2v-1z M12,11h1v1h-1v-1z M13,12h2v1h-2v-1z M14,13h1v2h-1v-2z M10,16h2v1h-2v-1z M9,17h1v1H9v-1z M8,18h1v3h-1v-3z M7,21h2v1H7v-1z M11,18h1v3h-1v-3z M10,21h2v1H7v-1z" fill="#10b981"/>
                     </svg>
                 </div>
-                <!-- 像素仙人掌障礙物替代原本的 🌵 EMOJI -->
+                <!-- 像素仙人掌障礙物 -->
                 <div id="dino-obstacle" class="absolute bottom-4 right-0 w-5 h-8 flex items-center justify-center">
                     <svg class="w-full h-full" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
                         <path d="M10,2h4v16h-4V2z M5,6h4v4H5V6z M8,10h2v4H8v-4z M15,8h4v4h-4V8z M14,12h2v4h-2v-4z" fill="#10b981"/>
@@ -604,6 +628,48 @@
             <div class="w-full flex justify-between items-center mt-4 text-xs text-gray-400">
                 <span>得分: <span id="dino-score" class="text-white font-bold">0</span></span>
                 <span>操作方法: 按 空白鍵 進行跳躍</span>
+            </div>
+        </div>
+    </div>
+
+
+    <!-- ================= 視窗：自製俄羅斯方塊 (完全獨立單機遊戲版) ================= -->
+    <div id="win-tetris" class="window-transition window-hidden absolute glass rounded-lg overflow-hidden win-shadow text-white flex flex-col border border-white/10" style="width: 440px; height: 550px; top: 8%; left: 22%; z-index: 10;">
+        <div class="h-10 bg-red-900 flex justify-between items-center px-4 cursor-move" onmousedown="dragStart(event, 'win-tetris')">
+            <div class="flex items-center gap-2">
+                <i class="fa-solid fa-shapes text-white"></i>
+                <span class="text-xs font-semibold text-gray-200">俄羅斯方塊 (自製暢玩版)</span>
+            </div>
+            <div class="flex gap-1 items-center">
+                <button onclick="minimizeWindow('tetris')" class="w-8 h-8 flex items-center justify-center hover:bg-white/10 rounded transition"><i class="fa-solid fa-minus text-xs"></i></button>
+                <button onclick="closeWindow('tetris')" class="w-8 h-8 flex items-center justify-center hover:bg-red-500 rounded transition"><i class="fa-solid fa-xmark text-xs"></i></button>
+            </div>
+        </div>
+        <div class="flex-1 bg-zinc-900 p-4 flex gap-4 overflow-hidden">
+            <!-- 左側主繪圖區 -->
+            <div class="flex-1 relative bg-black/60 rounded border border-zinc-800 flex justify-center items-center">
+                <canvas id="tetris-canvas" class="bg-black/40" style="width: 200px; height: 400px;"></canvas>
+            </div>
+            <!-- 右側計分資訊欄 -->
+            <div class="w-36 flex flex-col justify-between py-2 text-xs">
+                <div class="space-y-4">
+                    <div class="bg-black/30 p-2 rounded border border-white/5">
+                        <p class="text-gray-400 uppercase text-[9px] font-bold">得分</p>
+                        <p id="tetris-score" class="text-lg font-bold text-red-400">0</p>
+                    </div>
+                    <div class="bg-black/30 p-2 rounded border border-white/5">
+                        <p class="text-gray-400 uppercase text-[9px] font-bold">已消除行數</p>
+                        <p id="tetris-lines" class="text-lg font-bold text-white">0</p>
+                    </div>
+                    <div class="bg-black/30 p-2 rounded border border-white/5 flex flex-col items-center">
+                        <p class="text-gray-400 uppercase text-[9px] font-bold mb-2">下一個方塊</p>
+                        <canvas id="tetris-next-canvas" class="bg-black/20" style="width: 60px; height: 60px;"></canvas>
+                    </div>
+                </div>
+                <div class="space-y-2">
+                    <button onclick="startTetris()" class="w-full py-1.5 bg-red-600 hover:bg-red-500 text-white rounded font-bold transition">開始 / 重玩</button>
+                    <p class="text-[9px] text-gray-500 leading-tight">操作：鍵盤 ← → 移動，↑ 旋轉，↓ 加速落，Space 瞬間落下。</p>
+                </div>
             </div>
         </div>
     </div>
@@ -708,8 +774,9 @@
                 <h3 class="font-bold text-emerald-400">📂 全新 Office 功能與 Store 微調：</h3>
                 <p>1. <strong>自製 Office 系列</strong>：單機自製 Word、Excel、PowerPoint，隨時隨地離線開啟使用，完全排除任何報錯！</p>
                 <p>2. <strong>Store 商店與小恐龍大升級</strong>：Microsoft Store 圖示完美調用您下載的 <strong>`store.png`</strong> 官方圖片。另外，我們將<strong>小恐龍遊戲</strong>的圖示以及遊玩角色全部升級為超高畫質的<strong>經典 2D 像素綠色向量 SVG 影像</strong>，質感大幅躍升！</p>
-                <p>3. <strong>Minecraft 已預設安裝</strong>：您不用再去 Store 點選安裝，在桌面、工作列與開始功能表內，Minecraft 圖示預設就全部直接解鎖！可以直接點擊在獨立視窗暢玩！</p>
-                <p class="text-yellow-400">4. 支援按 F11 鍵一鍵無縫進入或退出「全螢幕」體驗模式！</p>
+                <p>3. <strong>Minecraft 已預設安裝並完美保護鎖定</strong>：Minecraft 圖示預設就全部直接解鎖！當點擊開啟時，鍵盤鎖定將自動對接，WASD 與 Space 不再失靈！</p>
+                <p>4. <strong>上架自製俄羅斯方塊</strong>：前往 Microsoft Store 下載可直接解鎖獨立桌面/工作列 APP！</p>
+                <p class="text-yellow-400">5. 支援按 F11 鍵一鍵無縫進入或退出「全螢幕」體驗模式！</p>
             </div>
             <div class="flex justify-end">
                 <button onclick="closeWindow('readme')" class="px-4 py-2 bg-blue-600 hover:bg-blue-500 rounded text-xs transition">進入體驗！</button>
@@ -756,7 +823,7 @@
                 <img src="1154.png" class="w-6 h-6 object-contain" onerror="fallbackIcon(this, 'thispc')">
                 <span id="dot-thispc" class="absolute bottom-0.5 left-1/2 transform -translate-x-1/2 w-1 h-1 bg-blue-400 rounded-full opacity-0"></span>
             </button>
-            <!-- Microsoft Store 工作列 (已對接您本機的 store.png) -->
+            <!-- Microsoft Store 工作列 -->
             <button onclick="toggleWindow('store')" id="taskbar-store" class="w-10 h-10 rounded flex items-center justify-center hover:bg-white/10 relative transition">
                 <img src="store.png" class="w-6 h-6 object-contain" onerror="fallbackIcon(this, 'store')">
                 <span id="dot-store" class="absolute bottom-0.5 left-1/2 transform -translate-x-1/2 w-1 h-1 bg-blue-400 rounded-full opacity-0"></span>
@@ -782,20 +849,19 @@
                 <span id="dot-powerpoint" class="absolute bottom-0.5 left-1/2 transform -translate-x-1/2 w-1 h-1 bg-blue-400 rounded-full opacity-0"></span>
             </button>
 
-            <!-- =================== 🔥 工作列：Minecraft 預設直接加入在工作列！ =================== -->
-            <!-- Minecraft 工作列 (預設直接顯現) -->
+            <!-- =================== 🔥 工作列：Minecraft 預設直接加載 =================== -->
             <button onclick="toggleWindow('minecraft')" id="taskbar-minecraft" class="w-10 h-10 rounded flex justify-center items-center hover:bg-white/10 relative transition">
                 <img src="minecraft.png" class="w-6 h-6 object-contain" onerror="fallbackIcon(this, 'minecraft')">
                 <span id="dot-minecraft" class="absolute bottom-0.5 left-1/2 transform -translate-x-1/2 w-1 h-1 bg-blue-400 rounded-full opacity-0"></span>
             </button>
 
-            <!-- =================== 🔥 動態商店下載 App 桌面欄位 (預設隱藏，安裝完成由 JS 自動顯現) =================== -->
+            <!-- =================== 🔥 動態商店下載 App 工作列 (安裝完成由 JS 自動顯現) =================== -->
             <!-- 2048 工作列 -->
             <button onclick="toggleWindow('game2048')" id="taskbar-game2048" class="w-10 h-10 rounded hidden justify-center items-center hover:bg-white/10 relative transition">
                 <div class="w-6 h-6 bg-amber-500 rounded text-center text-[10px] leading-6 font-bold text-white">2048</div>
                 <span id="dot-game2048" class="absolute bottom-0.5 left-1/2 transform -translate-x-1/2 w-1 h-1 bg-blue-400 rounded-full opacity-0"></span>
             </button>
-            <!-- 小恐龍 工作列 (全新高質感綠色像素設計) -->
+            <!-- 小恐龍 工作列 -->
             <button onclick="toggleWindow('gamedino')" id="taskbar-gamedino" class="w-10 h-10 rounded hidden justify-center items-center hover:bg-white/10 relative transition">
                 <div class="w-6 h-6 flex items-center justify-center">
                     <svg class="w-5 h-5" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
@@ -803,6 +869,13 @@
                     </svg>
                 </div>
                 <span id="dot-gamedino" class="absolute bottom-0.5 left-1/2 transform -translate-x-1/2 w-1 h-1 bg-blue-400 rounded-full opacity-0"></span>
+            </button>
+            <!-- 俄羅斯方塊 工作列 -->
+            <button onclick="toggleWindow('tetris')" id="taskbar-tetris" class="w-10 h-10 rounded hidden justify-center items-center hover:bg-white/10 relative transition">
+                <div class="w-6 h-6 bg-red-600 rounded flex items-center justify-center shadow-md">
+                    <i class="fa-solid fa-shapes text-[10px] text-white"></i>
+                </div>
+                <span id="dot-tetris" class="absolute bottom-0.5 left-1/2 transform -translate-x-1/2 w-1 h-1 bg-blue-400 rounded-full opacity-0"></span>
             </button>
         </div>
 
@@ -864,19 +937,17 @@
                         <span class="text-[10px] text-center truncate w-full">PowerPoint</span>
                     </div>
 
-                    <!-- =================== 🔥 開始選單：Minecraft 預設顯現於釘選區！ =================== -->
-                    <!-- Minecraft 開始選單 (預設顯現) -->
+                    <!-- =================== 🔥 開始選單：Minecraft 預設顯現 =================== -->
                     <div id="start-app-minecraft" class="flex flex-col items-center justify-center rounded hover:bg-white/10 p-2 cursor-pointer transition" onclick="openWindow('minecraft'); toggleStartMenu();">
                         <img src="minecraft.png" class="w-8 h-8 mb-1 object-contain" onerror="fallbackIcon(this, 'minecraft')">
                         <span class="text-[10px] text-center truncate w-full">Minecraft</span>
                     </div>
 
-                    <!-- =================== 🔥 動態商店下載 App 桌面欄位 (預設隱藏，安裝完成由 JS 自動顯現) =================== -->
+                    <!-- =================== 🔥 動態商店下載 App 開始功能表 (安裝完成由 JS 自動顯現) =================== -->
                     <div id="start-app-game2048" class="hidden flex-col items-center justify-center rounded hover:bg-white/10 p-2 cursor-pointer transition" onclick="openWindow('game2048'); toggleStartMenu();">
                         <div class="w-8 h-8 bg-amber-500 rounded text-center text-xs leading-8 font-bold text-white mb-1">2048</div>
                         <span class="text-[10px] text-center truncate w-full">2048</span>
                     </div>
-                    <!-- 小恐龍 開始選單 (像素綠色高質感圖示) -->
                     <div id="start-app-gamedino" class="hidden flex-col items-center justify-center rounded hover:bg-white/10 p-2 cursor-pointer transition" onclick="openWindow('gamedino'); toggleStartMenu();">
                         <div class="w-8 h-8 bg-zinc-800 rounded flex items-center justify-center mb-1">
                             <svg class="w-5 h-5" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
@@ -884,6 +955,12 @@
                             </svg>
                         </div>
                         <span class="text-[10px] text-center truncate w-full">小恐龍</span>
+                    </div>
+                    <div id="start-app-tetris" class="hidden flex-col items-center justify-center rounded hover:bg-white/10 p-2 cursor-pointer transition" onclick="openWindow('tetris'); toggleStartMenu();">
+                        <div class="w-8 h-8 bg-red-600 rounded flex items-center justify-center text-lg mb-1 shadow-sm text-white">
+                            <i class="fa-solid fa-shapes text-xs"></i>
+                        </div>
+                        <span class="text-[10px] text-center truncate w-full">方塊</span>
                     </div>
                 </div>
             </div>
@@ -925,6 +1002,7 @@
             minecraft: { elementId: 'win-minecraft', taskbarId: 'taskbar-minecraft', dotId: 'dot-minecraft', isOpen: false, isMinimized: false, isMaximized: false },
             game2048: { elementId: 'win-game2048', taskbarId: 'taskbar-game2048', dotId: 'dot-game2048', isOpen: false, isMinimized: false, isMaximized: false },
             gamedino: { elementId: 'win-gamedino', taskbarId: 'taskbar-gamedino', dotId: 'dot-gamedino', isOpen: false, isMinimized: false, isMaximized: false },
+            tetris: { elementId: 'win-tetris', taskbarId: 'taskbar-tetris', dotId: 'dot-tetris', isOpen: false, isMinimized: false, isMaximized: false },
             
             notepad: { elementId: 'win-notepad', taskbarId: 'taskbar-notepad', dotId: 'dot-notepad', isOpen: false, isMinimized: false, isMaximized: false },
             calculator: { elementId: 'win-calculator', taskbarId: 'taskbar-calculator', dotId: 'dot-calculator', isOpen: false, isMinimized: false, isMaximized: false },
@@ -933,10 +1011,11 @@
         };
 
         let highestZ = 10;
+        let activeWindow = null; // 紀錄當前焦點視窗
 
         // Note: fallbackIcon 已移至 <head> 區段，以防止早期影像加載失敗時拋出 ReferenceError。
 
-        // ---------------- 視窗基本控制 (完美修復指示燈、防閃退與多工作處理) ----------------
+        // ---------------- 視窗基本控制 ----------------
         function openWindow(winKey) {
             const win = windows[winKey];
             if (!win) return;
@@ -957,12 +1036,17 @@
 
             focusWindow(winKey);
             
-            // 關鍵修正：先確認 resizeCanvas 函式存在，再調用
-            if (winKey === 'edge') {
-                if (typeof resizeCanvas === 'function') {
-                    setTimeout(resizeCanvas, 200);
+            // 🔥 關鍵鎖定防搶機制：當開啟 Minecraft 視窗時，必須強制把鍵盤焦點 focus 到 iframe 內部！
+            // 並且設置多個定時器以確保載入完成後能正確鎖定！
+            if (winKey === 'minecraft') {
+                const mcIframe = document.getElementById('minecraft-iframe');
+                if (mcIframe) {
+                    setTimeout(() => { mcIframe.focus(); }, 100);
+                    setTimeout(() => { mcIframe.focus(); }, 500);
+                    setTimeout(() => { mcIframe.focus(); }, 1000);
                 }
             }
+            
             if (winKey === 'thispc') {
                 navigateFolder('root');
             }
@@ -972,6 +1056,9 @@
             }
             if (winKey === 'game2048') {
                 init2048();
+            }
+            if (winKey === 'tetris') {
+                startTetris();
             }
         }
 
@@ -991,6 +1078,10 @@
             if (win.taskbarId && document.getElementById(win.taskbarId)) {
                 document.getElementById(win.taskbarId).classList.remove('bg-white/10');
             }
+            
+            if (activeWindow === winKey) {
+                activeWindow = null;
+            }
         }
 
         // 縮小視窗
@@ -999,6 +1090,7 @@
             const el = document.getElementById(win.elementId);
             el.classList.add('window-hidden');
             win.isMinimized = true;
+            if (activeWindow === winKey) activeWindow = null;
         }
 
         // 放大視窗
@@ -1041,6 +1133,7 @@
             highestZ += 1;
             const el = document.getElementById(windows[winKey].elementId);
             if (el) el.style.zIndex = highestZ;
+            activeWindow = winKey; // 標記為當前活動視窗
         }
 
         Object.keys(windows).forEach(key => {
@@ -1074,6 +1167,7 @@
             document.addEventListener('mouseup', dragEnd);
         }
 
+        // 拖曳進行中
         function dragMove(e) {
             if (!dragEl) return;
             const dx = e.clientX - startX;
@@ -1094,7 +1188,8 @@
         const installedApps = {
             minecraft: true, // Minecraft 預設已安裝
             game2048: false,
-            gamedino: false
+            gamedino: false,
+            tetris: false
         };
 
         function installApp(appKey) {
@@ -1378,8 +1473,11 @@
 
         // 2048 移動演算法控制
         window.addEventListener('keydown', (e) => {
+            // 🔥 鎖定防搶機制：若當前焦點在 Minecraft
+            if (activeWindow === 'minecraft') return;
+
             const win2048 = document.getElementById('win-game2048');
-            if (win2048 && !win2048.classList.contains('window-hidden')) {
+            if (win2048 && !win2048.classList.contains('window-hidden') && activeWindow === 'game2048') {
                 let moved = false;
                 if (e.key === 'ArrowLeft') { moveLeft(); moved = true; }
                 else if (e.key === 'ArrowRight') { moveRight(); moved = true; }
@@ -1525,8 +1623,11 @@
 
         // 監聽小恐龍空白鍵
         window.addEventListener('keydown', (e) => {
+            // 🔥 鎖定防搶機制：若當前焦點在 Minecraft
+            if (activeWindow === 'minecraft') return;
+
             const winDino = document.getElementById('win-gamedino');
-            if (winDino && !winDino.classList.contains('window-hidden')) {
+            if (winDino && !winDino.classList.contains('window-hidden') && activeWindow === 'gamedino') {
                 if (e.key === ' ' || e.key === 'ArrowUp') {
                     e.preventDefault();
                     dinoJump();
@@ -1544,6 +1645,236 @@
             if (dinoMsg) dinoMsg.classList.remove('hidden');
             alert('小恐龍被撞到了！您的分數是：' + dinoScore);
         }
+
+
+        // ==========================================
+        //           自製經典「俄羅斯方塊」代碼
+        // ==========================================
+        const tetrisCanvas = document.getElementById('tetris-canvas');
+        const tetrisCtx = tetrisCanvas ? tetrisCanvas.getContext('2d') : null;
+        const tetrisNextCanvas = document.getElementById('tetris-next-canvas');
+        const tetrisNextCtx = tetrisNextCanvas ? tetrisNextCanvas.getContext('2d') : null;
+
+        const BLOCK_SIZE = 20;
+        const ROWS = 20;
+        const COLS = 10;
+        let tetrisScore = 0;
+        let tetrisLines = 0;
+        let tetrisBoard = [];
+        let currentPiece = null;
+        let nextPiece = null;
+        let tetrisInterval = null;
+        let tetrisGameOver = false;
+
+        const SHAPES = {
+            'I': [[1,1,1,1]],
+            'O': [[2,2],[2,2]],
+            'T': [[0,3,0],[3,3,3]],
+            'S': [[0,4,4],[4,4,0]],
+            'Z': [[5,5,0],[0,5,5]],
+            'J': [[6,0,0],[6,6,6]],
+            'L': [[0,0,7],[7,7,7]]
+        };
+
+        const COLORS = {
+            1: '#00f0f0', // Cyan
+            2: '#f0f000', // Yellow
+            3: '#a000f0', // Purple
+            4: '#00f000', // Green
+            5: '#f00000', // Red
+            6: '#0000f0', // Blue
+            7: '#f0a000'  // Orange
+        };
+
+        function createPiece(type) {
+            return {
+                shape: SHAPES[type],
+                color: COLORS[Object.keys(SHAPES).indexOf(type) + 1],
+                val: Object.keys(SHAPES).indexOf(type) + 1,
+                x: Math.floor((COLS - SHAPES[type][0].length) / 2),
+                y: 0
+            };
+        }
+
+        function drawBlock(ctx, x, y, val) {
+            ctx.fillStyle = COLORS[val];
+            ctx.fillRect(x * BLOCK_SIZE, y * BLOCK_SIZE, BLOCK_SIZE, BLOCK_SIZE);
+            ctx.strokeStyle = '#222';
+            ctx.strokeRect(x * BLOCK_SIZE, y * BLOCK_SIZE, BLOCK_SIZE, BLOCK_SIZE);
+        }
+
+        function drawTetris() {
+            if (!tetrisCtx) return;
+            tetrisCtx.clearRect(0, 0, tetrisCanvas.width, tetrisCanvas.height);
+
+            // 畫棋盤
+            for (let r = 0; r < ROWS; r++) {
+                for (let c = 0; c < COLS; c++) {
+                    if (tetrisBoard[r][c] > 0) {
+                        drawBlock(tetrisCtx, c, r, tetrisBoard[r][c]);
+                    }
+                }
+            }
+
+            // 畫現有的方塊
+            if (currentPiece) {
+                currentPiece.shape.forEach((row, dy) => {
+                    row.forEach((value, dx) => {
+                        if (value > 0) {
+                            drawBlock(tetrisCtx, currentPiece.x + dx, currentPiece.y + dy, currentPiece.val);
+                        }
+                    });
+                });
+            }
+        }
+
+        function drawNextPiece() {
+            if (!tetrisNextCtx || !nextPiece) return;
+            tetrisNextCtx.clearRect(0, 0, tetrisNextCanvas.width, tetrisNextCanvas.height);
+            
+            const offset = (60 - nextPiece.shape[0].length * 15) / 2;
+            nextPiece.shape.forEach((row, dy) => {
+                row.forEach((value, dx) => {
+                    if (value > 0) {
+                        tetrisNextCtx.fillStyle = COLORS[nextPiece.val];
+                        tetrisNextCtx.fillRect(offset + dx * 15, offset + dy * 15, 15, 15);
+                        tetrisNextCtx.strokeStyle = '#111';
+                        tetrisNextCtx.strokeRect(offset + dx * 15, offset + dy * 15, 15, 15);
+                    }
+                });
+            });
+        }
+
+        function collide(piece, board, offsetX = 0, offsetY = 0) {
+            for (let r = 0; r < piece.shape.length; r++) {
+                for (let c = 0; c < piece.shape[r].length; c++) {
+                    if (piece.shape[r][c] > 0) {
+                        let nextX = piece.x + c + offsetX;
+                        let nextY = piece.y + r + offsetY;
+                        if (nextX < 0 || nextX >= COLS || nextY >= ROWS) return true;
+                        if (nextY >= 0 && board[nextY][nextX] > 0) return true;
+                    }
+                }
+            }
+            return false;
+        }
+
+        function mergePiece() {
+            currentPiece.shape.forEach((row, dy) => {
+                row.forEach((value, dx) => {
+                    if (value > 0) {
+                        tetrisBoard[currentPiece.y + dy][currentPiece.x + dx] = currentPiece.val;
+                    }
+                });
+            });
+        }
+
+        function rotatePiece(piece) {
+            let nShape = [];
+            for (let c = 0; c < piece.shape[0].length; c++) {
+                let nRow = [];
+                for (let r = piece.shape.length - 1; r >= 0; r--) {
+                    nRow.push(piece.shape[r][c]);
+                }
+                nShape.push(nRow);
+            }
+            return { ...piece, shape: nShape };
+        }
+
+        function checkTetrisLines() {
+            let linesCleared = 0;
+            for (let r = ROWS - 1; r >= 0; r--) {
+                if (tetrisBoard[r].every(val => val > 0)) {
+                    tetrisBoard.splice(r, 1);
+                    tetrisBoard.unshift(Array(COLS).fill(0));
+                    linesCleared++;
+                    r++; // 重複檢查
+                }
+            }
+            if (linesCleared > 0) {
+                tetrisLines += linesCleared;
+                tetrisScore += [0, 100, 300, 500, 800][linesCleared];
+                document.getElementById('tetris-score').textContent = tetrisScore;
+                document.getElementById('tetris-lines').textContent = tetrisLines;
+            }
+        }
+
+        function tetrisTick() {
+            if (collide(currentPiece, tetrisBoard, 0, 1)) {
+                mergePiece();
+                checkTetrisLines();
+                currentPiece = nextPiece;
+                const types = Object.keys(SHAPES);
+                nextPiece = createPiece(types[Math.floor(Math.random() * types.length)]);
+                drawNextPiece();
+                if (collide(currentPiece, tetrisBoard)) {
+                    tetrisGameOver = true;
+                    clearInterval(tetrisInterval);
+                    alert('俄羅斯方塊結束！最終分數：' + tetrisScore);
+                }
+            } else {
+                currentPiece.y++;
+            }
+            drawTetris();
+        }
+
+        function startTetris() {
+            if (!tetrisCanvas) return;
+            tetrisCanvas.width = COLS * BLOCK_SIZE;
+            tetrisCanvas.height = ROWS * BLOCK_SIZE;
+            if (tetrisNextCanvas) {
+                tetrisNextCanvas.width = 60;
+                tetrisNextCanvas.height = 60;
+            }
+
+            tetrisBoard = Array(ROWS).fill().map(() => Array(COLS).fill(0));
+            tetrisScore = 0;
+            tetrisLines = 0;
+            tetrisGameOver = false;
+            document.getElementById('tetris-score').textContent = '0';
+            document.getElementById('tetris-lines').textContent = '0';
+
+            const types = Object.keys(SHAPES);
+            currentPiece = createPiece(types[Math.floor(Math.random() * types.length)]);
+            nextPiece = createPiece(types[Math.floor(Math.random() * types.length)]);
+
+            drawNextPiece();
+            drawTetris();
+
+            clearInterval(tetrisInterval);
+            tetrisInterval = setInterval(tetrisTick, 800);
+        }
+
+        // 俄羅斯方塊鍵盤監聽
+        window.addEventListener('keydown', (e) => {
+            // 🔥 鎖定防搶機制：若當前焦點在 Minecraft
+            if (activeWindow === 'minecraft') return;
+
+            const winTetris = document.getElementById('win-tetris');
+            if (winTetris && !winTetris.classList.contains('window-hidden') && activeWindow === 'tetris' && !tetrisGameOver) {
+                if (e.key === 'ArrowLeft') {
+                    e.preventDefault();
+                    if (!collide(currentPiece, tetrisBoard, -1, 0)) currentPiece.x--;
+                } else if (e.key === 'ArrowRight') {
+                    e.preventDefault();
+                    if (!collide(currentPiece, tetrisBoard, 1, 0)) currentPiece.x++;
+                } else if (e.key === 'ArrowDown') {
+                    e.preventDefault();
+                    if (!collide(currentPiece, tetrisBoard, 0, 1)) currentPiece.y++;
+                } else if (e.key === 'ArrowUp') {
+                    e.preventDefault();
+                    let rotated = rotatePiece(currentPiece);
+                    if (!collide(rotated, tetrisBoard)) currentPiece = rotated;
+                } else if (e.key === ' ') {
+                    e.preventDefault();
+                    while (!collide(currentPiece, tetrisBoard, 0, 1)) {
+                        currentPiece.y++;
+                    }
+                    tetrisTick();
+                }
+                drawTetris();
+            }
+        });
 
 
         // ==========================================
@@ -1716,14 +2047,12 @@
             });
         }
 
-        // 選擇投影片
         function selectSlide(idx) {
             currentSlideIdx = idx;
             updatePPTSlide();
             renderSlidesList();
         }
 
-        // 更新簡報
         function updatePPTSlide() {
             const slide = pptSlides[currentSlideIdx];
             if (pptTitleInput) pptTitleInput.value = slide.title;
