@@ -17,7 +17,7 @@
             
             let svgStr = '';
             if (type === 'thispc') {
-                svgStr = `<i class="fa-solid fa-laptop text-blue-400 text-3xl"></i>`;
+                svgStr = `<i class="fa-solid fa-folder-open text-yellow-400 text-3xl"></i>`;
             } else if (type === 'word') {
                 svgStr = `<svg class="w-10 h-10" viewBox="0 0 24 24" fill="none"><path d="M19 3H5c-1.1 0-2 .9-2 2v14c0 1.1.9 2 2 2h14c1.1 0 2-.9 2-2V5c0-1.1-.9-2-2-2zm-3.5 13.5H14l-2-6-2 6H8.5l-2.5-9h2l1.5 6 2-6h1.5l2 6 1.5-6h2l-2.5 9z" fill="#185abd"/></svg>`;
             } else if (type === 'excel') {
@@ -28,6 +28,8 @@
                 svgStr = `<div class="w-10 h-10 bg-green-700 rounded-lg flex items-center justify-center font-bold text-[10px] text-white border-2 border-green-500 shadow-md">MC</div>`;
             } else if (type === 'notepad') {
                 svgStr = `<svg class="w-10 h-10" viewBox="0 0 24 24" fill="none"><rect x="4" y="3" width="16" height="18" rx="2" fill="#0078d4"/><path d="M8 7h8M8 11h8M8 15h5" stroke="white" stroke-width="2" stroke-linecap="round"/></svg>`;
+            } else if (type === 'store') {
+                svgStr = `<svg class="w-10 h-10" viewBox="0 0 48 48" fill="none"><path d="M40 14H8V41C8 42.1046 8.89543 43 10 43H38C39.1046 43 40 42.1046 40 41V14Z" fill="#0078D4"/><path d="M30 14C30 10.6863 27.3137 8 24 8C20.6863 8 18 10.6863 18 14" stroke="#F1F1F1" stroke-width="3" stroke-linecap="round"/><path d="M8 14H40V18H8V14Z" fill="#50E6FF"/></svg>`;
             }
             container.innerHTML = svgStr;
         }
@@ -123,12 +125,20 @@
     <!-- ================= 桌面區域 ================= -->
     <div id="desktop" class="absolute inset-0 pb-12 p-4 flex flex-col flex-wrap gap-4 items-start content-start">
         
-        <!-- 此電腦 (使用 1154.png) -->
+        <!-- 檔案 (舊稱 此電腦) (使用 1154.png) -->
         <div onclick="openWindow('thispc')" class="w-20 h-22 flex flex-col items-center justify-center rounded hover:bg-white/10 active:bg-white/20 cursor-pointer transition p-1">
             <div class="w-10 h-10 flex items-center justify-center">
                 <img src="1154.png" class="w-full h-full object-contain" onerror="fallbackIcon(this, 'thispc')">
             </div>
-            <span class="text-white text-xs text-center drop-shadow-md truncate w-full mt-1">此電腦</span>
+            <span class="text-white text-xs text-center drop-shadow-md truncate w-full mt-1">檔案</span>
+        </div>
+
+        <!-- Microsoft Store 桌面圖示 (已完美對接您的 store.png 檔案) -->
+        <div onclick="openWindow('store')" class="w-20 h-22 flex flex-col items-center justify-center rounded hover:bg-white/10 active:bg-white/20 cursor-pointer transition p-1">
+            <div class="w-10 h-10 flex items-center justify-center">
+                <img src="store.png" class="w-9 h-9 object-contain" onerror="fallbackIcon(this, 'store')">
+            </div>
+            <span class="text-white text-xs text-center drop-shadow-md truncate w-full mt-1">Microsoft Store</span>
         </div>
 
         <!-- Edge 桌面圖示 -->
@@ -161,14 +171,6 @@
             <span class="text-white text-xs text-center drop-shadow-md truncate w-full mt-1">PowerPoint</span>
         </div>
 
-        <!-- Minecraft 桌面圖示 (使用 minecraft.png) -->
-        <div onclick="openWindow('minecraft')" class="w-20 h-22 flex flex-col items-center justify-center rounded hover:bg-white/10 active:bg-white/20 cursor-pointer transition p-1">
-            <div class="w-10 h-10 flex items-center justify-center">
-                <img src="minecraft.png" class="w-full h-full object-contain rounded-md" onerror="fallbackIcon(this, 'minecraft')">
-            </div>
-            <span class="text-white text-xs text-center drop-shadow-md truncate w-full mt-1">Minecraft</span>
-        </div>
-
         <!-- 記事本 桌面圖示 (使用 notepad.png) -->
         <div onclick="openWindow('notepad')" class="w-20 h-22 flex flex-col items-center justify-center rounded hover:bg-white/10 active:bg-white/20 cursor-pointer transition p-1">
             <div class="w-10 h-10 flex items-center justify-center">
@@ -182,15 +184,41 @@
             <i class="fa-solid fa-calculator text-green-400 text-3xl mb-1 mt-1"></i>
             <span class="text-white text-xs text-center drop-shadow-md truncate w-full mt-1">小算盤</span>
         </div>
+
+        <!-- =================== 🔥 桌面區域：Minecraft 預設顯現於主畫面！ =================== -->
+        <!-- Minecraft 桌面 (預設直接啟動，不需要進入 Store 下載) -->
+        <div id="desktop-app-minecraft" class="w-20 h-22 flex flex-col items-center justify-center rounded hover:bg-white/10 active:bg-white/20 cursor-pointer transition p-1">
+            <div class="w-10 h-10 flex items-center justify-center" onclick="openWindow('minecraft')">
+                <img src="minecraft.png" class="w-full h-full object-contain rounded-md" onerror="fallbackIcon(this, 'minecraft')">
+            </div>
+            <span class="text-white text-xs text-center drop-shadow-md truncate w-full mt-1">Minecraft</span>
+        </div>
+
+        <!-- =================== 🔥 動態商店下載 App 桌面欄位 (預設隱藏，安裝完成由 JS 自動顯現) =================== -->
+        <!-- 2048 桌面 -->
+        <div id="desktop-app-game2048" class="w-20 h-22 hidden flex-col items-center justify-center rounded hover:bg-white/10 active:bg-white/20 cursor-pointer transition p-1">
+            <div class="w-10 h-10 bg-amber-500 rounded-lg flex items-center justify-center font-extrabold text-white text-lg" onclick="openWindow('game2048')">2048</div>
+            <span class="text-white text-xs text-center drop-shadow-md truncate w-full mt-1">2048 遊戲</span>
+        </div>
+
+        <!-- 小恐龍 桌面 (全新升級為超高質感綠色像素畫向量圖案) -->
+        <div id="desktop-app-gamedino" class="w-20 h-22 hidden flex-col items-center justify-center rounded hover:bg-white/10 active:bg-white/20 cursor-pointer transition p-1">
+            <div class="w-10 h-10 bg-zinc-800/80 border border-zinc-700/60 rounded-lg flex items-center justify-center shadow-md cursor-pointer" onclick="openWindow('gamedino')">
+                <svg class="w-6 h-6" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+                    <path d="M14,2h6v2h1v3h-3v1h-1v1h-2V7h-1V6h-1V4h2V2z M17,3h1v1h-1V3z M11,6h1v1h-1V6z M10,7h1v1h-1V7z M9,8h1v1h-1V8z M8,9h1v3h-1V9z M7,10h1v4h-1V10z M6,11h1v4h-1V11z M5,12h1v4h-1V12z M2,14h3v1H2v-1z M1,15h3v1H1v-1z M0,16h3v1H0v-1z M1,17h1v1H1v-1z M2,18h1v1H2v-1z M3,19h2v1H3v-1z M5,15h1v1H5v-1z M6,14h1v1H6v-1z M11,10h2v1h-2v-1z M12,11h1v1h-1v-1z M13,12h2v1h-2v-1z M14,13h1v2h-1v-2z M10,16h2v1h-2v-1z M9,17h1v1H9v-1z M8,18h1v3h-1v-3z M7,21h2v1H7v-1z M11,18h1v3h-1v-3z M10,21h2v1h-2v-1z" fill="#10b981"/>
+                </svg>
+            </div>
+            <span class="text-white text-xs text-center drop-shadow-md truncate w-full mt-1">跳躍小恐龍</span>
+        </div>
     </div>
 
 
-    <!-- ================= 視窗：此電腦 (檔案總管與相片檢視器) ================= -->
+    <!-- ================= 視窗：檔案總管 ================= -->
     <div id="win-thispc" class="window-transition window-hidden absolute glass rounded-lg overflow-hidden win-shadow text-white flex flex-col border border-white/10" style="width: 750px; height: 480px; top: 15%; left: 18%; z-index: 10;">
         <div class="h-10 bg-black/40 flex justify-between items-center px-4 cursor-move" onmousedown="dragStart(event, 'win-thispc')">
             <div class="flex items-center gap-2">
                 <img src="1154.png" class="w-4 h-4" onerror="this.src='https://images.unsplash.com/photo-1618005182384-a83a8bd57fbe?auto=format&fit=crop&w=30&q=80'">
-                <span class="text-xs font-semibold text-gray-200">此電腦 - 檔案總管</span>
+                <span class="text-xs font-semibold text-gray-200">檔案 - 檔案總管</span>
             </div>
             <div class="flex gap-1 items-center">
                 <button onclick="minimizeWindow('thispc')" class="w-8 h-8 flex items-center justify-center hover:bg-white/10 rounded transition"><i class="fa-solid fa-minus text-xs"></i></button>
@@ -213,13 +241,95 @@
     </div>
 
 
+    <!-- ================= 視窗：Microsoft Store (官方正版視覺優化商店) ================= -->
+    <div id="win-store" class="window-transition window-hidden absolute glass rounded-lg overflow-hidden win-shadow text-white flex flex-col border border-white/10" style="width: 820px; height: 560px; top: 11%; left: 19%; z-index: 10;">
+        <div class="h-10 bg-[#0f0f0f] flex justify-between items-center px-4 cursor-move" onmousedown="dragStart(event, 'win-store')">
+            <div class="flex items-center gap-2">
+                <img src="store.png" class="w-4 h-4 object-contain" onerror="fallbackIcon(this, 'store')">
+                <span class="text-xs font-semibold text-gray-200">Microsoft Store</span>
+            </div>
+            <div class="flex gap-1 items-center">
+                <button onclick="minimizeWindow('store')" class="w-8 h-8 flex items-center justify-center hover:bg-white/10 rounded transition"><i class="fa-solid fa-minus text-xs"></i></button>
+                <button onclick="maximizeWindow('store')" class="w-8 h-8 flex items-center justify-center hover:bg-white/10 rounded transition"><i class="fa-regular fa-square text-xs"></i></button>
+                <button onclick="closeWindow('store')" class="w-8 h-8 flex items-center justify-center hover:bg-red-500 rounded transition"><i class="fa-solid fa-xmark text-xs"></i></button>
+            </div>
+        </div>
+        
+        <!-- 商店頂部橫幅 -->
+        <div class="p-6 bg-gradient-to-r from-[#1b1c24] to-[#121319] border-b border-white/5 flex justify-between items-center relative overflow-hidden">
+            <div class="absolute -right-10 -top-10 w-40 h-40 bg-blue-600/10 rounded-full blur-3xl pointer-events-none"></div>
+            <div class="z-10 flex items-center gap-4">
+                <img src="store.png" class="w-12 h-12 object-contain" onerror="fallbackIcon(this, 'store')">
+                <div>
+                    <h2 class="text-lg font-bold text-white flex items-center gap-1.5">Microsoft Store <span class="text-[10px] bg-blue-500 text-white font-medium py-0.5 px-1.5 rounded-full">官方正版</span></h2>
+                    <p class="text-xs text-gray-400">探索受信任的本地應用程式與熱門遊戲</p>
+                </div>
+            </div>
+            <div class="bg-zinc-800/80 rounded-lg py-1.5 px-3 border border-white/5 flex items-center gap-2 text-xs z-10">
+                <i class="fa-solid fa-magnifying-glass text-gray-400"></i>
+                <input type="text" placeholder="搜尋應用程式與遊戲..." class="bg-transparent border-none outline-none text-white w-40">
+            </div>
+        </div>
+
+        <!-- 商店主展示區 -->
+        <div class="flex-1 bg-[#131313] p-6 overflow-y-auto no-scrollbar">
+            <h3 class="text-xs font-extrabold text-gray-300 uppercase tracking-widest mb-4 flex items-center gap-1.5">
+                <span class="w-1.5 h-3.5 bg-blue-500 rounded-sm inline-block"></span> 🎮 精選熱門暢銷小遊戲 (點選安裝將在桌面建立獨立 App)
+            </h3>
+            <div class="grid grid-cols-3 gap-6">
+                
+                <!-- 應用 1：Minecraft (預設為已擁有 / 已安裝狀態) -->
+                <div class="bg-[#1c1c1f]/80 rounded-xl p-5 border border-white/5 flex flex-col items-center text-center shadow-md hover:scale-[1.02] transition">
+                    <img src="minecraft.png" class="w-16 h-16 object-contain rounded-lg mb-4 shadow-lg" onerror="fallbackIcon(this, 'minecraft')">
+                    <h4 class="text-sm font-bold text-white mb-1 flex items-center gap-1">Minecraft 2D <i class="fa-solid fa-circle-check text-blue-400 text-[10px]"></i></h4>
+                    <p class="text-[10px] text-gray-400 mb-4 h-12 flex items-center">高度整合 Scratch 麥塊系統！一鍵進入原汁原味的方塊搭建世界。</p>
+                    
+                    <!-- 安裝與進度按鈕 (Minecraft 預設為可直接啟動) -->
+                    <div class="w-full" id="store-action-minecraft">
+                        <button onclick="openWindow('minecraft'); closeWindow('store');" class="w-full py-2 bg-emerald-600 hover:bg-emerald-500 text-white rounded text-xs font-bold transition flex items-center justify-center gap-1">
+                            <i class="fa-solid fa-play"></i> 啟動遊戲
+                        </button>
+                    </div>
+                </div>
+
+                <!-- 應用 2：2048 -->
+                <div class="bg-[#1c1c1f]/80 rounded-xl p-5 border border-white/5 flex flex-col items-center text-center shadow-md hover:scale-[1.02] transition">
+                    <div class="w-16 h-16 bg-amber-500 rounded-xl flex items-center justify-center font-black text-white text-xl mb-4 shadow-lg">2048</div>
+                    <h4 class="text-sm font-bold text-white mb-1 flex items-center gap-1">2048 益智遊戲 <i class="fa-solid fa-circle-check text-blue-400 text-[10px]"></i></h4>
+                    <p class="text-[10px] text-gray-400 mb-4 h-12 flex items-center">經典數字方塊滑動合併益智小遊戲，向 2048 方塊進發！</p>
+                    
+                    <div class="w-full" id="store-action-game2048">
+                        <button onclick="installApp('game2048')" class="w-full py-2 bg-blue-600 hover:bg-blue-500 text-white rounded text-xs font-bold transition">取得 (免費安裝)</button>
+                    </div>
+                </div>
+
+                <!-- 應用 3：小恐龍 (已升級為超高質感精美綠色像素 dinosaur SVG 圖像) -->
+                <div class="bg-[#1c1c1f]/80 rounded-xl p-5 border border-white/5 flex flex-col items-center text-center shadow-md hover:scale-[1.02] transition">
+                    <div class="w-16 h-16 bg-zinc-800 rounded-xl flex items-center justify-center mb-4 shadow-lg border border-zinc-700/30">
+                        <svg class="w-10 h-10" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+                            <path d="M14,2h6v2h1v3h-3v1h-1v1h-2V7h-1V6h-1V4h2V2z M17,3h1v1h-1V3z M11,6h1v1h-1V6z M10,7h1v1h-1V7z M9,8h1v1h-1V8z M8,9h1v3h-1V9z M7,10h1v4h-1V10z M6,11h1v4h-1V11z M5,12h1v4h-1V12z M2,14h3v1H2v-1z M1,15h3v1H1v-1z M0,16h3v1H0v-1z M1,17h1v1H1v-1z M2,18h1v1H2v-1z M3,19h2v1H3v-1z M5,15h1v1H5v-1z M6,14h1v1H6v-1z M11,10h2v1h-2v-1z M12,11h1v1h-1v-1z M13,12h2v1h-2v-1z M14,13h1v2h-1v-2z M10,16h2v1h-2v-1z M9,17h1v1H9v-1z M8,18h1v3h-1v-3z M7,21h2v1H7v-1z M11,18h1v3h-1v-3z M10,21h2v1h-2v-1z" fill="#10b981"/>
+                        </svg>
+                    </div>
+                    <h4 class="text-sm font-bold text-white mb-1 flex items-center gap-1">跳躍小恐龍 <i class="fa-solid fa-circle-check text-blue-400 text-[10px]"></i></h4>
+                    <p class="text-[10px] text-gray-400 mb-4 h-12 flex items-center">點擊跳躍來躲避障礙仙人掌。最純粹好玩的全年齡像素運動遊戲。</p>
+                    
+                    <div class="w-full" id="store-action-gamedino">
+                        <button onclick="installApp('gamedino')" class="w-full py-2 bg-blue-600 hover:bg-blue-500 text-white rounded text-xs font-bold transition">取得 (免費安裝)</button>
+                    </div>
+                </div>
+
+            </div>
+        </div>
+    </div>
+
+
     <!-- ================= 視窗：Microsoft Edge ================= -->
     <div id="win-edge" class="window-transition window-hidden absolute glass rounded-lg overflow-hidden win-shadow text-white flex flex-col border border-white/10" style="width: 850px; height: 580px; top: 8%; left: 15%; z-index: 10;">
         <!-- 標題列 -->
         <div class="h-10 bg-black/40 flex justify-between items-center px-4 cursor-move" onmousedown="dragStart(event, 'win-edge')">
             <div class="flex items-center gap-2">
                 <img src="https://upload.wikimedia.org/wikipedia/commons/9/98/Microsoft_Edge_logo_%282019%29.svg" class="w-4 h-4">
-                <span class="text-xs font-semibold text-gray-200">Microsoft Edge (安全瀏覽器)</span>
+                <span class="text-xs font-semibold text-gray-200">Microsoft Edge</span>
             </div>
             <div class="flex gap-1 items-center">
                 <button onclick="minimizeWindow('edge')" class="w-8 h-8 flex items-center justify-center hover:bg-white/10 rounded transition"><i class="fa-solid fa-minus text-xs"></i></button>
@@ -247,17 +357,7 @@
                         <i class="fa-solid fa-magnifying-glass text-gray-400"></i>
                         <input id="search-input" type="text" placeholder="輸入關鍵字進行搜尋，或輸入網址..." class="bg-transparent border-none outline-none w-full text-sm text-white user-select-text" onkeydown="if(event.key==='Enter') handleSearch()">
                     </div>
-                    <div class="w-full">
-                        <h3 class="text-xs font-semibold text-gray-400 uppercase tracking-wider mb-3">🔥 推薦快捷功能</h3>
-                        <div class="grid grid-cols-2 gap-4">
-                            <div onclick="openWebTab('game-2048', 'edge://2048')" class="p-4 bg-zinc-800/50 hover:bg-zinc-800 rounded-xl border border-white/5 cursor-pointer text-center">
-                                <span class="text-xs font-medium">2048 益智遊戲</span>
-                            </div>
-                            <div onclick="openWebTab('game-dino', 'edge://dino')" class="p-4 bg-zinc-800/50 hover:bg-zinc-800 rounded-xl border border-white/5 cursor-pointer text-center">
-                                <span class="text-xs font-medium">跳躍小恐龍遊戲</span>
-                            </div>
-                        </div>
-                    </div>
+                    <p class="text-xs text-zinc-400">您可以在這裡安全地探索虛擬網路空間喔！</p>
                 </div>
             </div>
             <!-- 搜尋與其他網頁框架 -->
@@ -268,34 +368,11 @@
                     <div class="space-y-4" id="search-results-list"></div>
                 </div>
             </div>
-            <!-- 2048 遊戲 -->
-            <div id="tab-game-2048" class="browser-tab w-full h-full p-4 bg-zinc-900 overflow-y-auto no-scrollbar">
-                <div class="max-w-xs mx-auto flex flex-col items-center">
-                    <div class="w-full flex justify-between items-center mb-4">
-                        <span class="text-xl font-bold text-amber-500">2048 Game</span>
-                        <span id="score-2048" class="font-bold bg-zinc-800 px-3 py-1 rounded">0</span>
-                    </div>
-                    <div id="grid-2048" class="grid grid-cols-4 gap-2 bg-zinc-800 p-2 rounded-lg w-72 h-72"></div>
-                </div>
-            </div>
-            <!-- 小恐龍 -->
-            <div id="tab-game-dino" class="browser-tab w-full h-full p-4 bg-zinc-900">
-                <div class="max-w-md mx-auto flex flex-col items-center">
-                    <div class="relative bg-zinc-800 w-full h-48 rounded overflow-hidden" id="dino-container">
-                        <div class="absolute bottom-4 left-0 right-0 h-0.5 bg-gray-500"></div>
-                        <div id="dino-char" class="absolute bottom-4 left-10 w-8 h-8 bg-green-500 rounded flex items-center justify-center font-bold text-xs" style="bottom: 16px;">🦖</div>
-                        <div id="dino-obstacle" class="absolute bottom-4 right-0 w-5 h-8 bg-red-500 rounded flex items-center justify-center text-xs">🌵</div>
-                        <div id="dino-msg" class="absolute inset-0 bg-black/70 flex flex-col items-center justify-center text-white">
-                            <button onclick="startDinoGame()" class="px-3 py-1 bg-green-600 hover:bg-green-500 rounded text-xs transition">開始小恐龍</button>
-                        </div>
-                    </div>
-                </div>
-            </div>
         </div>
     </div>
 
 
-    <!-- ================= 視窗：Microsoft Word (完全自製功能版) ================= -->
+    <!-- ================= 視窗：Microsoft Word (自製版) ================= -->
     <div id="win-word" class="window-transition window-hidden absolute glass rounded-lg overflow-hidden win-shadow text-white flex flex-col border border-white/10" style="width: 820px; height: 560px; top: 10%; left: 18%; z-index: 10;">
         <div class="h-10 bg-[#185abd] flex justify-between items-center px-4 cursor-move" onmousedown="dragStart(event, 'win-word')">
             <div class="flex items-center gap-2">
@@ -340,18 +417,13 @@
             <div id="word-page" contenteditable="true" class="w-[580px] min-h-[700px] bg-white p-12 shadow-md outline-none rounded-sm user-select-text" style="font-family: 'Segoe UI', Arial, sans-serif;">
                 <h1 style="text-align: center; font-size: 24px; font-weight: bold; margin-bottom: 20px;">我的第一個自製 Word 文件</h1>
                 <p>這是一個<strong>100% 本地自製運行</strong>的 Word 文字編輯器！</p>
-                <p>您可以自由在這裡打字、排版，甚至使用上方的工具列：</p>
-                <ul>
-                    <li>- 修改文字為 <strong style="color: #dc2626;">鮮豔顏色</strong>。</li>
-                    <li>- 調整為<em>斜體</em>、<u>底線</u>或大號字體。</li>
-                </ul>
-                <p>點選右上方按鈕，就能將此排版完美的網頁文件下載保存至您的電腦中！</p>
+                <p>您可以自由在這裡打字、排版，甚至使用上方的工具列進行文字客製化設計。</p>
             </div>
         </div>
     </div>
 
 
-    <!-- ================= 視窗：Microsoft Excel (完全自製功能版) ================= -->
+    <!-- ================= 視窗：Microsoft Excel (自製版) ================= -->
     <div id="win-excel" class="window-transition window-hidden absolute glass rounded-lg overflow-hidden win-shadow text-white flex flex-col border border-white/10" style="width: 820px; height: 560px; top: 12%; left: 20%; z-index: 10;">
         <div class="h-10 bg-[#107c41] flex justify-between items-center px-4 cursor-move" onmousedown="dragStart(event, 'win-excel')">
             <div class="flex items-center gap-2">
@@ -402,7 +474,7 @@
     </div>
 
 
-    <!-- ================= 視窗：Microsoft PowerPoint (完全自製功能版) ================= -->
+    <!-- ================= 視窗：Microsoft PowerPoint (自製版) ================= -->
     <div id="win-powerpoint" class="window-transition window-hidden absolute glass rounded-lg overflow-hidden win-shadow text-white flex flex-col border border-white/10" style="width: 820px; height: 560px; top: 14%; left: 22%; z-index: 10;">
         <div class="h-10 bg-[#c43e1c] flex justify-between items-center px-4 cursor-move" onmousedown="dragStart(event, 'win-powerpoint')">
             <div class="flex items-center gap-2">
@@ -434,11 +506,11 @@
         </div>
         <!-- PowerPoint 編輯工作區 -->
         <div class="flex-1 flex bg-zinc-800 overflow-hidden">
-            <!-- 左側投影片列表 -->
+            <!-- Left slides list -->
             <div class="w-44 border-r border-zinc-700 overflow-y-auto p-2 space-y-2 flex flex-col items-center" id="ppt-slides-list">
-                <!-- 投影片縮圖會由 JS 生成 -->
+                <!-- Slides generated by JS -->
             </div>
-            <!-- 右側主要編輯區域 -->
+            <!-- Right editing space -->
             <div class="flex-1 p-8 flex items-center justify-center relative">
                 <div id="ppt-canvas" class="w-[480px] h-[320px] bg-white text-black p-8 shadow-xl flex flex-col justify-center rounded border border-zinc-700/20 transition-colors duration-300">
                     <input id="ppt-title" type="text" value="第一張簡報標題" class="bg-transparent border-b border-transparent hover:border-zinc-300 focus:border-orange-500 focus:outline-none text-2xl font-extrabold text-center w-full mb-6 user-select-text" placeholder="點擊編輯標題">
@@ -449,7 +521,7 @@
     </div>
 
 
-    <!-- ================= 視窗：Minecraft 啟動器整合版 ================= -->
+    <!-- ================= 視窗：Minecraft 啟動器獨立視窗 ================= -->
     <div id="win-minecraft" class="window-transition window-hidden absolute glass rounded-lg overflow-hidden win-shadow text-white flex flex-col border border-white/10" style="width: 850px; height: 580px; top: 10%; left: 15%; z-index: 10;">
         <div class="h-10 bg-zinc-900 flex justify-between items-center px-4 cursor-move" onmousedown="dragStart(event, 'win-minecraft')">
             <div class="flex items-center gap-2">
@@ -465,6 +537,74 @@
         <!-- 嵌入外部 Minecraft html -->
         <div class="flex-1 bg-black relative">
             <iframe id="minecraft-iframe" src="2026.4.20.html" class="w-full h-full border-none" allow="autoplay; fullscreen; keyboard" sandbox="allow-same-origin allow-scripts allow-popups allow-forms"></iframe>
+        </div>
+    </div>
+
+
+    <!-- ================= 視窗：2048 獨立遊戲視窗 ================= -->
+    <div id="win-game2048" class="window-transition window-hidden absolute glass rounded-lg overflow-hidden win-shadow text-white flex flex-col border border-white/10" style="width: 420px; height: 500px; top: 12%; left: 25%; z-index: 10;">
+        <div class="h-10 bg-amber-600 flex justify-between items-center px-4 cursor-move" onmousedown="dragStart(event, 'win-game2048')">
+            <div class="flex items-center gap-2">
+                <div class="w-4 h-4 bg-amber-500 rounded text-center text-[10px] leading-4 font-bold text-white">2</div>
+                <span class="text-xs font-semibold text-gray-200">2048 益智大挑戰</span>
+            </div>
+            <div class="flex gap-1 items-center">
+                <button onclick="minimizeWindow('game2048')" class="w-8 h-8 flex items-center justify-center hover:bg-white/10 rounded transition"><i class="fa-solid fa-minus text-xs"></i></button>
+                <button onclick="closeWindow('game2048')" class="w-8 h-8 flex items-center justify-center hover:bg-red-500 rounded transition"><i class="fa-solid fa-xmark text-xs"></i></button>
+            </div>
+        </div>
+        <div class="flex-1 bg-zinc-900 p-6 flex flex-col items-center justify-center">
+            <div class="w-full max-w-xs flex justify-between items-center mb-4">
+                <span class="text-xl font-bold text-amber-500">2048 Game</span>
+                <span id="score-2048" class="font-bold bg-zinc-800 px-3 py-1 rounded text-white">0</span>
+            </div>
+            <div id="grid-2048" class="grid grid-cols-4 gap-2 bg-zinc-800 p-2 rounded-lg w-72 h-72"></div>
+        </div>
+    </div>
+
+
+    <!-- ================= 視窗：小恐龍獨立遊戲視窗 (全新極致升級版) ================= -->
+    <div id="win-gamedino" class="window-transition window-hidden absolute glass rounded-lg overflow-hidden win-shadow text-white flex flex-col border border-white/10" style="width: 500px; height: 400px; top: 15%; left: 28%; z-index: 10;">
+        <div class="h-10 bg-zinc-800 flex justify-between items-center px-4 cursor-move" onmousedown="dragStart(event, 'win-gamedino')">
+            <div class="flex items-center gap-2">
+                <svg class="w-4 h-4 text-green-500" viewBox="0 0 24 24" fill="currentColor">
+                    <path d="M14,2h6v2h1v3h-3v1h-1v1h-2V7h-1V6h-1V4h2V2z M17,3h1v1h-1V3z M11,6h1v1h-1V6z M10,7h1v1h-1V7z M9,8h1v1h-1V8z M8,9h1v3h-1V9z M7,10h1v4h-1V10z M6,11h1v4h-1V11z M5,12h1v4h-1V12z M2,14h3v1H2v-1z M1,15h3v1H1v-1z M0,16h3v1H0v-1z M1,17h1v1H1v-1z M2,18h1v1H2v-1z M3,19h2v1H3v-1z M5,15h1v1H5v-1z M6,14h1v1H6v-1z M11,10h2v1h-2v-1z M12,11h1v1h-1v-1z M13,12h2v1h-2v-1z M14,13h1v2h-1v-2z M10,16h2v1h-2v-1z M9,17h1v1H9v-1z M8,18h1v3h-1v-3z M7,21h2v1H7v-1z M11,18h1v3h-1v-3z M10,21h2v1h-2v-1z"/>
+                </svg>
+                <span class="text-xs font-semibold text-gray-200">跳躍小恐龍</span>
+            </div>
+            <div class="flex gap-1 items-center">
+                <button onclick="minimizeWindow('gamedino')" class="w-8 h-8 flex items-center justify-center hover:bg-white/10 rounded transition"><i class="fa-solid fa-minus text-xs"></i></button>
+                <button onclick="closeWindow('gamedino')" class="w-8 h-8 flex items-center justify-center hover:bg-red-500 rounded transition"><i class="fa-solid fa-xmark text-xs"></i></button>
+            </div>
+        </div>
+        <div class="flex-1 bg-zinc-900 p-6 flex flex-col items-center justify-center">
+            <div class="relative bg-zinc-850 w-full h-48 rounded overflow-hidden" id="dino-container">
+                <div class="absolute bottom-4 left-0 right-0 h-0.5 bg-gray-500"></div>
+                <!-- 像素綠色小恐龍替代原本的 🦖 EMOJI -->
+                <div id="dino-char" class="absolute bottom-4 left-10 w-8 h-8 flex items-center justify-center" style="bottom: 16px;">
+                    <svg class="w-full h-full" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+                        <path d="M14,2h6v2h1v3h-3v1h-1v1h-2V7h-1V6h-1V4h2V2z M17,3h1v1h-1V3z M11,6h1v1h-1V6z M10,7h1v1h-1V7z M9,8h1v1h-1V8z M8,9h1v3h-1V9z M7,10h1v4h-1V10z M6,11h1v4h-1V11z M5,12h1v4h-1V12z M2,14h3v1H2v-1z M1,15h3v1H1v-1z M0,16h3v1H0v-1z M1,17h1v1H1v-1z M2,18h1v1H2v-1z M3,19h2v1H3v-1z M5,15h1v1H5v-1z M6,14h1v1H6v-1z M11,10h2v1h-2v-1z M12,11h1v1h-1v-1z M13,12h2v1h-2v-1z M14,13h1v2h-1v-2z M10,16h2v1h-2v-1z M9,17h1v1H9v-1z M8,18h1v3h-1v-3z M7,21h2v1H7v-1z M11,18h1v3h-1v-3z M10,21h2v1H7v-1z" fill="#10b981"/>
+                    </svg>
+                </div>
+                <!-- 像素仙人掌障礙物替代原本的 🌵 EMOJI -->
+                <div id="dino-obstacle" class="absolute bottom-4 right-0 w-5 h-8 flex items-center justify-center">
+                    <svg class="w-full h-full" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+                        <path d="M10,2h4v16h-4V2z M5,6h4v4H5V6z M8,10h2v4H8v-4z M15,8h4v4h-4V8z M14,12h2v4h-2v-4z" fill="#10b981"/>
+                    </svg>
+                </div>
+                <div id="dino-msg" class="absolute inset-0 bg-black/70 flex flex-col items-center justify-center text-white">
+                    <button onclick="startDinoGame()" class="px-4 py-2 bg-green-600 hover:bg-green-500 rounded text-xs font-bold transition flex items-center gap-1">
+                        <svg class="w-4 h-4 text-white" viewBox="0 0 24 24" fill="currentColor">
+                            <path d="M8,5.14V19.14L19,12.14L8,5.14Z"/>
+                        </svg>
+                        開始小恐龍
+                    </button>
+                </div>
+            </div>
+            <div class="w-full flex justify-between items-center mt-4 text-xs text-gray-400">
+                <span>得分: <span id="dino-score" class="text-white font-bold">0</span></span>
+                <span>操作方法: 按 空白鍵 進行跳躍</span>
+            </div>
         </div>
     </div>
 
@@ -565,12 +705,11 @@
             <h2 class="text-lg font-bold text-yellow-400">🎉 本地端與線上均可流暢使用！</h2>
             <p>這是為您專門打造的 <strong>Windows 11 本地完全獨立自製版</strong>。</p>
             <div class="border-l-4 border-emerald-500 pl-3 py-1 bg-emerald-500/10 rounded-r text-xs space-y-1">
-                <h3 class="font-bold text-emerald-400">📂 全新 Office 功能已上線：</h3>
-                <p>1. <strong>自製 Word</strong>：打字排版、修改大小與色彩、一鍵下載 Word 保存！</p>
-                <p>2. <strong>自製 Excel</strong>：格子內任意打字輸入，支援「自動加總」與「計算平均」！</p>
-                <p>3. <strong>自製 PowerPoint</strong>：任意建立簡報、更換背景色、甚至支援「全螢幕放映」大師模式！</p>
-                <p>4. <strong>Minecraft 啟動器</strong>：完美嵌入您的 Scratch 專案。</p>
-                <p class="text-yellow-400">5. 支援按 F11 鍵一鍵無縫進入或退出「全螢幕」體驗模式！</p>
+                <h3 class="font-bold text-emerald-400">📂 全新 Office 功能與 Store 微調：</h3>
+                <p>1. <strong>自製 Office 系列</strong>：單機自製 Word、Excel、PowerPoint，隨時隨地離線開啟使用，完全排除任何報錯！</p>
+                <p>2. <strong>Store 商店與小恐龍大升級</strong>：Microsoft Store 圖示完美調用您下載的 <strong>`store.png`</strong> 官方圖片。另外，我們將<strong>小恐龍遊戲</strong>的圖示以及遊玩角色全部升級為超高畫質的<strong>經典 2D 像素綠色向量 SVG 影像</strong>，質感大幅躍升！</p>
+                <p>3. <strong>Minecraft 已預設安裝</strong>：您不用再去 Store 點選安裝，在桌面、工作列與開始功能表內，Minecraft 圖示預設就全部直接解鎖！可以直接點擊在獨立視窗暢玩！</p>
+                <p class="text-yellow-400">4. 支援按 F11 鍵一鍵無縫進入或退出「全螢幕」體驗模式！</p>
             </div>
             <div class="flex justify-end">
                 <button onclick="closeWindow('readme')" class="px-4 py-2 bg-blue-600 hover:bg-blue-500 rounded text-xs transition">進入體驗！</button>
@@ -612,29 +751,58 @@
             </button>
             
             <!-- 工作列圖示 -->
+            <!-- 檔案總管 -->
             <button onclick="toggleWindow('thispc')" id="taskbar-thispc" class="w-10 h-10 rounded flex items-center justify-center hover:bg-white/10 relative transition">
                 <img src="1154.png" class="w-6 h-6 object-contain" onerror="fallbackIcon(this, 'thispc')">
                 <span id="dot-thispc" class="absolute bottom-0.5 left-1/2 transform -translate-x-1/2 w-1 h-1 bg-blue-400 rounded-full opacity-0"></span>
             </button>
+            <!-- Microsoft Store 工作列 (已對接您本機的 store.png) -->
+            <button onclick="toggleWindow('store')" id="taskbar-store" class="w-10 h-10 rounded flex items-center justify-center hover:bg-white/10 relative transition">
+                <img src="store.png" class="w-6 h-6 object-contain" onerror="fallbackIcon(this, 'store')">
+                <span id="dot-store" class="absolute bottom-0.5 left-1/2 transform -translate-x-1/2 w-1 h-1 bg-blue-400 rounded-full opacity-0"></span>
+            </button>
+            <!-- Edge -->
             <button onclick="toggleWindow('edge')" id="taskbar-edge" class="w-10 h-10 rounded flex items-center justify-center hover:bg-white/10 relative transition">
                 <img src="https://upload.wikimedia.org/wikipedia/commons/9/98/Microsoft_Edge_logo_%282019%29.svg" class="w-6 h-6">
                 <span id="dot-edge" class="absolute bottom-0.5 left-1/2 transform -translate-x-1/2 w-1 h-1 bg-blue-400 rounded-full opacity-0"></span>
             </button>
+            <!-- Word -->
             <button onclick="toggleWindow('word')" id="taskbar-word" class="w-10 h-10 rounded flex items-center justify-center hover:bg-white/10 relative transition">
                 <img src="winWord.png" class="w-6 h-6 object-contain" onerror="fallbackIcon(this, 'word')">
                 <span id="dot-word" class="absolute bottom-0.5 left-1/2 transform -translate-x-1/2 w-1 h-1 bg-blue-400 rounded-full opacity-0"></span>
             </button>
+            <!-- Excel -->
             <button onclick="toggleWindow('excel')" id="taskbar-excel" class="w-10 h-10 rounded flex items-center justify-center hover:bg-white/10 relative transition">
                 <img src="excel.png" class="w-6 h-6 object-contain" onerror="fallbackIcon(this, 'excel')">
                 <span id="dot-excel" class="absolute bottom-0.5 left-1/2 transform -translate-x-1/2 w-1 h-1 bg-blue-400 rounded-full opacity-0"></span>
             </button>
+            <!-- PowerPoint -->
             <button onclick="toggleWindow('powerpoint')" id="taskbar-powerpoint" class="w-10 h-10 rounded flex items-center justify-center hover:bg-white/10 relative transition">
                 <img src="powerpoint.png" class="w-6 h-6 object-contain" onerror="fallbackIcon(this, 'ppt')">
                 <span id="dot-powerpoint" class="absolute bottom-0.5 left-1/2 transform -translate-x-1/2 w-1 h-1 bg-blue-400 rounded-full opacity-0"></span>
             </button>
-            <button onclick="toggleWindow('minecraft')" id="taskbar-minecraft" class="w-10 h-10 rounded flex items-center justify-center hover:bg-white/10 relative transition">
+
+            <!-- =================== 🔥 工作列：Minecraft 預設直接加入在工作列！ =================== -->
+            <!-- Minecraft 工作列 (預設直接顯現) -->
+            <button onclick="toggleWindow('minecraft')" id="taskbar-minecraft" class="w-10 h-10 rounded flex justify-center items-center hover:bg-white/10 relative transition">
                 <img src="minecraft.png" class="w-6 h-6 object-contain" onerror="fallbackIcon(this, 'minecraft')">
                 <span id="dot-minecraft" class="absolute bottom-0.5 left-1/2 transform -translate-x-1/2 w-1 h-1 bg-blue-400 rounded-full opacity-0"></span>
+            </button>
+
+            <!-- =================== 🔥 動態商店下載 App 桌面欄位 (預設隱藏，安裝完成由 JS 自動顯現) =================== -->
+            <!-- 2048 工作列 -->
+            <button onclick="toggleWindow('game2048')" id="taskbar-game2048" class="w-10 h-10 rounded hidden justify-center items-center hover:bg-white/10 relative transition">
+                <div class="w-6 h-6 bg-amber-500 rounded text-center text-[10px] leading-6 font-bold text-white">2048</div>
+                <span id="dot-game2048" class="absolute bottom-0.5 left-1/2 transform -translate-x-1/2 w-1 h-1 bg-blue-400 rounded-full opacity-0"></span>
+            </button>
+            <!-- 小恐龍 工作列 (全新高質感綠色像素設計) -->
+            <button onclick="toggleWindow('gamedino')" id="taskbar-gamedino" class="w-10 h-10 rounded hidden justify-center items-center hover:bg-white/10 relative transition">
+                <div class="w-6 h-6 flex items-center justify-center">
+                    <svg class="w-5 h-5" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+                        <path d="M14,2h6v2h1v3h-3v1h-1v1h-2V7h-1V6h-1V4h2V2z M17,3h1v1h-1V3z M11,6h1v1h-1V6z M10,7h1v1h-1V7z M9,8h1v1h-1V8z M8,9h1v3h-1V9z M7,10h1v4h-1V10z M6,11h1v4h-1V11z M5,12h1v4h-1V12z M2,14h3v1H2v-1z M1,15h3v1H1v-1z M0,16h3v1H0v-1z M1,17h1v1H1v-1z M2,18h1v1H2v-1z M3,19h2v1H3v-1z M5,15h1v1H5v-1z M6,14h1v1H6v-1z M11,10h2v1h-2v-1z M12,11h1v1h-1v-1z M13,12h2v1h-2v-1z M14,13h1v2h-1v-2z M10,16h2v1h-2v-1z M9,17h1v1H9v-1z M8,18h1v3h-1v-3z M7,21h2v1H7v-1z M11,18h1v3h-1v-3z M10,21h2v1H7v-1z" fill="#10b981"/>
+                    </svg>
+                </div>
+                <span id="dot-gamedino" class="absolute bottom-0.5 left-1/2 transform -translate-x-1/2 w-1 h-1 bg-blue-400 rounded-full opacity-0"></span>
             </button>
         </div>
 
@@ -673,7 +841,11 @@
                 <div class="grid grid-cols-6 gap-y-4">
                     <div onclick="openWindow('thispc'); toggleStartMenu();" class="flex flex-col items-center justify-center rounded hover:bg-white/10 p-2 cursor-pointer transition">
                         <img src="1154.png" class="w-8 h-8 mb-1 object-contain" onerror="fallbackIcon(this, 'thispc')">
-                        <span class="text-[10px] text-center truncate w-full">此電腦</span>
+                        <span class="text-[10px] text-center truncate w-full">檔案</span>
+                    </div>
+                    <div onclick="openWindow('store'); toggleStartMenu();" class="flex flex-col items-center justify-center rounded hover:bg-white/10 p-2 cursor-pointer transition">
+                        <img src="store.png" class="w-8 h-8 mb-1 object-contain" onerror="fallbackIcon(this, 'store')">
+                        <span class="text-[10px] text-center truncate w-full">Store</span>
                     </div>
                     <div onclick="openWindow('edge'); toggleStartMenu();" class="flex flex-col items-center justify-center rounded hover:bg-white/10 p-2 cursor-pointer transition">
                         <img src="https://upload.wikimedia.org/wikipedia/commons/9/98/Microsoft_Edge_logo_%282019%29.svg" class="w-8 h-8 mb-1">
@@ -691,9 +863,27 @@
                         <img src="powerpoint.png" class="w-8 h-8 mb-1 object-contain" onerror="fallbackIcon(this, 'ppt')">
                         <span class="text-[10px] text-center truncate w-full">PowerPoint</span>
                     </div>
-                    <div onclick="openWindow('minecraft'); toggleStartMenu();" class="flex flex-col items-center justify-center rounded hover:bg-white/10 p-2 cursor-pointer transition">
+
+                    <!-- =================== 🔥 開始選單：Minecraft 預設顯現於釘選區！ =================== -->
+                    <!-- Minecraft 開始選單 (預設顯現) -->
+                    <div id="start-app-minecraft" class="flex flex-col items-center justify-center rounded hover:bg-white/10 p-2 cursor-pointer transition" onclick="openWindow('minecraft'); toggleStartMenu();">
                         <img src="minecraft.png" class="w-8 h-8 mb-1 object-contain" onerror="fallbackIcon(this, 'minecraft')">
                         <span class="text-[10px] text-center truncate w-full">Minecraft</span>
+                    </div>
+
+                    <!-- =================== 🔥 動態商店下載 App 桌面欄位 (預設隱藏，安裝完成由 JS 自動顯現) =================== -->
+                    <div id="start-app-game2048" class="hidden flex-col items-center justify-center rounded hover:bg-white/10 p-2 cursor-pointer transition" onclick="openWindow('game2048'); toggleStartMenu();">
+                        <div class="w-8 h-8 bg-amber-500 rounded text-center text-xs leading-8 font-bold text-white mb-1">2048</div>
+                        <span class="text-[10px] text-center truncate w-full">2048</span>
+                    </div>
+                    <!-- 小恐龍 開始選單 (像素綠色高質感圖示) -->
+                    <div id="start-app-gamedino" class="hidden flex-col items-center justify-center rounded hover:bg-white/10 p-2 cursor-pointer transition" onclick="openWindow('gamedino'); toggleStartMenu();">
+                        <div class="w-8 h-8 bg-zinc-800 rounded flex items-center justify-center mb-1">
+                            <svg class="w-5 h-5" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+                                <path d="M14,2h6v2h1v3h-3v1h-1v1h-2V7h-1V6h-1V4h2V2z M17,3h1v1h-1V3z M11,6h1v1h-1V6z M10,7h1v1h-1V7z M9,8h1v1h-1V8z M8,9h1v3h-1V9z M7,10h1v4h-1V10z M6,11h1v4h-1V11z M5,12h1v4h-1V12z M2,14h3v1H2v-1z M1,15h3v1H1v-1z M0,16h3v1H0v-1z M1,17h1v1H1v-1z M2,18h1v1H2v-1z M3,19h2v1H3v-1z M5,15h1v1H5v-1z M6,14h1v1H6v-1z M11,10h2v1h-2v-1z M12,11h1v1h-1v-1z M13,12h2v1h-2v-1z M14,13h1v2h-1v-2z M10,16h2v1h-2v-1z M9,17h1v1H9v-1z M8,18h1v3h-1v-3z M7,21h2v1H7v-1z M11,18h1v3h-1v-3z M10,21h2v1H7v-1z" fill="#10b981"/>
+                            </svg>
+                        </div>
+                        <span class="text-[10px] text-center truncate w-full">小恐龍</span>
                     </div>
                 </div>
             </div>
@@ -710,7 +900,7 @@
     </div>
 
 
-    <!-- ================= 簡意提示盒 (取代 Alert) ================= -->
+    <!-- ================= 進階防護提示盒 (取代 Alert) ================= -->
     <div id="alert-modal" class="fixed inset-0 bg-black/50 hidden items-center justify-center z-[100]">
         <div class="glass w-80 rounded-lg p-6 text-white text-center win-shadow border border-white/10">
             <i class="fa-solid fa-circle-exclamation text-blue-400 text-4xl mb-4"></i>
@@ -722,14 +912,20 @@
 
     <!-- ================= JavaScript 控制邏輯 ================= -->
     <script>
-        // ---------------- 狀態變數 ----------------
+        // ---------------- 狀態與視窗管理器 (包含正確的工作列、指示燈綁定) ----------------
         const windows = {
             thispc: { elementId: 'win-thispc', taskbarId: 'taskbar-thispc', dotId: 'dot-thispc', isOpen: false, isMinimized: false, isMaximized: false },
+            store: { elementId: 'win-store', taskbarId: 'taskbar-store', dotId: 'dot-store', isOpen: false, isMinimized: false, isMaximized: false },
             edge: { elementId: 'win-edge', taskbarId: 'taskbar-edge', dotId: 'dot-edge', isOpen: false, isMinimized: false, isMaximized: false },
             word: { elementId: 'win-word', taskbarId: 'taskbar-word', dotId: 'dot-word', isOpen: false, isMinimized: false, isMaximized: false },
             excel: { elementId: 'win-excel', taskbarId: 'taskbar-excel', dotId: 'dot-excel', isOpen: false, isMinimized: false, isMaximized: false },
             powerpoint: { elementId: 'win-powerpoint', taskbarId: 'taskbar-powerpoint', dotId: 'dot-powerpoint', isOpen: false, isMinimized: false, isMaximized: false },
+            
+            // 商店下載之獨立 App (Minecraft 預設直接開啟；其餘預設 hidden、dotId 安全防錯)
             minecraft: { elementId: 'win-minecraft', taskbarId: 'taskbar-minecraft', dotId: 'dot-minecraft', isOpen: false, isMinimized: false, isMaximized: false },
+            game2048: { elementId: 'win-game2048', taskbarId: 'taskbar-game2048', dotId: 'dot-game2048', isOpen: false, isMinimized: false, isMaximized: false },
+            gamedino: { elementId: 'win-gamedino', taskbarId: 'taskbar-gamedino', dotId: 'dot-gamedino', isOpen: false, isMinimized: false, isMaximized: false },
+            
             notepad: { elementId: 'win-notepad', taskbarId: 'taskbar-notepad', dotId: 'dot-notepad', isOpen: false, isMinimized: false, isMaximized: false },
             calculator: { elementId: 'win-calculator', taskbarId: 'taskbar-calculator', dotId: 'dot-calculator', isOpen: false, isMinimized: false, isMaximized: false },
             photoviewer: { elementId: 'win-photoviewer', taskbarId: '', dotId: '', isOpen: false, isMinimized: false, isMaximized: false },
@@ -740,24 +936,32 @@
 
         // Note: fallbackIcon 已移至 <head> 區段，以防止早期影像加載失敗時拋出 ReferenceError。
 
-        // ---------------- 視窗基本控制 ----------------
+        // ---------------- 視窗基本控制 (完美修復指示燈、防閃退與多工作處理) ----------------
         function openWindow(winKey) {
             const win = windows[winKey];
+            if (!win) return;
             const el = document.getElementById(win.elementId);
+            if (!el) return;
             
             el.classList.remove('window-hidden');
             win.isOpen = true;
             win.isMinimized = false;
             
-            if (win.dotId) {
+            // 修正：檢查 win.dotId 和對應的元素是否存在，再對 classList 進行操作，防止拋出 ReferenceError / TypeError
+            if (win.dotId && document.getElementById(win.dotId)) {
                 document.getElementById(win.dotId).classList.add('opacity-100');
+            }
+            if (win.taskbarId && document.getElementById(win.taskbarId)) {
                 document.getElementById(win.taskbarId).classList.add('bg-white/10');
             }
 
             focusWindow(winKey);
             
+            // 關鍵修正：先確認 resizeCanvas 函式存在，再調用
             if (winKey === 'edge') {
-                setTimeout(resizeCanvas, 200);
+                if (typeof resizeCanvas === 'function') {
+                    setTimeout(resizeCanvas, 200);
+                }
             }
             if (winKey === 'thispc') {
                 navigateFolder('root');
@@ -766,17 +970,25 @@
                 renderSlidesList();
                 updatePPTSlide();
             }
+            if (winKey === 'game2048') {
+                init2048();
+            }
         }
 
         function closeWindow(winKey) {
             const win = windows[winKey];
+            if (!win) return;
             const el = document.getElementById(win.elementId);
+            if (!el) return;
             
             el.classList.add('window-hidden');
             win.isOpen = false;
             
-            if (win.dotId) {
+            // 修正：檢查 win.dotId 和對應的元素是否存在，防止 TypeError
+            if (win.dotId && document.getElementById(win.dotId)) {
                 document.getElementById(win.dotId).classList.remove('opacity-100');
+            }
+            if (win.taskbarId && document.getElementById(win.taskbarId)) {
                 document.getElementById(win.taskbarId).classList.remove('bg-white/10');
             }
         }
@@ -827,14 +1039,18 @@
 
         function focusWindow(winKey) {
             highestZ += 1;
-            document.getElementById(windows[winKey].elementId).style.zIndex = highestZ;
+            const el = document.getElementById(windows[winKey].elementId);
+            if (el) el.style.zIndex = highestZ;
         }
 
         Object.keys(windows).forEach(key => {
-            document.getElementById(windows[key].elementId).addEventListener('mousedown', () => {
-                focusWindow(key);
-                document.getElementById('start-menu').classList.add('window-hidden');
-            });
+            const el = document.getElementById(windows[key].elementId);
+            if (el) {
+                el.addEventListener('mousedown', () => {
+                    focusWindow(key);
+                    document.getElementById('start-menu').classList.add('window-hidden');
+                });
+            }
         });
 
         // ---------------- 視窗拖曳 功能 ----------------
@@ -872,42 +1088,83 @@
             document.removeEventListener('mouseup', dragEnd);
         }
 
-        // ---------------- 開始功能表開關 ----------------
-        function toggleStartMenu() {
-            const menu = document.getElementById('start-menu');
-            if (menu.classList.contains('window-hidden')) {
-                menu.classList.remove('window-hidden');
-                menu.style.zIndex = highestZ + 5;
-            } else {
-                menu.classList.add('window-hidden');
+        // ==========================================
+        //        🔥 應用程式商店：下載安裝與桌面 APP 連動控制
+        // ==========================================
+        const installedApps = {
+            minecraft: true, // Minecraft 預設已安裝
+            game2048: false,
+            gamedino: false
+        };
+
+        function installApp(appKey) {
+            const container = document.getElementById(`store-action-${appKey}`);
+            if (!container) return;
+
+            // 1. 顯示下載安裝進度條
+            container.innerHTML = `
+                <div class="w-full bg-zinc-800 rounded-full h-2.5 overflow-hidden mb-2">
+                    <div id="progress-bar-${appKey}" class="bg-blue-600 h-2.5 rounded-full transition-all duration-300" style="width: 0%"></div>
+                </div>
+                <div class="text-[10px] text-gray-400 text-center flex justify-between px-1">
+                    <span>下載中...</span>
+                    <span id="progress-text-${appKey}">0%</span>
+                </div>
+            `;
+
+            let progress = 0;
+            const interval = setInterval(() => {
+                progress += Math.floor(Math.random() * 15) + 5;
+                if (progress >= 100) {
+                    progress = 100;
+                    clearInterval(interval);
+                    
+                    // 下載成功！觸發桌面、工作列與開始功能表的 APP 生成
+                    installedApps[appKey] = true;
+                    unlockAppOnSystem(appKey);
+
+                    // 商店按鈕改為「啟動」
+                    container.innerHTML = `
+                        <button onclick="openWindow('${appKey}'); closeWindow('store');" class="w-full py-2 bg-emerald-600 hover:bg-emerald-500 text-white rounded text-xs font-bold transition flex items-center justify-center gap-1">
+                            <i class="fa-solid fa-play"></i> 啟動遊戲
+                        </button>
+                    `;
+                    alert('應用程式下載完畢！已成功自動釘選至您的桌面、工作列與開始功能表中！');
+                }
+
+                const bar = document.getElementById(`progress-bar-${appKey}`);
+                const text = document.getElementById(`progress-text-${appKey}`);
+                if (bar) bar.style.width = progress + '%';
+                if (text) text.textContent = progress + '%';
+            }, 250);
+        }
+
+        function unlockAppOnSystem(appKey) {
+            // 解鎖桌面 App 圖示
+            const deskApp = document.getElementById(`desktop-app-${appKey}`);
+            if (deskApp) {
+                deskApp.classList.remove('hidden');
+                deskApp.classList.add('flex');
+            }
+
+            // 解鎖工作列 App
+            const taskbarApp = document.getElementById(`taskbar-${appKey}`);
+            if (taskbarApp) {
+                taskbarApp.classList.remove('hidden');
+                taskbarApp.classList.add('flex');
+            }
+
+            // 解鎖開始功能表 App
+            const startApp = document.getElementById(`start-app-${appKey}`);
+            if (startApp) {
+                startApp.classList.remove('hidden');
+                startApp.classList.add('flex');
             }
         }
 
-        document.getElementById('desktop').addEventListener('click', () => {
-            document.getElementById('start-menu').classList.add('window-hidden');
-        });
-
-        // ---------------- 系統時鐘更新 ----------------
-        function updateClock() {
-            const now = new Date();
-            let hours = now.getHours();
-            const minutes = String(now.getMinutes()).padStart(2, '0');
-            const ampm = hours >= 12 ? 'PM' : 'AM';
-            hours = hours % 12;
-            hours = hours ? hours : 12;
-            
-            const timeStr = `${hours}:${minutes} ${ampm}`;
-            const dateStr = `${now.getFullYear()}/${String(now.getMonth()+1).padStart(2,'0')}/${String(now.getDate()).padStart(2,'0')}`;
-            
-            document.getElementById('clock-time').textContent = timeStr;
-            document.getElementById('clock-date').textContent = dateStr;
-        }
-        setInterval(updateClock, 1000);
-        updateClock();
-
 
         // ==========================================
-        //           此電腦與檔案管理總管核心
+        //           檔案總管 控制核心
         // ==========================================
         const fileSystem = {
             root: [
@@ -921,7 +1178,7 @@
             ],
             pictures: [
                 { name: '170.png (預設桌布)', type: 'image', file: '170.png' },
-                { name: '1154.png (此電腦)', type: 'image', file: '1154.png' },
+                { name: '1154.png (檔案圖示)', type: 'image', file: '1154.png' },
                 { name: 'winWord.png (Word)', type: 'image', file: 'winWord.png' },
                 { name: 'excel.png (Excel)', type: 'image', file: 'excel.png' },
                 { name: 'powerpoint.png (PPT)', type: 'image', file: 'powerpoint.png' },
@@ -938,6 +1195,7 @@
 
         function navigateFolder(folderKey) {
             const container = document.getElementById('explorer-content');
+            if (!container) return;
             container.innerHTML = '';
             
             const items = fileSystem[folderKey] || [];
@@ -978,8 +1236,10 @@
         }
 
         function openPhotoViewer(src, title) {
-            document.getElementById('photoviewer-img').src = src;
-            document.getElementById('photoviewer-title').textContent = title;
+            const viewerImg = document.getElementById('photoviewer-img');
+            const viewerTitle = document.getElementById('photoviewer-title');
+            if (viewerImg) viewerImg.src = src;
+            if (viewerTitle) viewerTitle.textContent = title;
             openWindow('photoviewer');
         }
 
@@ -994,14 +1254,16 @@
 
         function goEdgeHome() {
             switchBrowserTab('tab-home');
-            edgeAddress.value = "edge://home";
+            if (edgeAddress) edgeAddress.value = "edge://home";
         }
 
         function switchBrowserTab(tabId) {
             document.querySelectorAll('.browser-tab').forEach(tab => {
                 tab.classList.remove('active');
             });
-            document.getElementById(tabId).classList.add('active');
+            const target = document.getElementById(tabId);
+            if (target) target.classList.add('active');
+            
             if (tabId !== 'tab-game-dino') {
                 clearInterval(dinoInterval);
                 dinoRunning = false;
@@ -1010,12 +1272,10 @@
 
         function openWebTab(tabName, virtualUrl) {
             switchBrowserTab('tab-' + tabName);
-            edgeAddress.value = virtualUrl;
+            if (edgeAddress) edgeAddress.value = virtualUrl;
 
             if (tabName === 'game-2048') init2048();
-            if (tabName === 'tool-paint') setTimeout(resizeCanvas, 100);
             if (tabName === 'game-dino') startDinoGame();
-            if (tabName === 'tool-typing') resetTyping();
         }
 
         function navigateEdge() {
@@ -1038,17 +1298,17 @@
                 window.open(formattedUrl, '_blank');
                 alert('為了保障安全並突破網頁框架嵌入限制，已為您在新分頁安全開啟此網頁！');
             } else {
-                searchInput.value = inputVal;
+                if (searchInput) searchInput.value = inputVal;
                 handleSearch();
             }
         }
 
         function handleSearch() {
-            const query = searchInput.value.trim() || document.getElementById('edge-address').value.trim();
+            const query = (searchInput ? searchInput.value.trim() : '') || (edgeAddress ? edgeAddress.value.trim() : '');
             if (!query) return;
 
-            edgeAddress.value = `https://www.bing.com/search?q=${encodeURIComponent(query)}`;
-            searchKeywordSpan.textContent = query;
+            if (edgeAddress) edgeAddress.value = `https://www.bing.com/search?q=${encodeURIComponent(query)}`;
+            if (searchKeywordSpan) searchKeywordSpan.textContent = query;
             switchBrowserTab('tab-search');
 
             const mockData = [
@@ -1056,21 +1316,18 @@
                     title: `🌟 您搜尋了「${query}」！`,
                     snippet: `歡迎來到網頁版的 Windows 11 安全沙盒。此系統極度重視安全性，請放心地在本機中運作或修改程式代碼。`,
                     link: "edge://home"
-                },
-                {
-                    title: "🎮 2048 經典益智數學挑戰網頁版",
-                    snippet: "經典的 2048 益智遊戲，結合滑動合併方塊。挑戰你的邏輯思考！",
-                    link: "edge://2048"
                 }
             ];
 
-            searchResultsList.innerHTML = mockData.map(item => `
-                <div class="bg-zinc-800/40 p-4 rounded-lg border border-white/5 hover:border-blue-500/50 transition cursor-pointer" onclick="openWebTab('${item.link.replace('edge://', '')}', '${item.link}')">
-                    <span class="text-xs text-blue-400 block mb-1">${item.link}</span>
-                    <h3 class="text-base font-semibold text-white">${item.title}</h3>
-                    <p class="text-xs text-gray-400 mt-1">${item.snippet}</p>
-                </div>
-            `).join('');
+            if (searchResultsList) {
+                searchResultsList.innerHTML = mockData.map(item => `
+                    <div class="bg-zinc-800/40 p-4 rounded-lg border border-white/5 hover:border-blue-500/50 transition cursor-pointer" onclick="goEdgeHome()">
+                        <span class="text-xs text-blue-400 block mb-1">${item.link}</span>
+                        <h3 class="text-base font-semibold text-white">${item.title}</h3>
+                        <p class="text-xs text-gray-400 mt-1">${item.snippet}</p>
+                    </div>
+                `).join('');
+            }
         }
 
         // ==========================================
@@ -1082,7 +1339,8 @@
         function init2048() {
             board2048 = Array(16).fill(0);
             score2048 = 0;
-            document.getElementById('score-2048').textContent = score2048;
+            const scoreDisplay = document.getElementById('score-2048');
+            if (scoreDisplay) scoreDisplay.textContent = score2048;
             addRandomTile();
             addRandomTile();
             render2048();
@@ -1098,6 +1356,7 @@
 
         function render2048() {
             const grid = document.getElementById('grid-2048');
+            if (!grid) return;
             grid.innerHTML = '';
             const colorMap = {
                 0: 'bg-zinc-700/50',
@@ -1117,14 +1376,99 @@
             });
         }
 
+        // 2048 移動演算法控制
+        window.addEventListener('keydown', (e) => {
+            const win2048 = document.getElementById('win-game2048');
+            if (win2048 && !win2048.classList.contains('window-hidden')) {
+                let moved = false;
+                if (e.key === 'ArrowLeft') { moveLeft(); moved = true; }
+                else if (e.key === 'ArrowRight') { moveRight(); moved = true; }
+                else if (e.key === 'ArrowUp') { moveUp(); moved = true; }
+                else if (e.key === 'ArrowDown') { moveDown(); moved = true; }
+                
+                if (moved) {
+                    e.preventDefault();
+                    addRandomTile();
+                    render2048();
+                    checkGameOver2048();
+                }
+            }
+        });
+
+        function compress(row) {
+            let nRow = row.filter(val => val !== 0);
+            while (nRow.length < 4) nRow.push(0);
+            return nRow;
+        }
+        function merge(row) {
+            for (let i = 0; i < 3; i++) {
+                if (row[i] !== 0 && row[i] === row[i+1]) {
+                    row[i] *= 2;
+                    score2048 += row[i];
+                    const display = document.getElementById('score-2048');
+                    if (display) display.textContent = score2048;
+                    row[i+1] = 0;
+                }
+            }
+            return row;
+        }
+        function moveLeft() {
+            for (let i = 0; i < 16; i += 4) {
+                let row = [board2048[i], board2048[i+1], board2048[i+2], board2048[i+3]];
+                row = compress(row);
+                row = merge(row);
+                row = compress(row);
+                board2048[i] = row[0]; board2048[i+1] = row[1]; board2048[i+2] = row[2]; board2048[i+3] = row[3];
+            }
+        }
+        function moveRight() {
+            for (let i = 0; i < 16; i += 4) {
+                let row = [board2048[i+3], board2048[i+2], board2048[i+1], board2048[i]];
+                row = compress(row);
+                row = merge(row);
+                row = compress(row);
+                board2048[i+3] = row[0]; board2048[i+2] = row[1]; board2048[i+1] = row[2]; board2048[i] = row[3];
+            }
+        }
+        function moveUp() {
+            for (let i = 0; i < 4; i++) {
+                let row = [board2048[i], board2048[i+4], board2048[i+8], board2048[i+12]];
+                row = compress(row);
+                row = merge(row);
+                row = compress(row);
+                board2048[i] = row[0]; board2048[i+4] = row[1]; board2048[i+8] = row[2]; board2048[i+12] = row[3];
+            }
+        }
+        function moveDown() {
+            for (let i = 0; i < 4; i++) {
+                let row = [board2048[i+12], board2048[i+8], board2048[i+4], board2048[i]];
+                row = compress(row);
+                row = merge(row);
+                row = compress(row);
+                board2048[i+12] = row[0]; board2048[i+8] = row[1]; board2048[i+4] = row[2]; board2048[i] = row[3];
+            }
+        }
+        function checkGameOver2048() {
+            if (!board2048.includes(0)) {
+                let canMove = false;
+                for (let i = 0; i < 16; i++) {
+                    if (i % 4 < 3 && board2048[i] === board2048[i+1]) canMove = true;
+                    if (i < 12 && board2048[i] === board2048[i+4]) canMove = true;
+                }
+                if (!canMove) {
+                    alert('2048 遊戲結束！您的最終得分是：' + score2048);
+                }
+            }
+        }
+
+
         // ==========================================
-        //           內建小遊戲 3：小恐龍跳躍
+        //           內建小遊戲 2：小恐龍跳躍
         // ==========================================
-        const dino = document.getElementById('dino-char');
-        const obstacle = document.getElementById('dino-obstacle');
+        const dinoChar = document.getElementById('dino-char');
+        const dinoObstacle = document.getElementById('dino-obstacle');
         const dinoMsg = document.getElementById('dino-msg');
         let dinoScore = 0;
-        let dinoHighScore = 0;
         let isJumping = false;
         let dinoInterval = null;
         let dinoRunning = false;
@@ -1134,39 +1478,87 @@
             dinoScore = 0;
             obstaclePos = 400;
             dinoRunning = true;
-            dinoMsg.classList.add('hidden');
-            document.getElementById('dino-score').textContent = dinoScore;
+            if (dinoMsg) dinoMsg.classList.add('hidden');
+            const scoreDisplay = document.getElementById('dino-score');
+            if (scoreDisplay) scoreDisplay.textContent = dinoScore;
             
             clearInterval(dinoInterval);
             dinoInterval = setInterval(() => {
                 if (!dinoRunning) return;
                 
-                obstaclePos -= 5;
+                obstaclePos -= 6;
                 if (obstaclePos < -20) {
                     obstaclePos = 400;
                     dinoScore += 10;
+                    if (scoreDisplay) scoreDisplay.textContent = dinoScore;
                 }
-                obstacle.style.left = obstaclePos + 'px';
+                if (dinoObstacle) dinoObstacle.style.left = obstaclePos + 'px';
 
-                const dinoBottom = parseInt(dino.style.bottom);
-                if (obstaclePos > 40 && obstaclePos < 70 && dinoBottom <= 30) {
-                    dinoRunning = false;
-                    clearInterval(dinoInterval);
-                    dinoMsg.classList.remove('hidden');
+                const dinoBottom = parseInt(dinoChar.style.bottom) || 16;
+                if (obstaclePos > 40 && obstaclePos < 70 && dinoBottom <= 32) {
+                    gameOverDino();
                 }
             }, 20);
         }
+
+        function dinoJump() {
+            if (isJumping || !dinoRunning) return;
+            isJumping = true;
+            let count = 0;
+            
+            let jumpInterval = setInterval(() => {
+                let bottom = parseInt(dinoChar.style.bottom) || 16;
+                if (count < 15) {
+                    bottom += 6;
+                } else {
+                    bottom -= 6;
+                }
+                if (dinoChar) dinoChar.style.bottom = bottom + 'px';
+                count++;
+                if (count >= 30) {
+                    clearInterval(jumpInterval);
+                    if (dinoChar) dinoChar.style.bottom = '16px';
+                    isJumping = false;
+                }
+            }, 12);
+        }
+
+        // 監聽小恐龍空白鍵
+        window.addEventListener('keydown', (e) => {
+            const winDino = document.getElementById('win-gamedino');
+            if (winDino && !winDino.classList.contains('window-hidden')) {
+                if (e.key === ' ' || e.key === 'ArrowUp') {
+                    e.preventDefault();
+                    dinoJump();
+                }
+            }
+        });
+
+        if (document.getElementById('dino-container')) {
+            document.getElementById('dino-container').addEventListener('mousedown', dinoJump);
+        }
+
+        function gameOverDino() {
+            dinoRunning = false;
+            clearInterval(dinoInterval);
+            if (dinoMsg) dinoMsg.classList.remove('hidden');
+            alert('小恐龍被撞到了！您的分數是：' + dinoScore);
+        }
+
 
         // ==========================================
         //       Microsoft Word 自製排版器控制代碼
         // ==========================================
         function formatWord(command, value = null) {
             document.execCommand(command, false, value);
-            document.getElementById('word-page').focus();
+            const page = document.getElementById('word-page');
+            if (page) page.focus();
         }
 
         function saveWordDoc() {
-            const content = document.getElementById('word-page').innerHTML;
+            const page = document.getElementById('word-page');
+            if (!page) return;
+            const content = page.innerHTML;
             const blob = new Blob([content], { type: 'text/html;charset=utf-8' });
             const link = document.createElement('a');
             link.href = URL.createObjectURL(blob);
@@ -1175,6 +1567,7 @@
             URL.revokeObjectURL(link.href);
         }
 
+
         // ==========================================
         //       Microsoft Excel 自製試算表控制代碼
         // ==========================================
@@ -1182,6 +1575,7 @@
 
         function initExcel() {
             const tbody = document.getElementById('excel-tbody');
+            if (!tbody) return;
             tbody.innerHTML = '';
             
             for (let i = 1; i <= 12; i++) {
@@ -1199,33 +1593,47 @@
                 tbody.appendChild(tr);
             }
             
-            // 預設樣品試算數據
-            document.getElementById('A1').textContent = 'Minecraft 原木方塊';
-            document.getElementById('B1').textContent = '64';
-            document.getElementById('A2').textContent = '黃金礦石';
-            document.getElementById('B2').textContent = '32';
-            document.getElementById('A3').textContent = '總方塊數量 (SUM)';
-            document.getElementById('B3').className += ' font-bold text-emerald-600 bg-emerald-50/40';
-            document.getElementById('B3').textContent = '96';
+            const a1 = document.getElementById('A1');
+            const b1 = document.getElementById('B1');
+            const a2 = document.getElementById('A2');
+            const b2 = document.getElementById('B2');
+            const a3 = document.getElementById('A3');
+            const b3 = document.getElementById('B3');
+
+            if (a1) a1.textContent = 'Minecraft 原木方塊';
+            if (b1) b1.textContent = '64';
+            if (a2) a2.textContent = '黃金礦石';
+            if (b2) b2.textContent = '32';
+            if (a3) a3.textContent = '總方塊數量 (SUM)';
+            if (b3) {
+                b3.className += ' font-bold text-emerald-600 bg-emerald-50/40';
+                b3.textContent = '96';
+            }
         }
 
         function selectCell(id) {
             selectedCellId = id;
-            document.getElementById('excel-active-cell').textContent = id;
+            const display = document.getElementById('excel-active-cell');
+            if (display) display.textContent = id;
         }
 
+        // 自動加總
         function calculateExcelSum() {
             const col = selectedCellId.charAt(0);
             const row = parseInt(selectedCellId.substring(1), 10);
             
             let sum = 0;
             for (let i = 1; i < row; i++) {
-                const cellVal = parseFloat(document.getElementById(`${col}${i}`).textContent);
-                if (!isNaN(cellVal)) {
-                    sum += cellVal;
+                const cell = document.getElementById(`${col}${i}`);
+                if (cell) {
+                    const cellVal = parseFloat(cell.textContent);
+                    if (!isNaN(cellVal)) {
+                        sum += cellVal;
+                    }
                 }
             }
-            document.getElementById(selectedCellId).textContent = sum;
+            const targetCell = document.getElementById(selectedCellId);
+            if (targetCell) targetCell.textContent = sum;
             alert(`已自動為 ${selectedCellId} 計算上方整欄的「加總數值」！`);
         }
 
@@ -1236,15 +1644,19 @@
             let sum = 0;
             let count = 0;
             for (let i = 1; i < row; i++) {
-                const cellVal = parseFloat(document.getElementById(`${col}${i}`).textContent);
-                if (!isNaN(cellVal)) {
-                    sum += cellVal;
-                    count++;
+                const cell = document.getElementById(`${col}${i}`);
+                if (cell) {
+                    const cellVal = parseFloat(cell.textContent);
+                    if (!isNaN(cellVal)) {
+                        sum += cellVal;
+                        count++;
+                    }
                 }
             }
             if (count > 0) {
                 const avg = (sum / count).toFixed(2);
-                document.getElementById(selectedCellId).textContent = avg;
+                const targetCell = document.getElementById(selectedCellId);
+                if (targetCell) targetCell.textContent = avg;
                 alert(`已自動為 ${selectedCellId} 計算上方 ${count} 個格子的「平均值」：${avg}`);
             } else {
                 alert('上方欄位沒有找到可以計算的數字喔！');
@@ -1254,17 +1666,19 @@
         function clearExcelSheet() {
             for (let i = 1; i <= 12; i++) {
                 ['A', 'B', 'C', 'D', 'E', 'F', 'G'].forEach(col => {
-                    document.getElementById(`${col}${i}`).textContent = '';
+                    const cell = document.getElementById(`${col}${i}`);
+                    if (cell) cell.textContent = '';
                 });
             }
         }
+
 
         // ==========================================
         //     Microsoft PowerPoint 自製簡報控制代碼
         // ==========================================
         let pptSlides = [
             { title: "自製 PowerPoint 簡報大師", content: "歡迎來到您專屬的 Windows 11 本地完全自製簡報軟體！\n\n您可以自由修改這兩頁投影片，或新增更多創意頁面。\n\n點選右上方「播放簡報」按鈕即可開始全螢幕放映！", bg: "#fff7ed" },
-            { title: "關於 Minecraft 世界", content: "雙擊桌面上的 Minecraft 綠色方塊圖示，可立即在模擬器中加載 Scratch 專案運行！\n\n這是一個由您提供的 2026.4.20.html 完美整合版。", bg: "#ecfdf5" }
+            { title: "關於 Minecraft 世界", content: "已經收納於 Microsoft Store 中！\n\n這是一個由您提供的 2026.4.20.html 完美整合版。可在商店中直接點選「啟動遊戲」！", bg: "#ecfdf5" }
         ];
         let currentSlideIdx = 0;
 
@@ -1272,16 +1686,21 @@
         const pptContentInput = document.getElementById('ppt-content');
         const pptCanvas = document.getElementById('ppt-canvas');
 
-        pptTitleInput.addEventListener('input', () => {
-            pptSlides[currentSlideIdx].title = pptTitleInput.value;
-            renderSlidesList();
-        });
-        pptContentInput.addEventListener('input', () => {
-            pptSlides[currentSlideIdx].content = pptContentInput.value;
-        });
+        if (pptTitleInput) {
+            pptTitleInput.addEventListener('input', () => {
+                pptSlides[currentSlideIdx].title = pptTitleInput.value;
+                renderSlidesList();
+            });
+        }
+        if (pptContentInput) {
+            pptContentInput.addEventListener('input', () => {
+                pptSlides[currentSlideIdx].content = pptContentInput.value;
+            });
+        }
 
         function renderSlidesList() {
             const listContainer = document.getElementById('ppt-slides-list');
+            if (!listContainer) return;
             listContainer.innerHTML = '';
             
             pptSlides.forEach((slide, idx) => {
@@ -1297,18 +1716,23 @@
             });
         }
 
+        // 選擇投影片
         function selectSlide(idx) {
             currentSlideIdx = idx;
             updatePPTSlide();
             renderSlidesList();
         }
 
+        // 更新簡報
         function updatePPTSlide() {
             const slide = pptSlides[currentSlideIdx];
-            pptTitleInput.value = slide.title;
-            pptContentInput.value = slide.content;
-            pptCanvas.style.backgroundColor = slide.bg;
-            document.getElementById('ppt-bg-color').value = slide.bg;
+            if (pptTitleInput) pptTitleInput.value = slide.title;
+            if (pptContentInput) pptContentInput.value = slide.content;
+            if (pptCanvas) {
+                pptCanvas.style.backgroundColor = slide.bg;
+                const bgPicker = document.getElementById('ppt-bg-color');
+                if (bgPicker) bgPicker.value = slide.bg;
+            }
         }
 
         function addSlide() {
@@ -1331,7 +1755,7 @@
 
         function changeSlideBg(color) {
             pptSlides[currentSlideIdx].bg = color;
-            pptCanvas.style.backgroundColor = color;
+            if (pptCanvas) pptCanvas.style.backgroundColor = color;
             renderSlidesList();
         }
 
@@ -1340,24 +1764,32 @@
         function startSlideshow() {
             slideshowIdx = currentSlideIdx;
             const modal = document.getElementById('ppt-slideshow-modal');
-            modal.classList.remove('hidden');
-            modal.classList.add('flex');
-            updateSlideshowView();
+            if (modal) {
+                modal.classList.remove('hidden');
+                modal.classList.add('flex');
+                updateSlideshowView();
+            }
         }
 
         function updateSlideshowView() {
             const slide = pptSlides[slideshowIdx];
-            document.getElementById('slideshow-title').textContent = slide.title;
-            document.getElementById('slideshow-content').textContent = slide.content;
-            document.getElementById('slideshow-container').style.backgroundColor = slide.bg;
-            
-            // 自動偵測背景亮度調整字體顏色
-            const isDark = isColorDark(slide.bg);
-            document.getElementById('slideshow-title').style.color = isDark ? '#ffffff' : '#111827';
-            document.getElementById('slideshow-content').style.color = isDark ? '#e4e4e7' : '#374151';
+            const title = document.getElementById('slideshow-title');
+            const content = document.getElementById('slideshow-content');
+            const container = document.getElementById('slideshow-container');
+            const indexSpan = document.getElementById('slideshow-index');
+            const totalSpan = document.getElementById('slideshow-total');
 
-            document.getElementById('slideshow-index').textContent = slideshowIdx + 1;
-            document.getElementById('slideshow-total').textContent = pptSlides.length;
+            if (title) title.textContent = slide.title;
+            if (content) content.textContent = slide.content;
+            if (container) {
+                container.style.backgroundColor = slide.bg;
+                const isDark = isColorDark(slide.bg);
+                if (title) title.style.color = isDark ? '#ffffff' : '#111827';
+                if (content) content.style.color = isDark ? '#e4e4e7' : '#374151';
+            }
+
+            if (indexSpan) indexSpan.textContent = slideshowIdx + 1;
+            if (totalSpan) totalSpan.textContent = pptSlides.length;
         }
 
         function nextSlideshow() {
@@ -1378,13 +1810,17 @@
         }
 
         function exitSlideshow() {
-            document.getElementById('ppt-slideshow-modal').classList.add('hidden');
-            document.getElementById('ppt-slideshow-modal').classList.remove('flex');
+            const modal = document.getElementById('ppt-slideshow-modal');
+            if (modal) {
+                modal.classList.add('hidden');
+                modal.classList.remove('flex');
+            }
         }
 
         // 簡報鍵盤控制監聽
         window.addEventListener('keydown', (e) => {
-            if (!document.getElementById('ppt-slideshow-modal').classList.contains('hidden')) {
+            const modal = document.getElementById('ppt-slideshow-modal');
+            if (modal && !modal.classList.contains('hidden')) {
                 if (e.key === 'ArrowRight' || e.key === ' ' || e.key === 'Enter') {
                     e.preventDefault();
                     nextSlideshow();
@@ -1412,7 +1848,9 @@
 
         // ---------------- 記事本與小算盤 ----------------
         function saveNotepad() {
-            const text = document.getElementById('notepad-content').value;
+            const notepadText = document.getElementById('notepad-content');
+            if (!notepadText) return;
+            const text = notepadText.value;
             const blob = new Blob([text], { type: 'text/plain;charset=utf-8' });
             const link = document.createElement('a');
             link.href = URL.createObjectURL(blob);
@@ -1421,7 +1859,8 @@
         }
 
         function clearNotepad() {
-            document.getElementById('notepad-content').value = '';
+            const notepadText = document.getElementById('notepad-content');
+            if (notepadText) notepadText.value = '';
         }
 
         let calcVal = '0';
@@ -1429,39 +1868,49 @@
         function calcPress(val) {
             if (calcVal === '0' && !isNaN(val)) calcVal = val;
             else calcVal += val;
-            calcScreen.textContent = calcVal;
+            if (calcScreen) calcScreen.textContent = calcVal;
         }
         function calcClear() {
             calcVal = '0';
-            calcScreen.textContent = '0';
+            if (calcScreen) calcScreen.textContent = '0';
         }
         function calcBack() {
             calcVal = calcVal.length > 1 ? calcVal.slice(0, -1) : '0';
-            calcScreen.textContent = calcVal;
+            if (calcScreen) calcScreen.textContent = calcVal;
         }
         function calcEqual() {
             try {
                 calcVal = String(eval(calcVal));
-                calcScreen.textContent = calcVal;
+                if (calcScreen) calcScreen.textContent = calcVal;
             } catch {
-                calcScreen.textContent = '錯誤';
+                if (calcScreen) calcScreen.textContent = '錯誤';
                 calcVal = '0';
             }
         }
 
+        // 提示訊息
         function alert(msg) {
-            document.getElementById('alert-text').textContent = msg;
-            document.getElementById('alert-modal').classList.remove('hidden');
-            document.getElementById('alert-modal').classList.add('flex');
+            const alertText = document.getElementById('alert-text');
+            const alertModal = document.getElementById('alert-modal');
+            if (alertText && alertModal) {
+                alertText.textContent = msg;
+                alertModal.classList.remove('hidden');
+                alertModal.classList.add('flex');
+            }
         }
         function closeAlert() {
-            document.getElementById('alert-modal').classList.add('hidden');
-            document.getElementById('alert-modal').classList.remove('flex');
+            const alertModal = document.getElementById('alert-modal');
+            if (alertModal) {
+                alertModal.classList.add('hidden');
+                alertModal.classList.remove('flex');
+            }
         }
 
         window.onload = function() {
             openWindow('readme');
-            initExcel();
+            if (typeof initExcel === 'function') {
+                initExcel();
+            }
         }
     </script>
 </body>
