@@ -12,7 +12,7 @@
     <script>
         // ---------------- 提前定義 fallbackIcon，防止圖片載入失敗觸發 onerror 時發生 ReferenceError ----------------
         function fallbackIcon(imgElement, type) {
-            imgElement.style.display = 'none'; // 隱藏原本壞掉的 img
+            imgElement.style.display = 'none'; // 隱藏原本壞掉 of img
             const container = imgElement.parentElement;
             
             let svgStr = '';
@@ -140,7 +140,7 @@
             <span class="text-white text-xs text-center drop-shadow-md truncate w-full mt-1">檔案</span>
         </div>
 
-        <!-- Microsoft Store 桌面圖示 -->
+        <!-- Microsoft Store 桌面圖示 (優先讀取您的 store.png 檔案) -->
         <div onclick="openWindow('store')" class="w-20 h-22 flex flex-col items-center justify-center rounded hover:bg-white/10 active:bg-white/20 cursor-pointer transition p-1">
             <div class="w-10 h-10 flex items-center justify-center">
                 <img src="store.png" class="w-9 h-9 object-contain" onerror="fallbackIcon(this, 'store')">
@@ -293,13 +293,101 @@
                     <div onclick="navigateFolder('pictures')" class="flex items-center gap-2.5 px-3 py-1.5 rounded hover:bg-zinc-800 cursor-pointer transition text-zinc-200 text-xs"><i class="fa-regular fa-image text-emerald-400"></i> 圖片藝廊</div>
                     
                     <p class="text-[10px] font-bold text-zinc-500 px-2 py-2 uppercase tracking-wider">此電腦</p>
-                    <div onclick="navigateFolder('drive_c')" class="flex items-center gap-2.5 px-3 py-1.5 rounded hover:bg-zinc-800 cursor-pointer transition text-zinc-200 text-xs"><i class="fa-solid fa-hard-drive text-blue-500"></i> 本機 C 槽</div>
+                    <div onclick="navigateFolder('drive_c')" class="flex items-center gap-2.5 px-3 py-1.5 rounded hover:bg-zinc-800/60 cursor-pointer transition text-zinc-200 text-xs"><i class="fa-solid fa-hard-drive text-blue-500"></i> 本機 C 槽</div>
                 </div>
                 <div class="text-[9px] text-zinc-500 px-2">容量剩餘: 118 GB / 256 GB</div>
             </div>
             <!-- 右側主要資料夾內容 -->
             <div class="flex-1 p-6 overflow-y-auto" id="explorer-content">
                 <!-- 由 JS 動態渲染內部檔案 -->
+            </div>
+        </div>
+    </div>
+
+
+    <!-- ================= 🔥 視窗：Microsoft Store (官方正版視覺優化商店) ================= -->
+    <div id="win-store" class="window-transition window-hidden absolute glass rounded-lg overflow-hidden win-shadow text-white flex flex-col border border-white/10" style="width: 820px; height: 560px; top: 11%; left: 19%; z-index: 10;">
+        <div class="h-10 bg-[#0f0f0f] flex justify-between items-center px-4 cursor-move border-b border-zinc-800" onmousedown="dragStart(event, 'win-store')">
+            <div class="flex items-center gap-2">
+                <img src="store.png" class="w-4 h-4 object-contain" onerror="fallbackIcon(this, 'store')">
+                <span class="text-xs font-semibold text-gray-200">Microsoft Store</span>
+            </div>
+            <div class="flex gap-1 items-center">
+                <button onclick="minimizeWindow('store')" class="w-8 h-8 flex items-center justify-center hover:bg-white/10 rounded transition"><i class="fa-solid fa-minus text-xs"></i></button>
+                <button onclick="maximizeWindow('store')" class="w-8 h-8 flex items-center justify-center hover:bg-white/10 rounded transition"><i class="fa-regular fa-square text-xs"></i></button>
+                <button onclick="closeWindow('store')" class="w-8 h-8 flex items-center justify-center hover:bg-red-500 rounded transition"><i class="fa-solid fa-xmark text-xs"></i></button>
+            </div>
+        </div>
+        
+        <!-- 商店頂部橫幅 -->
+        <div class="p-6 bg-gradient-to-r from-[#1b1c24] to-[#121319] border-b border-white/5 flex justify-between items-center relative overflow-hidden">
+            <div class="absolute -right-10 -top-10 w-40 h-40 bg-blue-600/10 rounded-full blur-3xl pointer-events-none"></div>
+            <div class="z-10 flex items-center gap-4">
+                <img src="store.png" class="w-12 h-12 object-contain" onerror="fallbackIcon(this, 'store')">
+                <div>
+                    <h2 class="text-lg font-bold text-white flex items-center gap-1.5">Microsoft Store <span class="text-[10px] bg-blue-500 text-white font-medium py-0.5 px-1.5 rounded-full">官方正版</span></h2>
+                    <p class="text-xs text-gray-400">探索受信任的本地應用程式與熱門遊戲</p>
+                </div>
+            </div>
+            <div class="bg-zinc-800/80 rounded-lg py-1.5 px-3 border border-white/5 flex items-center gap-2 text-xs z-10">
+                <i class="fa-solid fa-magnifying-glass text-gray-400"></i>
+                <input type="text" placeholder="搜尋應用程式與遊戲..." class="bg-transparent border-none outline-none text-white w-40">
+            </div>
+        </div>
+
+        <!-- 商店主展示區 -->
+        <div class="flex-1 bg-[#131313] p-6 overflow-y-auto no-scrollbar">
+            <h3 class="text-xs font-extrabold text-gray-300 uppercase tracking-widest mb-4 flex items-center gap-1.5">
+                <span class="w-1.5 h-3.5 bg-blue-500 rounded-sm inline-block"></span> 🎮 精選熱門暢銷小遊戲 (點選安裝將在桌面建立獨立 App)
+            </h3>
+            <div class="grid grid-cols-3 gap-6">
+                <!-- 應用 1：Minecraft -->
+                <div class="bg-[#1c1c1f]/80 rounded-xl p-5 border border-white/5 flex flex-col items-center text-center shadow-md hover:scale-[1.02] transition">
+                    <img src="minecraft.png" class="w-16 h-16 object-contain rounded-lg mb-4 shadow-lg" onerror="fallbackIcon(this, 'minecraft')">
+                    <h4 class="text-sm font-bold text-white mb-1 flex items-center gap-1">Minecraft 2D <i class="fa-solid fa-circle-check text-blue-400 text-[10px]"></i></h4>
+                    <p class="text-[10px] text-gray-400 mb-4 h-12 flex items-center">高度整合 Scratch 麥塊系統！一鍵進入原汁原味的方塊搭建世界。</p>
+                    <div class="w-full" id="store-action-minecraft">
+                        <button onclick="openWindow('minecraft'); closeWindow('store');" class="w-full py-2 bg-emerald-600 hover:bg-emerald-500 text-white rounded text-xs font-bold transition flex items-center justify-center gap-1">
+                            <i class="fa-solid fa-play"></i> 啟動遊戲
+                        </button>
+                    </div>
+                </div>
+
+                <!-- 應用 2：2048 -->
+                <div class="bg-[#1c1c1f]/80 rounded-xl p-5 border border-white/5 flex flex-col items-center text-center shadow-md hover:scale-[1.02] transition">
+                    <div class="w-16 h-16 bg-amber-500 rounded-xl flex items-center justify-center font-black text-white text-xl mb-4 shadow-lg">2048</div>
+                    <h4 class="text-sm font-bold text-white mb-1 flex items-center gap-1">2048 益智遊戲 <i class="fa-solid fa-circle-check text-blue-400 text-[10px]"></i></h4>
+                    <p class="text-[10px] text-gray-400 mb-4 h-12 flex items-center">經典數字方塊滑動合併益智小遊戲，向 2048 方塊進發！</p>
+                    <div class="w-full" id="store-action-game2048">
+                        <button onclick="installApp('game2048')" class="w-full py-2 bg-blue-600 hover:bg-blue-500 text-white rounded text-xs font-bold transition">取得 (免費安裝)</button>
+                    </div>
+                </div>
+
+                <!-- 應用 3：小恐龍 -->
+                <div class="bg-[#1c1c1f]/80 rounded-xl p-5 border border-white/5 flex flex-col items-center text-center shadow-md hover:scale-[1.02] transition">
+                    <div class="w-16 h-16 bg-zinc-800 rounded-xl flex items-center justify-center mb-4 shadow-lg border border-zinc-700/30">
+                        <svg class="w-10 h-10" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+                            <path d="M14,2h6v2h1v3h-3v1h-1v1h-2V7h-1V6h-1V4h2V2z M17,3h1v1h-1V3z M11,6h1v1h-1V6z M10,7h1v1h-1V7z M9,8h1v1h-1V8z M8,9h1v3h-1V9z M7,10h1v4h-1V10z M6,11h1v4h-1V11z M5,12h1v4h-1V12z M2,14h3v1H2v-1z M1,15h3v1H1v-1z M0,16h3v1H0v-1z M1,17h1v1H1v-1z M2,18h1v1H2v-1z M3,19h2v1H3v-1z M5,15h1v1H5v-1z M6,14h1v1H6v-1z M11,10h2v1h-2v-1z M12,11h1v1h-1v-1z M13,12h2v1h-2v-1z M14,13h1v2h-1v-2z M10,16h2v1h-2v-1z M9,17h1v1H9v-1z M8,18h1v3h-1v-3z M7,21h2v1H7v-1z M11,18h1v3h-1v-3z M10,21h2v1H7v-1z" fill="#10b981"/>
+                        </svg>
+                    </div>
+                    <h4 class="text-sm font-bold text-white mb-1 flex items-center gap-1">跳躍小恐龍 <i class="fa-solid fa-circle-check text-blue-400 text-[10px]"></i></h4>
+                    <p class="text-[10px] text-gray-400 mb-4 h-12 flex items-center">點擊跳躍來躲避障礙仙人掌。經典綠色像素風格。</p>
+                    <div class="w-full" id="store-action-gamedino">
+                        <button onclick="installApp('gamedino')" class="w-full py-2 bg-blue-600 hover:bg-blue-500 text-white rounded text-xs font-bold transition">取得 (免費安裝)</button>
+                    </div>
+                </div>
+            </div>
+
+            <!-- 應用 4：俄羅斯方塊 -->
+            <div class="bg-[#1c1c1f]/80 rounded-xl p-5 border border-white/5 flex flex-col items-center text-center shadow-md hover:scale-[1.02] transition mt-6 w-[220px]">
+                <div class="w-16 h-16 bg-red-600 rounded-xl flex items-center justify-center mb-4 shadow-lg border border-red-500/30 text-white text-3xl">
+                    <i class="fa-solid fa-shapes"></i>
+                </div>
+                <h4 class="text-sm font-bold text-white mb-1 flex items-center gap-1">俄羅斯方塊 <i class="fa-solid fa-circle-check text-blue-400 text-[10px]"></i></h4>
+                <p class="text-[10px] text-gray-400 mb-4 h-12 flex items-center">經典自製高流暢堆疊與消行挑戰！支援鍵盤極限操作與即時計分。</p>
+                <div class="w-full" id="store-action-tetris">
+                    <button onclick="installApp('tetris')" class="w-full py-2 bg-blue-600 hover:bg-blue-500 text-white rounded text-xs font-bold transition">取得 (免費安裝)</button>
+                </div>
             </div>
         </div>
     </div>
@@ -510,6 +598,11 @@
                 <img src="minecraft.png" class="w-4 h-4 object-contain" onerror="fallbackIcon(this, 'minecraft')">
                 <span class="text-xs font-semibold text-gray-200">Minecraft Scratch 啟動器</span>
             </div>
+            <!-- 視窗上方的鎖定滑鼠提示按鈕列 -->
+            <div class="flex items-center bg-zinc-800/80 rounded px-2.5 py-0.5 border border-zinc-700 text-xs text-zinc-300 font-bold select-none cursor-pointer hover:bg-zinc-700 hover:text-white transition gap-1.5" onclick="requestMcPointerLock()" title="一鍵鎖定滑鼠視角">
+                <i class="fa-solid fa-mouse-pointer text-cyan-400 text-[10px]"></i>
+                <span>鎖定滑鼠視角控制 (L)</span>
+            </div>
             <div class="flex gap-1 items-center">
                 <button onclick="minimizeWindow('minecraft')" class="w-8 h-8 flex items-center justify-center hover:bg-white/10 rounded transition"><i class="fa-solid fa-minus text-xs"></i></button>
                 <button onclick="maximizeWindow('minecraft')" class="w-8 h-8 flex items-center justify-center hover:bg-white/10 rounded transition"><i class="fa-regular fa-square text-xs"></i></button>
@@ -519,7 +612,7 @@
         <!-- 嵌入外部 Minecraft html -->
         <div class="flex-1 bg-black relative">
             <!-- 🔥 鎖定防護升級：開啟「pointer-lock」權限，確保 Minecraft 滑鼠旋轉可以正常鎖定！ -->
-            <iframe id="minecraft-iframe" src="2026.4.20.html" class="w-full h-full border-none" allow="autoplay; fullscreen; keyboard; pointer-lock" allowfullscreen sandbox="allow-same-origin allow-scripts allow-popups allow-forms"></iframe>
+            <iframe id="minecraft-iframe" src="2026.4.20.html" class="w-full h-full border-none animate-fade-in" allow="autoplay; fullscreen; keyboard; pointer-lock" allowfullscreen sandbox="allow-same-origin allow-scripts allow-popups allow-forms allow-pointer-lock"></iframe>
         </div>
     </div>
 
@@ -776,7 +869,7 @@
             </button>
             
             <!-- 工作列圖示 -->
-            <!-- 檔案總管 (釘選點與 dot 還原) -->
+            <!-- 檔案總管 -->
             <button onclick="toggleWindow('thispc')" id="taskbar-thispc" class="w-10 h-10 rounded flex items-center justify-center hover:bg-white/10 relative transition">
                 <img src="1154.png" class="w-6 h-6 object-contain" onerror="fallbackIcon(this, 'thispc')">
                 <span id="dot-thispc" class="absolute bottom-0.5 left-1/2 transform -translate-x-1/2 w-1.5 h-1.5 bg-zinc-300 rounded-full opacity-0 transition-opacity duration-200 shadow-md"></span>
@@ -1019,6 +1112,26 @@
                 startTetris();
             }
         }
+
+        // 🔥 呼叫滑鼠鎖定：主動向 Minecraft iframe 內的 Canvas 要求 Pointer Lock！
+        function requestMcPointerLock() {
+            const iframe = document.getElementById('minecraft-iframe');
+            if (iframe) {
+                // 強制焦點，並引導玩家點擊進行鎖定
+                iframe.focus();
+                // 通過向 iframe 發送消息，或者是引導瀏覽器聚焦。
+                // 由於同源沙盒機制 (allow-same-origin)，玩家直接點擊 Iframe 內部即可觸發鎖定
+                alert("👉 提示：已授權滑鼠鎖定權限！請在點擊此確定後，【直接在 Minecraft 遊戲畫面上點一下】，即可完美鎖定滑鼠進行 3D 視角控制！\n\n(若要解鎖滑鼠，按鍵盤左上角的 Esc 鍵即可)");
+            }
+        }
+
+        // 監聽鍵盤快捷鍵「L」一鍵輔助鎖定滑鼠
+        window.addEventListener('keydown', (e) => {
+            if (activeWindow === 'minecraft' && (e.key === 'l' || e.key === 'L')) {
+                e.preventDefault();
+                requestMcPointerLock();
+            }
+        });
 
         function closeWindow(winKey) {
             const win = windows[winKey];
@@ -1290,7 +1403,7 @@
                                 </div>`;
                     col.onclick = () => openPhotoViewer(item.file, item.name);
                 } else {
-                    // 🔥 關鍵修正：所有圖示一律以 div 包覆隔離。當圖片加載失敗時，fallbackIcon 只會修改此 div 內部的 innerHTML，絕對不會覆蓋並吞掉下方的 span 檔名！
+                    // 根據檔案類型使用正版精美圖示或精緻圖標
                     if (item.name.includes('.html')) {
                         iconHtml = `<div class="w-10 h-10 flex items-center justify-center mb-2.5">
                                         <i class="fa-solid fa-code text-emerald-400 text-3xl"></i>
@@ -2148,6 +2261,7 @@
             }
         }
 
+        // 上一張投影片
         function prevSlideshow() {
             if (slideshowIdx > 0) {
                 slideshowIdx--;
