@@ -12,7 +12,7 @@
     <script>
         // ---------------- 提前定義 fallbackIcon，防止圖片載入失敗觸發 onerror 時發生 ReferenceError ----------------
         function fallbackIcon(imgElement, type) {
-            imgElement.style.display = 'none'; // 隱藏原本壞掉 of img
+            imgElement.style.display = 'none'; // 隱藏原本壞掉的 img
             const container = imgElement.parentElement;
             
             let svgStr = '';
@@ -32,6 +32,12 @@
                 svgStr = `<svg class="w-10 h-10" viewBox="0 0 48 48" fill="none"><path d="M40 14H8V41C8 42.1046 8.89543 43 10 43H38C39.1046 43 40 42.1046 40 41V14Z" fill="#0078D4"/><path d="M30 14C30 10.6863 27.3137 8 24 8C20.6863 8 18 10.6863 18 14" stroke="#F1F1F1" stroke-width="3" stroke-linecap="round"/><path d="M8 14H40V18H8V14Z" fill="#50E6FF"/></svg>`;
             } else if (type === 'tetris') {
                 svgStr = `<div class="w-10 h-10 bg-red-600 rounded-lg flex items-center justify-center font-bold text-[10px] text-white border-2 border-red-500 shadow-md">T</div>`;
+            } else if (type === 'settings') {
+                svgStr = `<i class="fa-solid fa-gear text-blue-500 text-3xl"></i>`;
+            } else if (type === 'bin') {
+                svgStr = `<i class="fa-solid fa-trash-can text-zinc-400 text-3xl"></i>`;
+            } else if (type === 'calculator') {
+                svgStr = `<i class="fa-solid fa-calculator text-emerald-400 text-3xl"></i>`;
             }
             if (container) {
                 container.innerHTML = svgStr;
@@ -92,6 +98,7 @@
             user-select: none;
             height: 100vh;
             width: 100vw;
+            transition: background 0.3s ease;
         }
         /* 玻璃擬真毛玻璃效果 */
         .glass {
@@ -132,7 +139,7 @@
     <!-- ================= 桌面區域 ================= -->
     <div id="desktop" class="absolute inset-0 pb-12 p-4 flex flex-col flex-wrap gap-4 items-start content-start">
         
-        <!-- 檔案 (使用 1154.png) -->
+        <!-- 檔案 (舊稱 此電腦) (使用 1154.png) -->
         <div onclick="openWindow('thispc')" class="w-20 h-22 flex flex-col items-center justify-center rounded hover:bg-white/10 active:bg-white/20 cursor-pointer transition p-1">
             <div class="w-10 h-10 flex items-center justify-center">
                 <img src="1154.png" class="w-full h-full object-contain" onerror="fallbackIcon(this, 'thispc')">
@@ -186,13 +193,31 @@
             <span class="text-white text-xs text-center drop-shadow-md truncate w-full mt-1">記事本</span>
         </div>
 
-        <!-- 小算盤 桌面圖示 -->
+        <!-- 小算盤 桌面圖示 (🔥 替換為您的本機正版圖片 calculator.png) -->
         <div onclick="openWindow('calculator')" class="w-20 h-22 flex flex-col items-center justify-center rounded hover:bg-white/10 active:bg-white/20 cursor-pointer transition p-1">
-            <i class="fa-solid fa-calculator text-green-400 text-3xl mb-1 mt-1"></i>
+            <div class="w-10 h-10 flex items-center justify-center">
+                <img src="calculator.png" class="w-full h-full object-contain" onerror="fallbackIcon(this, 'calculator')">
+            </div>
             <span class="text-white text-xs text-center drop-shadow-md truncate w-full mt-1">小算盤</span>
         </div>
 
-        <!-- =================== 🔥 桌面區域：Minecraft 預設直接加載 =================== -->
+        <!-- 設定 桌面圖示 (🔥 新增！對接您的 settings.png) -->
+        <div onclick="openWindow('settings')" class="w-20 h-22 flex flex-col items-center justify-center rounded hover:bg-white/10 active:bg-white/20 cursor-pointer transition p-1">
+            <div class="w-10 h-10 flex items-center justify-center">
+                <img src="settings.png" class="w-full h-full object-contain" onerror="fallbackIcon(this, 'settings')">
+            </div>
+            <span class="text-white text-xs text-center drop-shadow-md truncate w-full mt-1">設定</span>
+        </div>
+
+        <!-- 垃圾桶 桌面圖示 (🔥 新增！對接您的 bin0.png) -->
+        <div onclick="openWindow('bin')" class="w-20 h-22 flex flex-col items-center justify-center rounded hover:bg-white/10 active:bg-white/20 cursor-pointer transition p-1">
+            <div class="w-10 h-10 flex items-center justify-center">
+                <img id="desktop-bin-icon" src="bin0.png" class="w-full h-full object-contain" onerror="fallbackIcon(this, 'bin')">
+            </div>
+            <span class="text-white text-xs text-center drop-shadow-md truncate w-full mt-1">垃圾桶</span>
+        </div>
+
+        <!-- =================== 桌面區域：Minecraft 預設直接加載 =================== -->
         <div id="desktop-app-minecraft" class="w-20 h-22 flex flex-col items-center justify-center rounded hover:bg-white/10 active:bg-white/20 cursor-pointer transition p-1">
             <div class="w-10 h-10 flex items-center justify-center" onclick="openWindow('minecraft')">
                 <img src="minecraft.png" class="w-full h-full object-contain rounded-md" onerror="fallbackIcon(this, 'minecraft')">
@@ -231,7 +256,7 @@
     </div>
 
 
-    <!-- ================= 視窗：檔案總管 (比照微軟原版檔案總管介面還原) ================= -->
+    <!-- ================= 視窗：檔案總管 (檔案) ================= -->
     <div id="win-thispc" class="window-transition window-hidden absolute glass rounded-lg overflow-hidden win-shadow text-white flex flex-col border border-white/10" style="width: 820px; height: 520px; top: 10%; left: 15%; z-index: 10;">
         <!-- 檔案總管最上方標題列 -->
         <div class="h-10 bg-[#1e1e1e] flex justify-between items-center px-4 cursor-move border-b border-zinc-800" onmousedown="dragStart(event, 'win-thispc')">
@@ -305,7 +330,7 @@
     </div>
 
 
-    <!-- ================= 🔥 視窗：Microsoft Store (官方正版視覺優化商店) ================= -->
+    <!-- ================= 視窗：Microsoft Store (官方正版視覺優化商店) ================= -->
     <div id="win-store" class="window-transition window-hidden absolute glass rounded-lg overflow-hidden win-shadow text-white flex flex-col border border-white/10" style="width: 820px; height: 560px; top: 11%; left: 19%; z-index: 10;">
         <div class="h-10 bg-[#0f0f0f] flex justify-between items-center px-4 cursor-move border-b border-zinc-800" onmousedown="dragStart(event, 'win-store')">
             <div class="flex items-center gap-2">
@@ -341,11 +366,12 @@
                 <span class="w-1.5 h-3.5 bg-blue-500 rounded-sm inline-block"></span> 🎮 精選熱門暢銷小遊戲 (點選安裝將在桌面建立獨立 App)
             </h3>
             <div class="grid grid-cols-3 gap-6">
-                <!-- 應用 1：Minecraft -->
+                <!-- 應用 1：Minecraft (預設已安裝) -->
                 <div class="bg-[#1c1c1f]/80 rounded-xl p-5 border border-white/5 flex flex-col items-center text-center shadow-md hover:scale-[1.02] transition">
                     <img src="minecraft.png" class="w-16 h-16 object-contain rounded-lg mb-4 shadow-lg" onerror="fallbackIcon(this, 'minecraft')">
                     <h4 class="text-sm font-bold text-white mb-1 flex items-center gap-1">Minecraft 2D <i class="fa-solid fa-circle-check text-blue-400 text-[10px]"></i></h4>
                     <p class="text-[10px] text-gray-400 mb-4 h-12 flex items-center">高度整合 Scratch 麥塊系統！一鍵進入原汁原味的方塊搭建世界。</p>
+                    
                     <div class="w-full" id="store-action-minecraft">
                         <button onclick="openWindow('minecraft'); closeWindow('store');" class="w-full py-2 bg-emerald-600 hover:bg-emerald-500 text-white rounded text-xs font-bold transition flex items-center justify-center gap-1">
                             <i class="fa-solid fa-play"></i> 啟動遊戲
@@ -371,7 +397,7 @@
                         </svg>
                     </div>
                     <h4 class="text-sm font-bold text-white mb-1 flex items-center gap-1">跳躍小恐龍 <i class="fa-solid fa-circle-check text-blue-400 text-[10px]"></i></h4>
-                    <p class="text-[10px] text-gray-400 mb-4 h-12 flex items-center">點擊跳躍來躲避障礙仙人掌。經典綠色像素風格。</p>
+                    <p class="text-[10px] text-gray-400 mb-4 h-12 flex items-center">點擊跳躍來躲避障礙仙人掌。經典綠色像素像素風格。</p>
                     <div class="w-full" id="store-action-gamedino">
                         <button onclick="installApp('gamedino')" class="w-full py-2 bg-blue-600 hover:bg-blue-500 text-white rounded text-xs font-bold transition">取得 (免費安裝)</button>
                     </div>
@@ -444,7 +470,7 @@
 
     <!-- ================= 視窗：Microsoft Word ================= -->
     <div id="win-word" class="window-transition window-hidden absolute glass rounded-lg overflow-hidden win-shadow text-white flex flex-col border border-white/10" style="width: 820px; height: 560px; top: 10%; left: 18%; z-index: 10;">
-        <div class="h-10 bg-[#185abd] flex justify-between items-center px-4 cursor-move" onmousedown="dragStart(event, 'win-word')">
+        <div class="h-10 bg-[#185abd] flex justify-between items-center px-4 cursor-move border-b border-zinc-800" onmousedown="dragStart(event, 'win-word')">
             <div class="flex items-center gap-2">
                 <i class="fa-solid fa-file-word text-white"></i>
                 <span class="text-xs font-semibold text-gray-100">Microsoft Word (自製單機版)</span>
@@ -546,7 +572,7 @@
 
     <!-- ================= 視窗：Microsoft PowerPoint ================= -->
     <div id="win-powerpoint" class="window-transition window-hidden absolute glass rounded-lg overflow-hidden win-shadow text-white flex flex-col border border-white/10" style="width: 820px; height: 560px; top: 14%; left: 22%; z-index: 10;">
-        <div class="h-10 bg-[#c43e1c] flex justify-between items-center px-4 cursor-move" onmousedown="dragStart(event, 'win-powerpoint')">
+        <div class="h-10 bg-[#c43e1c] flex justify-between items-center px-4 cursor-move border-b border-zinc-800" onmousedown="dragStart(event, 'win-powerpoint')">
             <div class="flex items-center gap-2">
                 <i class="fa-solid fa-file-powerpoint text-white"></i>
                 <span class="text-xs font-semibold text-gray-100">Microsoft PowerPoint (自製簡報大師)</span>
@@ -569,10 +595,10 @@
                 <span class="text-gray-300">|</span>
                 <span class="text-[11px] text-zinc-600">更換背景色:</span>
                 <input type="color" id="ppt-bg-color" onchange="changeSlideBg(this.value)" class="w-6 h-6 border-0 rounded cursor-pointer" value="#ffffff" title="更改投影片背景">
+                <button onclick="startSlideshow()" class="px-4 py-1 bg-green-600 hover:bg-green-700 text-white rounded font-bold text-[11px] transition flex items-center gap-1">
+                    <i class="fa-solid fa-play"></i> 播放全螢幕簡報
+                </button>
             </div>
-            <button onclick="startSlideshow()" class="px-4 py-1 bg-green-600 hover:bg-green-700 text-white rounded font-bold text-[11px] transition flex items-center gap-1">
-                <i class="fa-solid fa-play"></i> 播放全螢幕簡報
-            </button>
         </div>
         <!-- PowerPoint 編輯工作區 -->
         <div class="flex-1 flex bg-zinc-800 overflow-hidden">
@@ -593,7 +619,7 @@
 
     <!-- ================= 視窗：Minecraft 啟動器獨立視窗 ================= -->
     <div id="win-minecraft" class="window-transition window-hidden absolute glass rounded-lg overflow-hidden win-shadow text-white flex flex-col border border-white/10" style="width: 850px; height: 580px; top: 10%; left: 15%; z-index: 10;">
-        <div class="h-10 bg-zinc-900 flex justify-between items-center px-4 cursor-move" onmousedown="dragStart(event, 'win-minecraft')">
+        <div class="h-10 bg-zinc-900 flex justify-between items-center px-4 cursor-move border-b border-zinc-800" onmousedown="dragStart(event, 'win-minecraft')">
             <div class="flex items-center gap-2">
                 <img src="minecraft.png" class="w-4 h-4 object-contain" onerror="fallbackIcon(this, 'minecraft')">
                 <span class="text-xs font-semibold text-gray-200">Minecraft Scratch 啟動器</span>
@@ -619,7 +645,7 @@
 
     <!-- ================= 視窗：2048 獨立遊戲視窗 ================= -->
     <div id="win-game2048" class="window-transition window-hidden absolute glass rounded-lg overflow-hidden win-shadow text-white flex flex-col border border-white/10" style="width: 420px; height: 500px; top: 12%; left: 25%; z-index: 10;">
-        <div class="h-10 bg-amber-600 flex justify-between items-center px-4 cursor-move" onmousedown="dragStart(event, 'win-game2048')">
+        <div class="h-10 bg-amber-600 flex justify-between items-center px-4 cursor-move border-b border-amber-700" onmousedown="dragStart(event, 'win-game2048')">
             <div class="flex items-center gap-2">
                 <div class="w-4 h-4 bg-amber-500 rounded text-center text-[10px] leading-4 font-bold text-white">2</div>
                 <span class="text-xs font-semibold text-gray-200">2048 益智大挑戰</span>
@@ -641,7 +667,7 @@
 
     <!-- ================= 視窗：小恐龍獨立遊戲視窗 ================= -->
     <div id="win-gamedino" class="window-transition window-hidden absolute glass rounded-lg overflow-hidden win-shadow text-white flex flex-col border border-white/10" style="width: 500px; height: 400px; top: 15%; left: 28%; z-index: 10;">
-        <div class="h-10 bg-zinc-800 flex justify-between items-center px-4 cursor-move" onmousedown="dragStart(event, 'win-gamedino')">
+        <div class="h-10 bg-zinc-800 flex justify-between items-center px-4 cursor-move border-b border-zinc-700" onmousedown="dragStart(event, 'win-gamedino')">
             <div class="flex items-center gap-2">
                 <svg class="w-4 h-4 text-green-500" viewBox="0 0 24 24" fill="currentColor">
                     <path d="M14,2h6v2h1v3h-3v1h-1v1h-2V7h-1V6h-1V4h2V2z M17,3h1v1h-1V3z M11,6h1v1h-1V6z M10,7h1v1h-1V7z M9,8h1v1h-1V8z M8,9h1v3h-1V9z M7,10h1v4h-1V10z M6,11h1v4h-1V11z M5,12h1v4h-1V12z M2,14h3v1H2v-1z M1,15h3v1H1v-1z M0,16h3v1H0v-1z M1,17h1v1H1v-1z M2,18h1v1H2v-1z M3,19h2v1H3v-1z M5,15h1v1H5v-1z M6,14h1v1H6v-1z M11,10h2v1h-2v-1z M12,11h1v1h-1v-1z M13,12h2v1h-2v-1z M14,13h1v2h-1v-2z M10,16h2v1h-2v-1z M9,17h1v1H9v-1z M8,18h1v3h-1v-3z M7,21h2v1H7v-1z M11,18h1v3h-1v-3z M10,21h2v1H7v-1z"/>
@@ -726,6 +752,131 @@
     </div>
 
 
+    <!-- ================= 視窗：設定視窗 (🔥 藍牙原版功能完美還原) ================= -->
+    <div id="win-settings" class="window-transition window-hidden absolute glass rounded-lg overflow-hidden win-shadow text-white flex flex-col border border-white/10" style="width: 780px; height: 480px; top: 15%; left: 20%; z-index: 10;">
+        <div class="h-10 bg-zinc-950 flex justify-between items-center px-4 cursor-move border-b border-zinc-800" onmousedown="dragStart(event, 'win-settings')">
+            <div class="flex items-center gap-2">
+                <img src="settings.png" class="w-4 h-4 object-contain" onerror="fallbackIcon(this, 'settings')">
+                <span class="text-xs font-semibold text-gray-200">設定</span>
+            </div>
+            <div class="flex gap-1 items-center">
+                <button onclick="minimizeWindow('settings')" class="w-8 h-8 flex items-center justify-center hover:bg-white/10 rounded transition"><i class="fa-solid fa-minus text-xs"></i></button>
+                <button onclick="maximizeWindow('settings')" class="w-8 h-8 flex items-center justify-center hover:bg-white/10 rounded transition"><i class="fa-regular fa-square text-xs"></i></button>
+                <button onclick="closeWindow('settings')" class="w-8 h-8 flex items-center justify-center hover:bg-red-500 rounded transition"><i class="fa-solid fa-xmark text-xs"></i></button>
+            </div>
+        </div>
+        <div class="flex-1 flex bg-[#202020] overflow-hidden text-sm relative">
+            
+            <!-- 🔥 藍牙新增裝置互動浮層 (Modal) -->
+            <div id="settings-add-device-modal" class="absolute inset-0 bg-black/80 hidden flex-col justify-center items-center z-50 p-6">
+                 <div class="bg-[#2d2d2d] border border-zinc-700 rounded-lg w-[420px] p-6 text-white shadow-2xl relative animate-fade-in">
+                      <!-- 關閉按鈕 -->
+                      <button onclick="closeAddBluetoothDeviceModal()" class="absolute top-4 right-4 text-zinc-400 hover:text-white transition"><i class="fa-solid fa-xmark"></i></button>
+                      
+                      <!-- 步驟 1: 選擇裝置類型 -->
+                      <div id="add-device-step1">
+                          <h3 class="text-base font-bold mb-1">新增裝置</h3>
+                          <p class="text-xs text-zinc-400 mb-6">請選擇您要新增的裝置類型</p>
+                          <div class="space-y-2.5">
+                              <div onclick="startBluetoothScan()" class="p-3 bg-zinc-800 hover:bg-zinc-700 border border-zinc-700 rounded-lg cursor-pointer flex items-center gap-3 transition">
+                                  <i class="fa-solid fa-bluetooth text-blue-400 text-lg"></i>
+                                  <div class="text-left">
+                                      <h4 class="text-xs font-bold">藍牙</h4>
+                                      <p class="text-[10px] text-zinc-400">滑鼠、鍵盤、筆、音訊裝置、無線控制器等</p>
+                                  </div>
+                              </div>
+                              <div onclick="alert('本模擬系統目前不支援外接顯示器！'); closeAddBluetoothDeviceModal();" class="p-3 bg-zinc-800 hover:bg-zinc-700 border border-zinc-700 rounded-lg cursor-pointer flex items-center gap-3 transition opacity-50">
+                                  <i class="fa-solid fa-tv text-purple-400 text-lg"></i>
+                                  <div class="text-left">
+                                      <h4 class="text-xs font-bold">無線顯示器或底座</h4>
+                                      <p class="text-[10px] text-zinc-400">無線顯示器、電視或使用 Miracast 的底座</p>
+                                  </div>
+                              </div>
+                          </div>
+                      </div>
+
+                      <!-- 步驟 2: 正在掃描裝置 -->
+                      <div id="add-device-step2" class="hidden flex flex-col items-center justify-center py-6 text-center">
+                          <div class="w-12 h-12 border-4 border-blue-500 border-t-transparent rounded-full animate-spin mb-4"></div>
+                          <h4 class="text-sm font-bold text-white mb-1">正在尋找裝置...</h4>
+                          <p class="text-xs text-zinc-400 mb-6">請確保您的藍牙裝置已開啟且處於可偵測狀態</p>
+                          <div class="w-full space-y-2 max-h-40 overflow-y-auto pr-1" id="scanned-devices-list">
+                              <!-- 掃描結果由 JS 动态生成 -->
+                          </div>
+                      </div>
+
+                      <!-- 步驟 3: 配對成功 -->
+                      <div id="add-device-step3" class="hidden flex flex-col items-center justify-center py-6 text-center">
+                          <i class="fa-solid fa-circle-check text-emerald-400 text-5xl mb-4"></i>
+                          <h4 class="text-sm font-bold text-white mb-1">您的裝置已就緒！</h4>
+                          <p id="paired-success-device-name" class="text-xs text-zinc-300 mb-6">WH-1000XM4 已配對成功。</p>
+                          <button onclick="closeAddBluetoothDeviceModal()" class="px-6 py-2 bg-blue-600 hover:bg-blue-500 rounded text-xs font-bold transition shadow-md shadow-blue-600/20">完成</button>
+                      </div>
+                 </div>
+            </div>
+
+            <!-- 左導航欄 -->
+            <div class="w-48 border-r border-zinc-800 bg-[#191919] p-4 space-y-1.5" id="settings-sidebar">
+                <div class="flex items-center gap-3 p-2 rounded bg-zinc-800/80 text-white font-medium select-none">
+                    <img src="settings.png" class="w-4 h-4">
+                    <span>設定</span>
+                </div>
+                <div onclick="switchSettingsTab('system')" id="settings-btn-system" class="flex items-center gap-3 p-2 rounded hover:bg-zinc-800 cursor-pointer text-zinc-300 hover:text-white transition">
+                    <i class="fa-solid fa-laptop text-blue-400"></i>
+                    <span>系統資訊</span>
+                </div>
+                <div onclick="switchSettingsTab('bluetooth')" id="settings-btn-bluetooth" class="flex items-center gap-3 p-2 rounded hover:bg-zinc-800 cursor-pointer text-zinc-300 hover:text-white transition">
+                    <i class="fa-solid fa-bluetooth text-blue-500"></i>
+                    <span>藍牙與裝置</span>
+                </div>
+                <div onclick="switchSettingsTab('personal')" id="settings-btn-personal" class="flex items-center gap-3 p-2 rounded hover:bg-zinc-800 cursor-pointer text-zinc-300 hover:text-white transition">
+                    <i class="fa-solid fa-palette text-cyan-400"></i>
+                    <span>個人化桌布</span>
+                </div>
+                <div onclick="switchSettingsTab('network')" id="settings-btn-network" class="flex items-center gap-3 p-2 rounded hover:bg-zinc-800 cursor-pointer text-zinc-300 hover:text-white transition">
+                    <i class="fa-solid fa-wifi text-emerald-400"></i>
+                    <span>網路和網際網路</span>
+                </div>
+                <div onclick="switchSettingsTab('update')" id="settings-btn-update" class="flex items-center gap-3 p-2 rounded hover:bg-zinc-800 cursor-pointer text-zinc-300 hover:text-white transition">
+                    <i class="fa-solid fa-rotate text-purple-400"></i>
+                    <span>Windows 更新</span>
+                </div>
+            </div>
+            <!-- 右主要面板 -->
+            <div class="flex-1 p-6 overflow-y-auto no-scrollbar" id="settings-main-panel">
+                <!-- 由 JS 動態加載 -->
+            </div>
+        </div>
+    </div>
+
+
+    <!-- ================= 視窗：資源回收筒 ( bin0.png ) ================= -->
+    <div id="win-bin" class="window-transition window-hidden absolute glass rounded-lg overflow-hidden win-shadow text-white flex flex-col border border-white/10" style="width: 600px; height: 420px; top: 18%; left: 25%; z-index: 10;">
+        <div class="h-10 bg-zinc-900 flex justify-between items-center px-4 cursor-move border-b border-zinc-800" onmousedown="dragStart(event, 'win-bin')">
+            <div class="flex items-center gap-2">
+                <img id="bin-title-icon" src="bin0.png" class="w-4 h-4 object-contain" onerror="fallbackIcon(this, 'bin')">
+                <span class="text-xs font-semibold text-gray-200">資源回收筒</span>
+            </div>
+            <div class="flex gap-1 items-center">
+                <button onclick="minimizeWindow('bin')" class="w-8 h-8 flex items-center justify-center hover:bg-white/10 rounded transition"><i class="fa-solid fa-minus text-xs"></i></button>
+                <button onclick="closeWindow('bin')" class="w-8 h-8 flex items-center justify-center hover:bg-red-500 rounded transition"><i class="fa-solid fa-xmark text-xs"></i></button>
+            </div>
+        </div>
+        <!-- 垃圾桶工具列 -->
+        <div class="bg-[#2a2a2e] px-4 py-2 border-b border-zinc-800 flex items-center gap-3 text-xs text-zinc-300">
+            <button onclick="emptyRecycleBin()" class="flex items-center gap-1.5 bg-red-950/40 border border-red-500/20 text-red-400 hover:bg-red-600 hover:text-white px-3 py-1 rounded transition font-bold">
+                <i class="fa-solid fa-dumpster"></i> 清理垃圾桶
+            </button>
+            <span class="text-zinc-700">|</span>
+            <button class="hover:bg-zinc-800 px-2.5 py-1 rounded" disabled><i class="fa-solid fa-rotate-left"></i> 還原所有項目</button>
+        </div>
+        <!-- 垃圾桶文件展示區 -->
+        <div class="flex-1 bg-[#19191c] p-6 overflow-y-auto no-scrollbar" id="bin-content-area">
+            <!-- 垃圾桶內容由 JS 進行動態管理 -->
+        </div>
+    </div>
+
+
     <!-- ================= 視窗：記事本 ================= -->
     <div id="win-notepad" class="window-transition window-hidden absolute glass rounded-lg overflow-hidden win-shadow text-white flex flex-col border border-white/10" style="width: 500px; height: 380px; top: 20%; left: 30%; z-index: 10;">
         <div class="h-10 bg-black/40 flex justify-between items-center px-4 cursor-move" onmousedown="dragStart(event, 'win-notepad')">
@@ -749,9 +900,9 @@
 
     <!-- ================= 視窗：小算盤 ================= -->
     <div id="win-calculator" class="window-transition window-hidden absolute glass rounded-lg overflow-hidden win-shadow text-white flex flex-col border border-white/10" style="width: 300px; height: 420px; top: 15%; left: 55%; z-index: 10;">
-        <div class="h-10 bg-black/40 flex justify-between items-center px-4 cursor-move" onmousedown="dragStart(event, 'win-calculator')">
+        <div class="h-10 bg-black/40 flex justify-between items-center px-4 cursor-move border-b border-zinc-800" onmousedown="dragStart(event, 'win-calculator')">
             <div class="flex items-center gap-2">
-                <i class="fa-solid fa-calculator text-green-400 text-sm"></i>
+                <img src="calculator.png" class="w-4 h-4 object-contain" onerror="fallbackIcon(this, 'calculator')">
                 <span class="text-xs font-semibold text-gray-200">小算盤</span>
             </div>
             <div class="flex gap-1 items-center">
@@ -854,8 +1005,12 @@
 
 
     <!-- ================= 工作列 (Taskbar) ================= -->
-    <div class="absolute bottom-0 left-0 right-0 h-12 glass flex items-center justify-between px-3 z-50">
-        <div class="w-24"></div>
+    <div id="taskbar" class="absolute bottom-0 left-0 right-0 h-12 glass flex items-center justify-between px-3 z-50">
+        <div class="w-24 flex items-center gap-2" id="taskbar-left-widget">
+            <!-- 虛擬原版 Widgets 區塊 -->
+            <i class="fa-solid fa-cloud-sun text-zinc-300 hover:text-white cursor-pointer transition text-sm"></i>
+            <span class="text-[10px] text-zinc-400 font-semibold select-none">24°C</span>
+        </div>
 
         <!-- 中間：Windows 11 置中圖示群 -->
         <div class="flex items-center gap-2">
@@ -874,7 +1029,7 @@
                 <img src="1154.png" class="w-6 h-6 object-contain" onerror="fallbackIcon(this, 'thispc')">
                 <span id="dot-thispc" class="absolute bottom-0.5 left-1/2 transform -translate-x-1/2 w-1.5 h-1.5 bg-zinc-300 rounded-full opacity-0 transition-opacity duration-200 shadow-md"></span>
             </button>
-            <!-- Microsoft Store 工作列 (已對接您本機的 store.png) -->
+            <!-- Microsoft Store 工作列 -->
             <button onclick="toggleWindow('store')" id="taskbar-store" class="w-10 h-10 rounded flex items-center justify-center hover:bg-white/10 relative transition">
                 <img src="store.png" class="w-6 h-6 object-contain" onerror="fallbackIcon(this, 'store')">
                 <span id="dot-store" class="absolute bottom-0.5 left-1/2 transform -translate-x-1/2 w-1.5 h-1.5 bg-zinc-300 rounded-full opacity-0 transition-opacity duration-200 shadow-md"></span>
@@ -934,7 +1089,8 @@
         <div class="flex items-center gap-3 text-white text-xs mr-2">
             <!-- 網路 / 音量 / 電池 捷徑 -->
             <div class="flex items-center gap-2 hover:bg-white/10 p-1.5 rounded transition cursor-pointer">
-                <i class="fa-solid fa-wifi"></i>
+                <!-- WiFi 圖示 (動態關聯設定) -->
+                <i id="taskbar-wifi-icon" class="fa-solid fa-wifi text-white"></i>
                 <i class="fa-solid fa-volume-high"></i>
                 <i class="fa-solid fa-battery-three-quarters"></i>
             </div>
@@ -1019,7 +1175,7 @@
         <div class="h-12 border-t border-white/10 -mx-6 -mb-6 px-6 flex justify-between items-center bg-black/20 rounded-b-xl text-xs">
             <div class="flex items-center gap-2">
                 <div class="w-6 h-6 rounded-full bg-blue-500 flex items-center justify-center text-[10px] font-bold">User</div>
-                <span>Administrator</span>
+                <span id="start-menu-user-name">Administrator</span>
             </div>
             <button onclick="toggleStartMenu(); alert('已安全關機。請直接關閉此網頁瀏覽器分頁。');" class="w-8 h-8 rounded-full flex items-center justify-center hover:bg-white/10 text-gray-200">
                 <i class="fa-solid fa-power-off"></i>
@@ -1055,6 +1211,8 @@
             gamedino: { elementId: 'win-gamedino', taskbarId: 'taskbar-gamedino', dotId: 'dot-gamedino', isOpen: false, isMinimized: false, isMaximized: false },
             tetris: { elementId: 'win-tetris', taskbarId: 'taskbar-tetris', dotId: 'dot-tetris', isOpen: false, isMinimized: false, isMaximized: false },
             
+            settings: { elementId: 'win-settings', taskbarId: '', dotId: '', isOpen: false, isMinimized: false, isMaximized: false },
+            bin: { elementId: 'win-bin', taskbarId: '', dotId: '', isOpen: false, isMinimized: false, isMaximized: false },
             notepad: { elementId: 'win-notepad', taskbarId: 'taskbar-notepad', dotId: 'dot-notepad', isOpen: false, isMinimized: false, isMaximized: false },
             calculator: { elementId: 'win-calculator', taskbarId: 'taskbar-calculator', dotId: 'dot-calculator', isOpen: false, isMinimized: false, isMaximized: false },
             photoviewer: { elementId: 'win-photoviewer', taskbarId: '', dotId: '', isOpen: false, isMinimized: false, isMaximized: false },
@@ -1111,6 +1269,12 @@
             if (winKey === 'tetris') {
                 startTetris();
             }
+            if (winKey === 'settings') {
+                switchSettingsTab('personal');
+            }
+            if (winKey === 'bin') {
+                renderRecycleBin();
+            }
         }
 
         // 🔥 呼叫滑鼠鎖定：主動向 Minecraft iframe 內的 Canvas 要求 Pointer Lock！
@@ -1119,7 +1283,6 @@
             if (iframe) {
                 // 強制焦點，並引導玩家點擊進行鎖定
                 iframe.focus();
-                // 通過向 iframe 發送消息，或者是引導瀏覽器聚焦。
                 // 由於同源沙盒機制 (allow-same-origin)，玩家直接點擊 Iframe 內部即可觸發鎖定
                 alert("👉 提示：已授權滑鼠鎖定權限！請在點擊此確定後，【直接在 Minecraft 遊戲畫面上點一下】，即可完美鎖定滑鼠進行 3D 視角控制！\n\n(若要解鎖滑鼠，按鍵盤左上角的 Esc 鍵即可)");
             }
@@ -1304,6 +1467,7 @@
             }, 250);
         }
 
+        // 解鎖應用程式
         function unlockAppOnSystem(appKey) {
             // 解鎖桌面 App 圖示
             const deskApp = document.getElementById(`desktop-app-${appKey}`);
@@ -1565,7 +1729,11 @@
                 16: 'bg-orange-400 text-white font-bold',
                 32: 'bg-orange-500 text-white font-bold',
                 64: 'bg-red-500 text-white font-bold',
-                128: 'bg-yellow-400 text-white font-bold shadow-lg'
+                128: 'bg-yellow-400 text-white font-bold shadow-lg',
+                256: 'bg-yellow-500 text-white font-bold shadow-lg',
+                512: 'bg-emerald-400 text-white font-bold',
+                1024: 'bg-teal-500 text-white font-bold',
+                2048: 'bg-blue-600 text-white font-bold animate-pulse'
             };
             board2048.forEach(value => {
                 const cell = document.createElement('div');
@@ -2201,6 +2369,7 @@
             renderSlidesList();
         }
 
+        // 刪除簡報
         function deleteSlide() {
             if (pptSlides.length <= 1) {
                 alert("至少需要保留一張簡報喔！");
@@ -2261,7 +2430,6 @@
             }
         }
 
-        // 上一張投影片
         function prevSlideshow() {
             if (slideshowIdx > 0) {
                 slideshowIdx--;
@@ -2320,7 +2488,7 @@
             const deskFilesContainer = document.getElementById('desktop-dynamic-files');
             if (deskFilesContainer) {
                 const newFileDiv = document.createElement('div');
-                newFileDiv.className = "w-20 h-22 flex flex-col items-center justify-center rounded hover:bg-white/10 active:bg-white/20 cursor-pointer transition p-1";
+                newFileDiv.className = "w-20 h-22 flex flex-col items-center justify-center rounded hover:bg-white/10 active:bg-white/20 cursor-pointer transition p-1 text-center";
                 // 點擊可以呼叫開啟此文件
                 newFileDiv.onclick = () => openSavedDoc(text, fileName);
                 newFileDiv.innerHTML = `
@@ -2380,6 +2548,8 @@
         function calcClear() {
             calcVal = '0';
             if (calcScreen) calcScreen.textContent = '0';
+            const calcHist = document.getElementById('calc-history');
+            if (calcHist) calcHist.textContent = '';
         }
         function calcBack() {
             calcVal = calcVal.length > 1 ? calcVal.slice(0, -1) : '0';
@@ -2387,13 +2557,606 @@
         }
         function calcEqual() {
             try {
-                calcVal = String(eval(calcVal));
+                const result = eval(calcVal);
+                const calcHist = document.getElementById('calc-history');
+                if (calcHist) calcHist.textContent = calcVal + ' =';
+                calcVal = String(result);
                 if (calcScreen) calcScreen.textContent = calcVal;
             } catch {
                 if (calcScreen) calcScreen.textContent = '錯誤';
                 calcVal = '0';
             }
         }
+
+        // ==========================================
+        //         🔥 全新設定 App 面板頁切換與桌布個人化 (原版細節完全對接)
+        // ==========================================
+        let currentSettingsTab = 'personal';
+        let systemDeviceName = "Administrator-PC";
+        let virtualWifiConnected = true;
+        let virtualBluetoothConnected = true; // 預設開啟藍牙
+        let settingsTheme = "dark"; // 預設深色模式
+
+        // 藍牙設備動態列表資料庫
+        let bluetoothDevices = [
+            { id: 'dev1', name: "Xbox Wireless Controller", status: "已配對", icon: "fa-gamepad" },
+            { id: 'dev2', name: "WH-1000XM4 (無線耳機)", status: "已連線 音訊", icon: "fa-headphones" },
+            { id: 'dev3', name: "Microsoft Designer Keyboard", status: "已配對", icon: "fa-keyboard" }
+        ];
+
+        // 模擬搜尋藍牙設備清單
+        const searchPoolDevices = [
+            { name: "Dino's Phone (手機)", icon: "fa-mobile-screen-button" },
+            { name: "Wireless Magic Mouse (滑鼠)", icon: "fa-mouse" },
+            { name: "Sony HT-S40R (音響喇叭)", icon: "fa-volume-high" },
+            { name: "Pixel Buds Pro (藍牙耳機)", icon: "fa-headphones" }
+        ];
+
+        function switchSettingsTab(tabKey) {
+            currentSettingsTab = tabKey;
+            const panel = document.getElementById('settings-main-panel');
+            if (!panel) return;
+
+            // 移除左側菜單所有 active 狀態，並為選中的加上樣式
+            const menuDivs = document.querySelectorAll('#settings-sidebar div');
+            menuDivs.forEach(div => {
+                div.classList.remove('bg-zinc-800/80', 'text-white', 'font-bold');
+                div.classList.add('text-zinc-300');
+            });
+            
+            // 添加 active 樣式至選定項目
+            const currentBtn = document.getElementById(`settings-btn-${tabKey}`);
+            if (currentBtn) {
+                currentBtn.classList.add('bg-zinc-800/80', 'text-white', 'font-bold');
+                currentBtn.classList.remove('text-zinc-300');
+            }
+
+            if (tabKey === 'personal') {
+                panel.innerHTML = `
+                    <div class="space-y-6 animate-fade-in text-zinc-100">
+                        <div class="flex items-center gap-2 pb-2 border-b border-zinc-800">
+                            <i class="fa-solid fa-palette text-cyan-400 text-lg"></i>
+                            <h3 class="text-base font-bold">個人化桌布與主題設計</h3>
+                        </div>
+                        <p class="text-xs text-zinc-400">點擊下方任一桌布縮圖，即可一鍵將 Windows 11 模擬器的桌面壁紙進行即時切換！</p>
+                        
+                        <!-- 桌布庫 -->
+                        <div class="grid grid-cols-2 gap-4">
+                            <div onclick="changeWallpaper('170.png')" class="border border-zinc-700/60 rounded-lg p-2 bg-zinc-800/40 cursor-pointer hover:border-cyan-500 transition text-center group">
+                                <div class="w-full h-24 rounded overflow-hidden mb-2 bg-zinc-950 flex items-center justify-center">
+                                    <img src="170.png" class="w-full h-full object-cover group-hover:scale-105 transition duration-300" onerror="this.src='https://images.unsplash.com/photo-1620121692029-d088224ddc74?auto=format&fit=crop&w=100&q=80'">
+                                </div>
+                                <span class="text-xs font-semibold">170.png 預設緞帶</span>
+                            </div>
+                            <div onclick="changeWallpaper('https://images.unsplash.com/photo-1618005182384-a83a8bd57fbe?auto=format&fit=crop&w=1920&q=80')" class="border border-zinc-700/60 rounded-lg p-2 bg-zinc-800/40 cursor-pointer hover:border-cyan-500 transition text-center group">
+                                <div class="w-full h-24 rounded overflow-hidden mb-2 bg-zinc-950">
+                                    <img src="https://images.unsplash.com/photo-1618005182384-a83a8bd57fbe?auto=format&fit=crop&w=100&q=80" class="w-full h-full object-cover group-hover:scale-105 transition duration-300">
+                                </div>
+                                <span class="text-xs font-semibold">流金幻彩極光</span>
+                            </div>
+                            <div onclick="changeWallpaper('https://images.unsplash.com/photo-1579546929518-9e396f3cc809?auto=format&fit=crop&w=1920&q=80')" class="border border-zinc-700/60 rounded-lg p-2 bg-zinc-800/40 cursor-pointer hover:border-cyan-500 transition text-center group">
+                                <div class="w-full h-24 rounded overflow-hidden mb-2 bg-zinc-950">
+                                    <img src="https://images.unsplash.com/photo-1579546929518-9e396f3cc809?auto=format&fit=crop&w=100&q=80" class="w-full h-full object-cover group-hover:scale-105 transition duration-300">
+                                </div>
+                                <span class="text-xs font-semibold">炫彩霓虹漸層</span>
+                            </div>
+                            <div onclick="changeWallpaper('https://images.unsplash.com/photo-1557683316-973673baf926?auto=format&fit=crop&w=1920&q=80')" class="border border-zinc-700/60 rounded-lg p-2 bg-zinc-800/40 cursor-pointer hover:border-cyan-500 transition text-center group">
+                                <div class="w-full h-24 rounded overflow-hidden mb-2 bg-zinc-950">
+                                    <img src="https://images.unsplash.com/photo-1557683316-973673baf926?auto=format&fit=crop&w=100&q=80" class="w-full h-full object-cover group-hover:scale-105 transition duration-300">
+                                </div>
+                                <span class="text-xs font-semibold">深邃極夜暗紅</span>
+                            </div>
+                        </div>
+
+                        <!-- 淺色/深色模式 -->
+                        <div class="pt-4 border-t border-zinc-800 flex justify-between items-center bg-zinc-850/30 p-4 rounded-lg border border-zinc-800">
+                            <div>
+                                <h4 class="text-xs font-bold text-white mb-0.5">選擇您的顏色模式</h4>
+                                <p class="text-[10px] text-zinc-400">變更設定視窗與系統環境主題</p>
+                            </div>
+                            <select id="theme-select" onchange="toggleSystemTheme(this.value)" class="bg-zinc-800 border border-zinc-700 rounded px-2 py-1 text-xs text-white outline-none">
+                                <option value="dark" ${settingsTheme === 'dark' ? 'selected' : ''}>深色模式</option>
+                                <option value="light" ${settingsTheme === 'light' ? 'selected' : ''}>淺色模式</option>
+                            </select>
+                        </div>
+                    </div>
+                `;
+            } else if (tabKey === 'system') {
+                panel.innerHTML = `
+                    <div class="space-y-6 animate-fade-in text-zinc-100">
+                        <div class="flex items-center gap-2 pb-2 border-b border-zinc-800">
+                            <i class="fa-solid fa-laptop text-blue-400 text-lg"></i>
+                            <h3 class="text-base font-bold">系統規格與關於本機</h3>
+                        </div>
+                        
+                        <!-- 修改電腦名稱區塊 -->
+                        <div class="bg-zinc-850/30 p-4 rounded-lg border border-zinc-800 flex justify-between items-center gap-4">
+                            <div>
+                                <h4 class="text-xs font-bold text-white mb-0.5">裝置名稱</h4>
+                                <p class="text-[11px] text-zinc-400">目前本機的虛擬名稱是：<span id="settings-device-label" class="text-blue-400 font-bold">${systemDeviceName}</span></p>
+                            </div>
+                            <button onclick="renameDevice()" class="bg-blue-600 hover:bg-blue-500 text-white rounded text-xs font-semibold px-4 py-1.5 transition">重新命名</button>
+                        </div>
+
+                        <!-- 系統詳細資訊表 -->
+                        <div class="bg-zinc-850/40 p-4 rounded-lg border border-zinc-800 space-y-3.5">
+                            <div class="flex justify-between border-b border-zinc-800/50 pb-2">
+                                <span class="text-xs text-zinc-400 font-medium">裝置名稱</span>
+                                <span id="info-device-name" class="text-xs font-bold text-white">${systemDeviceName}</span>
+                            </div>
+                            <div class="flex justify-between border-b border-zinc-800/50 pb-2">
+                                <span class="text-xs text-zinc-400 font-medium">處理器 (CPU)</span>
+                                <span class="text-xs font-bold text-white">Intel(R) Core(TM) i9-2026K CPU @ 5.00GHz</span>
+                            </div>
+                            <div class="flex justify-between border-b border-zinc-800/50 pb-2">
+                                <span class="text-xs text-zinc-400 font-medium">安裝的記憶體 (RAM)</span>
+                                <span class="text-xs font-bold text-white">32.0 GB (31.8 GB 可用)</span>
+                            </div>
+                            <div class="flex justify-between border-b border-zinc-800/50 pb-2">
+                                <span class="text-xs text-zinc-400 font-medium">系統類型</span>
+                                <span class="text-xs font-bold text-white">64 位元作業系統，x64 處理器</span>
+                            </div>
+                            <div class="flex justify-between border-b border-zinc-800/50 pb-2">
+                                <span class="text-xs text-zinc-400 font-medium">版本作業系統</span>
+                                <span class="text-xs font-bold text-white">Windows 11 專業網頁自製版</span>
+                            </div>
+                            <div class="flex justify-between pb-1">
+                                <span class="text-xs text-zinc-400 font-medium">容量使用狀況</span>
+                                <span class="text-xs font-bold text-white">已用 118 GB / 剩餘 138 GB (共 256 GB)</span>
+                            </div>
+                        </div>
+                    </div>
+                `;
+            } else if (tabKey === 'network') {
+                panel.innerHTML = `
+                    <div class="space-y-6 animate-fade-in text-zinc-100">
+                        <div class="flex items-center gap-2 pb-2 border-b border-zinc-800">
+                            <i class="fa-solid fa-wifi text-emerald-400 text-lg"></i>
+                            <h3 class="text-base font-bold">網路和網際網路狀態</h3>
+                        </div>
+                        <p class="text-xs text-zinc-400">管理這部虛擬本機的網際網路連線狀態。</p>
+
+                        <!-- Wi-Fi 物理連線實體開關 -->
+                        <div class="bg-zinc-850/30 p-4 rounded-lg border border-zinc-800 flex justify-between items-center">
+                            <div>
+                                <h4 class="text-xs font-bold text-white mb-0.5">無線網路連線 (Wi-Fi)</h4>
+                                <p id="settings-wifi-status-text" class="text-[10px] text-zinc-400">${virtualWifiConnected ? '已安全連線至網際網路' : '中斷連線'}</p>
+                            </div>
+                            <div class="flex items-center">
+                                <button onclick="toggleVirtualWifi()" id="settings-wifi-switch-btn" class="w-12 h-6 rounded-full p-0.5 transition-colors duration-200 focus:outline-none ${virtualWifiConnected ? 'bg-blue-600' : 'bg-zinc-700'} flex items-center">
+                                    <div class="w-5 h-5 bg-white rounded-full shadow transition-transform duration-200 transform ${virtualWifiConnected ? 'translate-x-6' : 'translate-x-0'}"></div>
+                                </button>
+                            </div>
+                        </div>
+
+                        <!-- 行網或飛航模式 -->
+                        <div class="bg-zinc-850/30 p-4 rounded-lg border border-zinc-800 flex justify-between items-center opacity-60">
+                            <div>
+                                <h4 class="text-xs font-bold text-white mb-0.5">飛航模式</h4>
+                                <p class="text-[10px] text-zinc-400">停止所有的無線連線</p>
+                            </div>
+                            <button class="bg-zinc-800 border border-zinc-700 text-zinc-500 rounded text-xs px-3 py-1 cursor-not-allowed">已停用</button>
+                        </div>
+                    </div>
+                `;
+            } else if (tabKey === 'update') {
+                panel.innerHTML = `
+                    <div class="space-y-6 animate-fade-in text-zinc-100">
+                        <div class="flex items-center gap-2 pb-2 border-b border-zinc-800">
+                            <i class="fa-solid fa-rotate text-purple-400 text-lg"></i>
+                            <h3 class="text-base font-bold">Windows 更新 (Windows Update)</h3>
+                        </div>
+
+                        <div class="bg-zinc-850/30 p-5 rounded-lg border border-zinc-800 flex items-center justify-between gap-4">
+                            <div class="flex items-center gap-4">
+                                <i id="settings-update-status-icon" class="fa-solid fa-circle-check text-emerald-400 text-3xl"></i>
+                                <div>
+                                    <h4 id="settings-update-title" class="text-sm font-bold text-white mb-0.5">您的系統已是最新版本</h4>
+                                    <p id="settings-update-subtitle" class="text-[10px] text-zinc-400">最後檢查時間：今天</p>
+                                </div>
+                            </div>
+                            <button onclick="triggerMockWindowsUpdate()" id="settings-update-check-btn" class="bg-blue-600 hover:bg-blue-500 text-white rounded text-xs font-bold px-4 py-2 transition flex items-center gap-1.5 shadow-md">
+                                <i class="fa-solid fa-arrows-rotate"></i>
+                                <span>檢查更新</span>
+                            </button>
+                        </div>
+
+                        <!-- 預估更新項目 -->
+                        <div id="settings-update-progress-container" class="hidden animate-fade-in bg-zinc-850/40 p-4 rounded-lg border border-zinc-800">
+                            <p class="text-xs text-white mb-2">正在安裝安全更新與功能更新套件...</p>
+                            <div class="w-full bg-zinc-800 rounded-full h-2.5 overflow-hidden">
+                                <div id="settings-update-progress-bar" class="bg-purple-500 h-2.5 rounded-full transition-all duration-300" style="width: 0%"></div>
+                            </div>
+                        </div>
+                    </div>
+                `;
+            } else if (tabKey === 'bluetooth') {
+                // 🔥 原版藍牙裝置內容生成器
+                renderBluetoothSettingsPage(panel);
+            }
+        }
+
+        // ==========================================
+        //         🔥 藍牙控制核心邏輯 (與原版一模一樣)
+        // ==========================================
+        function renderBluetoothSettingsPage(panel) {
+            let devicesHtml = '';
+            
+            if (!virtualBluetoothConnected) {
+                devicesHtml = `
+                    <div class="flex flex-col items-center justify-center py-10 text-zinc-500">
+                        <i class="fa-solid fa-bluetooth text-5xl mb-3 text-zinc-600"></i>
+                        <p class="text-xs font-semibold">藍牙已關閉，無法顯示或偵測已連線的設備。</p>
+                    </div>
+                `;
+            } else {
+                devicesHtml = `
+                    <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
+                        ${bluetoothDevices.map(dev => `
+                            <div id="bt-card-${dev.id}" class="bg-zinc-850/40 border border-zinc-800/80 rounded-xl p-4 flex items-center justify-between hover:border-zinc-700 transition">
+                                <div class="flex items-center gap-4">
+                                    <div class="w-10 h-10 bg-zinc-800 rounded-lg flex items-center justify-center text-zinc-300 text-lg">
+                                        <i class="fa-solid ${dev.icon}"></i>
+                                    </div>
+                                    <div class="text-left">
+                                        <h4 class="text-xs font-bold text-white">${dev.name}</h4>
+                                        <p class="text-[10px] text-zinc-400" id="bt-status-${dev.id}">${dev.status}</p>
+                                    </div>
+                                </div>
+                                <div class="flex gap-2">
+                                    <button onclick="toggleBluetoothConnection('${dev.id}')" id="bt-connect-btn-${dev.id}" class="px-2.5 py-1 bg-zinc-800 hover:bg-zinc-700 text-white rounded text-[10px] font-semibold transition">
+                                        ${dev.status.includes('連線') ? '中斷連線' : '連線'}
+                                    </button>
+                                    <button onclick="removeBluetoothDevice('${dev.id}')" class="px-2.5 py-1 bg-red-950/40 hover:bg-red-900 border border-red-500/20 text-red-400 rounded text-[10px] font-semibold transition" title="移除此配對設備">
+                                        移除
+                                    </button>
+                                </div>
+                            </div>
+                        `).join('')}
+                    </div>
+                `;
+            }
+
+            panel.innerHTML = `
+                <div class="space-y-6 animate-fade-in text-zinc-100">
+                    <div class="flex items-center justify-between pb-2 border-b border-zinc-800">
+                        <div class="flex items-center gap-2">
+                            <i class="fa-solid fa-bluetooth text-blue-500 text-lg"></i>
+                            <h3 class="text-base font-bold">藍牙與裝置</h3>
+                        </div>
+                        <!-- 新增裝置按鈕 -->
+                        <button onclick="openAddBluetoothDeviceModal()" ${!virtualBluetoothConnected ? 'disabled' : ''} class="bg-blue-600 hover:bg-blue-500 disabled:bg-zinc-700 disabled:text-zinc-500 text-white rounded text-xs font-bold px-4 py-2 transition flex items-center gap-1.5 shadow-md shadow-blue-600/10">
+                            <i class="fa-solid fa-plus"></i>
+                            <span>新增裝置</span>
+                        </button>
+                    </div>
+
+                    <!-- 藍牙主開關 -->
+                    <div class="bg-zinc-850/30 p-4 rounded-lg border border-zinc-800 flex justify-between items-center">
+                        <div>
+                            <h4 class="text-xs font-bold text-white mb-0.5">藍牙功能開關</h4>
+                            <p class="text-[10px] text-zinc-400">目前您的藍牙功能：<span class="font-bold ${virtualBluetoothConnected ? 'text-blue-400' : 'text-zinc-500'}" id="settings-bluetooth-status-label">${virtualBluetoothConnected ? '已開啟' : '已關閉'}</span></p>
+                        </div>
+                        <div class="flex items-center">
+                            <button onclick="toggleVirtualBluetooth()" id="settings-bluetooth-switch-btn" class="w-12 h-6 rounded-full p-0.5 transition-colors duration-200 focus:outline-none ${virtualBluetoothConnected ? 'bg-blue-600' : 'bg-zinc-700'} flex items-center">
+                                <div class="w-5 h-5 bg-white rounded-full shadow transition-transform duration-200 transform ${virtualBluetoothConnected ? 'translate-x-6' : 'translate-x-0'}"></div>
+                            </button>
+                        </div>
+                    </div>
+
+                    <!-- 裝置列表 -->
+                    <div class="space-y-3">
+                        <h4 class="text-xs font-bold text-zinc-400">已配對與已儲存的裝置</h4>
+                        ${devicesHtml}
+                    </div>
+                </div>
+            `;
+        }
+
+        // 藍牙主開關
+        function toggleVirtualBluetooth() {
+            virtualBluetoothConnected = !virtualBluetoothConnected;
+            switchSettingsTab('bluetooth');
+            alert(`藍牙功能已成功${virtualBluetoothConnected ? '開啟' : '關閉'}！`);
+        }
+
+        // 切換單個藍牙裝置連線狀態
+        function toggleBluetoothConnection(id) {
+            const dev = bluetoothDevices.find(d => d.id === id);
+            if (!dev) return;
+
+            const btn = document.getElementById(`bt-connect-btn-${id}`);
+            const status = document.getElementById(`bt-status-${id}`);
+            
+            if (dev.status.includes('連線')) {
+                dev.status = "已配對";
+                if (btn) btn.textContent = "連線";
+                if (status) status.textContent = "已配對";
+                alert(`已成功中斷與 ${dev.name} 的連線。`);
+            } else {
+                dev.status = dev.name.includes("耳機") ? "已連線 音訊" : "已連線";
+                if (btn) btn.textContent = "中斷連線";
+                if (status) status.textContent = dev.status;
+                alert(`已與 ${dev.name} 建立安全連線！`);
+            }
+        }
+
+        // 移除藍牙裝置
+        function removeBluetoothDevice(id) {
+            const index = bluetoothDevices.findIndex(d => d.id === id);
+            if (index !== -1) {
+                const name = bluetoothDevices[index].name;
+                bluetoothDevices.splice(index, 1);
+                switchSettingsTab('bluetooth');
+                alert(`已安全移除並解除配對裝置：${name}。`);
+            }
+        }
+
+        // 開啟新增裝置對話框
+        function openAddBluetoothDeviceModal() {
+            if (!virtualBluetoothConnected) return;
+            const modal = document.getElementById('settings-add-device-modal');
+            if (modal) {
+                modal.classList.remove('hidden');
+                modal.classList.add('flex');
+                
+                // 重設步驟
+                document.getElementById('add-device-step1').classList.remove('hidden');
+                document.getElementById('add-device-step2').classList.add('hidden');
+                document.getElementById('add-device-step3').classList.add('hidden');
+            }
+        }
+
+        function closeAddBluetoothDeviceModal() {
+            const modal = document.getElementById('settings-add-device-modal');
+            if (modal) modal.classList.add('hidden');
+        }
+
+        // 開始掃描可用裝置
+        function startBluetoothScan() {
+            document.getElementById('add-device-step1').classList.add('hidden');
+            document.getElementById('add-device-step2').classList.remove('hidden');
+            
+            const list = document.getElementById('scanned-devices-list');
+            if (list) list.innerHTML = `<p class="text-xs text-zinc-500 py-4 animate-pulse">正在掃描附近的藍牙廣播設備...</p>`;
+
+            // 隨機選取 2 個裝置作為掃描結果
+            setTimeout(() => {
+                const shuffled = searchPoolDevices.sort(() => 0.5 - Math.random());
+                const selected = shuffled.slice(0, 2);
+
+                if (list) {
+                    list.innerHTML = selected.map((dev, idx) => `
+                        <div onclick="pairScannedDevice('${dev.name}', '${dev.icon}')" class="p-3 bg-zinc-800/80 hover:bg-zinc-700/80 border border-zinc-700 rounded-lg cursor-pointer flex items-center justify-between transition animate-fade-in">
+                            <div class="flex items-center gap-3">
+                                <i class="fa-solid ${dev.icon} text-blue-400 text-sm"></i>
+                                <span class="text-xs font-semibold text-white">${dev.name}</span>
+                            </div>
+                            <span class="text-[10px] text-zinc-500">點選以配對</span>
+                        </div>
+                    `).join('');
+                }
+            }, 1500);
+        }
+
+        // 配對選中的掃描裝置
+        function pairScannedDevice(name, icon) {
+            const list = document.getElementById('scanned-devices-list');
+            if (list) {
+                list.innerHTML = `
+                    <div class="flex flex-col items-center py-4 text-center">
+                        <div class="w-8 h-8 border-4 border-blue-500 border-t-transparent rounded-full animate-spin mb-3"></div>
+                        <p class="text-xs text-zinc-300">正在與 ${name} 建立配對金鑰...</p>
+                    </div>
+                `;
+            }
+
+            setTimeout(() => {
+                // 將其推入我們已連線的設備陣列
+                const newId = 'dev' + (bluetoothDevices.length + 1);
+                bluetoothDevices.push({
+                    id: newId,
+                    name: name,
+                    status: name.includes("耳機") || name.includes("喇叭") ? "已連線 音訊" : "已連線",
+                    icon: icon
+                });
+
+                // 跳轉至成功
+                document.getElementById('add-device-step2').classList.add('hidden');
+                document.getElementById('add-device-step3').classList.remove('hidden');
+                document.getElementById('paired-success-device-name').textContent = `「${name}」配對成功，所有功能皆已就緒。`;
+
+                // 重新載入主藍牙設定頁
+                switchSettingsTab('bluetooth');
+            }, 1800);
+        }
+
+        // 切換壁紙
+        function changeWallpaper(src) {
+            document.body.style.backgroundImage = `url('${src}'), url('https://images.unsplash.com/photo-1620121692029-d088224ddc74?auto=format&fit=crop&w=1920&q=80')`;
+            alert("桌布已成功即時變更！");
+        }
+
+        // 系統命名修改功能
+        function renameDevice() {
+            const newName = prompt("請輸入您的新裝置名稱：", systemDeviceName);
+            if (newName && newName.trim() !== '') {
+                systemDeviceName = newName.trim();
+                
+                // 同步更新設定介面文字與開始功能表用戶名
+                const label = document.getElementById('settings-device-label');
+                if (label) label.textContent = systemDeviceName;
+                const tblName = document.getElementById('info-device-name');
+                if (tblName) tblName.textContent = systemDeviceName;
+                
+                const startUserLabel = document.getElementById('start-menu-user-name');
+                if (startUserLabel) startUserLabel.textContent = systemDeviceName;
+
+                alert(`已成功將電腦名稱重新命名為：${systemDeviceName}！`);
+            }
+        }
+
+        // 切換深色與淺色模式主題
+        function toggleSystemTheme(mode) {
+            settingsTheme = mode;
+            const settingsWin = document.getElementById('win-settings');
+            const mainPanel = document.getElementById('settings-main-panel');
+            const sidebar = document.getElementById('settings-sidebar');
+
+            if (mode === 'light') {
+                if (settingsWin) {
+                    settingsWin.classList.remove('text-white');
+                    settingsWin.classList.add('text-zinc-900');
+                    settingsWin.style.background = "rgba(240, 240, 240, 0.88)";
+                    settingsWin.style.borderColor = "rgba(0,0,0,0.1)";
+                }
+                if (mainPanel) mainPanel.style.backgroundColor = "#ffffff";
+                if (sidebar) sidebar.style.backgroundColor = "#e4e4e7";
+            } else {
+                if (settingsWin) {
+                    settingsWin.classList.remove('text-zinc-900');
+                    settingsWin.classList.add('text-white');
+                    settingsWin.style.background = "rgba(30, 30, 30, 0.72)";
+                    settingsWin.style.borderColor = "rgba(255, 255, 255, 0.12)";
+                }
+                if (mainPanel) mainPanel.style.backgroundColor = "#202020";
+                if (sidebar) sidebar.style.backgroundColor = "#191919";
+            }
+            switchSettingsTab('personal');
+            alert(`已成功更換為「${mode === 'light' ? '淺色' : '深色'}」主題模式！`);
+        }
+
+        // 切換 Wi-Fi 連線開關
+        function toggleVirtualWifi() {
+            virtualWifiConnected = !virtualWifiConnected;
+            const switchBtn = document.getElementById('settings-wifi-switch-btn');
+            const wifiStatus = document.getElementById('settings-wifi-status-text');
+            const taskbarWifi = document.getElementById('taskbar-wifi-icon');
+
+            if (virtualWifiConnected) {
+                if (switchBtn) {
+                    switchBtn.classList.remove('bg-zinc-700');
+                    switchBtn.classList.add('bg-blue-600');
+                    switchBtn.querySelector('div').className = "w-5 h-5 bg-white rounded-full shadow transition-transform duration-200 transform translate-x-6";
+                }
+                if (wifiStatus) wifiStatus.textContent = "已安全連線至網際網路";
+                if (taskbarWifi) taskbarWifi.className = "fa-solid fa-wifi text-white";
+                alert("Wi-Fi 連線已開啟！");
+            } else {
+                if (switchBtn) {
+                    switchBtn.classList.remove('bg-blue-600');
+                    switchBtn.classList.add('bg-zinc-700');
+                    switchBtn.querySelector('div').className = "w-5 h-5 bg-white rounded-full shadow transition-transform duration-200 transform translate-x-0";
+                }
+                if (wifiStatus) wifiStatus.textContent = "中斷連線";
+                if (taskbarWifi) taskbarWifi.className = "fa-solid fa-wifi text-zinc-500";
+                alert("Wi-Fi 連線已斷開！");
+            }
+        }
+
+        // 觸發模擬 Windows 更新
+        function triggerMockWindowsUpdate() {
+            const progressContainer = document.getElementById('settings-update-progress-container');
+            const checkBtn = document.getElementById('settings-update-check-btn');
+            if (progressContainer) progressContainer.classList.remove('hidden');
+            if (checkBtn) {
+                checkBtn.disabled = true;
+                checkBtn.className = "bg-zinc-700 text-zinc-500 rounded text-xs font-bold px-4 py-2 cursor-not-allowed flex items-center gap-1.5";
+            }
+
+            // 更新文字狀態
+            const title = document.getElementById('settings-update-title');
+            const subtitle = document.getElementById('settings-update-subtitle');
+            const icon = document.getElementById('settings-update-status-icon');
+            if (title) title.textContent = "正在下載並安裝更新包...";
+            if (icon) icon.className = "fa-solid fa-circle-notch text-blue-400 animate-spin text-3xl";
+
+            let progress = 0;
+            const interval = setInterval(() => {
+                progress += Math.floor(Math.random() * 15) + 5;
+                if (progress >= 100) {
+                    progress = 100;
+                    clearInterval(interval);
+                    
+                    // 更新完畢
+                    setTimeout(() => {
+                        if (title) title.textContent = "您的系統已是最新版本";
+                        if (subtitle) subtitle.textContent = "最後檢查時間：今天 " + new Date().toLocaleTimeString();
+                        if (icon) icon.className = "fa-solid fa-circle-check text-emerald-400 text-3xl";
+                        if (progressContainer) progressContainer.classList.add('hidden');
+                        if (checkBtn) {
+                            checkBtn.disabled = false;
+                            checkBtn.className = "bg-blue-600 hover:bg-blue-500 text-white rounded text-xs font-bold px-4 py-2 transition flex items-center gap-1.5 shadow-md";
+                        }
+                        alert("🎉 Windows Update 已完成！所有本機核心功能已是最新狀態。");
+                    }, 500);
+                }
+                const bar = document.getElementById('settings-update-progress-bar');
+                if (bar) bar.style.width = progress + '%';
+            }, 250);
+        }
+
+        // ==========================================
+        //         🔥 垃圾桶 App 動態管理與清理功能
+        // ==========================================
+        let recycleBinFiles = [
+            { name: "Internet Explorer 快捷方式.lnk", size: "1 KB" },
+            { name: "微軟廣告推送通知.txt", size: "2 KB" },
+            { name: "Windows ME 系統漏洞補丁.exe", size: "148 MB" },
+            { name: "IE6 瀏覽器獨立安裝包.msi", size: "12 MB" }
+        ];
+
+        function renderRecycleBin() {
+            const container = document.getElementById('bin-content-area');
+            if (!container) return;
+            container.innerHTML = '';
+
+            if (recycleBinFiles.length === 0) {
+                container.innerHTML = `
+                    <div class="flex flex-col items-center justify-center h-full py-16 text-center text-zinc-500 select-none animate-fade-in">
+                        <i class="fa-solid fa-trash-arrow-up text-5xl mb-4 text-zinc-600"></i>
+                        <p class="text-sm font-semibold">資源回收筒目前是空的喔！</p>
+                        <p class="text-xs text-zinc-600 mt-1">這裡沒有任何被刪除的垃圾檔案。</p>
+                    </div>
+                `;
+                return;
+            }
+
+            const grid = document.createElement('div');
+            grid.className = "grid grid-cols-4 gap-4 p-1";
+
+            recycleBinFiles.forEach(item => {
+                const col = document.createElement('div');
+                col.className = "flex flex-col items-center p-3 rounded-lg hover:bg-zinc-800/60 cursor-pointer text-center select-none transition";
+                
+                col.innerHTML = `
+                    <div class="w-10 h-10 flex items-center justify-center mb-2 text-zinc-500 text-3xl">
+                        <i class="fa-regular fa-file"></i>
+                    </div>
+                    <span class="text-xs text-zinc-300 break-all font-medium leading-tight h-8 w-full overflow-hidden text-center block" style="display: -webkit-box; -webkit-line-clamp: 2; -webkit-box-orient: vertical;">${item.name}</span>
+                    <span class="text-[9px] text-zinc-500 mt-1">${item.size}</span>
+                `;
+                grid.appendChild(col);
+            });
+            container.appendChild(grid);
+        }
+
+        function emptyRecycleBin() {
+            if (recycleBinFiles.length === 0) {
+                alert("垃圾桶本來就是空的喔！");
+                return;
+            }
+            recycleBinFiles = [];
+            renderRecycleBin();
+            
+            // 變更桌面的垃圾桶圖示，讓它看起來像清空一樣！
+            const binIcon = document.getElementById('desktop-bin-icon');
+            if (binIcon) {
+                binIcon.src = "bin0.png";
+            }
+            alert("🧹 資源回收筒已成功安全清理完畢！");
+        }
+
 
         // 提示訊息
         function alert(msg) {
