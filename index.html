@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Windows 11 網頁版</title>
+    <title>Windows 11 網頁版 - 完全自製版</title>
     <!-- 引入 Tailwind CSS 用於精美版面 -->
     <script src="https://cdn.tailwindcss.com"></script>
     <!-- 引入 Font Awesome 圖示 -->
@@ -253,7 +253,7 @@
     </div>
 
 
-    <!-- ================= 視窗：Microsoft Store ================= -->
+    <!-- ================= 視窗：Microsoft Store (官方正版視覺優化商店) ================= -->
     <div id="win-store" class="window-transition window-hidden absolute glass rounded-lg overflow-hidden win-shadow text-white flex flex-col border border-white/10" style="width: 820px; height: 560px; top: 11%; left: 19%; z-index: 10;">
         <div class="h-10 bg-[#0f0f0f] flex justify-between items-center px-4 cursor-move" onmousedown="dragStart(event, 'win-store')">
             <div class="flex items-center gap-2">
@@ -314,23 +314,25 @@
                     </div>
                 </div>
 
-                <!-- 應用 3：小恐龍 -->
+                <!-- 應用 3：小恐龍 (已升級為超高質感精美綠色像素 dinosaur SVG 圖像) -->
                 <div class="bg-[#1c1c1f]/80 rounded-xl p-5 border border-white/5 flex flex-col items-center text-center shadow-md hover:scale-[1.02] transition">
                     <div class="w-16 h-16 bg-zinc-800 rounded-xl flex items-center justify-center mb-4 shadow-lg border border-zinc-700/30">
                         <svg class="w-10 h-10" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
                             <path d="M14,2h6v2h1v3h-3v1h-1v1h-2V7h-1V6h-1V4h2V2z M17,3h1v1h-1V3z M11,6h1v1h-1V6z M10,7h1v1h-1V7z M9,8h1v1h-1V8z M8,9h1v3h-1V9z M7,10h1v4h-1V10z M6,11h1v4h-1V11z M5,12h1v4h-1V12z M2,14h3v1H2v-1z M1,15h3v1H1v-1z M0,16h3v1H0v-1z M1,17h1v1H1v-1z M2,18h1v1H2v-1z M3,19h2v1H3v-1z M5,15h1v1H5v-1z M6,14h1v1H6v-1z M11,10h2v1h-2v-1z M12,11h1v1h-1v-1z M13,12h2v1h-2v-1z M14,13h1v2h-1v-2z M10,16h2v1h-2v-1z M9,17h1v1H9v-1z M8,18h1v3h-1v-3z M7,21h2v1H7v-1z M11,18h1v3h-1v-3z M10,21h2v1H7v-1z" fill="#10b981"/>
-                    </svg>
+                        </svg>
+                    </div>
+                    <h4 class="text-sm font-bold text-white mb-1 flex items-center gap-1">跳躍小恐龍 <i class="fa-solid fa-circle-check text-blue-400 text-[10px]"></i></h4>
+                    <p class="text-[10px] text-gray-400 mb-4 h-12 flex items-center">點擊跳躍來躲避障礙仙人掌。經典綠色像素像素風格。</p>
+                    
+                    <div class="w-full" id="store-action-gamedino">
+                        <button onclick="installApp('gamedino')" class="w-full py-2 bg-blue-600 hover:bg-blue-500 text-white rounded text-xs font-bold transition">取得 (免費安裝)</button>
+                    </div>
                 </div>
-                <h4 class="text-sm font-bold text-white mb-1 flex items-center gap-1">跳躍小恐龍 <i class="fa-solid fa-circle-check text-blue-400 text-[10px]"></i></h4>
-                <p class="text-[10px] text-gray-400 mb-4 h-12 flex items-center">點擊跳躍來躲避障礙仙人掌。經典綠色像素像素風格。</p>
-                
-                <div class="w-full" id="store-action-gamedino">
-                    <button onclick="installApp('gamedino')" class="w-full py-2 bg-blue-600 hover:bg-blue-500 text-white rounded text-xs font-bold transition">取得 (免費安裝)</button>
-                </div>
+
             </div>
 
             <!-- 應用 4：俄羅斯方塊 (Tetris) -->
-            <div class="bg-[#1c1c1f]/80 rounded-xl p-5 border border-white/5 flex flex-col items-center text-center shadow-md hover:scale-[1.02] transition mt-6">
+            <div class="bg-[#1c1c1f]/80 rounded-xl p-5 border border-white/5 flex flex-col items-center text-center shadow-md hover:scale-[1.02] transition mt-6 w-[220px]">
                 <div class="w-16 h-16 bg-red-600 rounded-xl flex items-center justify-center mb-4 shadow-lg border border-red-500/30 text-white text-3xl">
                     <i class="fa-solid fa-shapes"></i>
                 </div>
@@ -641,7 +643,6 @@
                 <span class="text-xs font-semibold text-gray-200">俄羅斯方塊 (自製暢玩版)</span>
             </div>
             <div class="flex gap-1 items-center">
-                <button onclick="minimizeWindow('tetris')" class="w-8 h-8 flex items-center justify-center hover:bg-white/10 rounded transition"><i class="fa-solid fa-minus text-xs"></i></button>
                 <button onclick="closeWindow('tetris')" class="w-8 h-8 flex items-center justify-center hover:bg-red-500 rounded transition"><i class="fa-solid fa-xmark text-xs"></i></button>
             </div>
         </div>
@@ -823,7 +824,7 @@
                 <img src="1154.png" class="w-6 h-6 object-contain" onerror="fallbackIcon(this, 'thispc')">
                 <span id="dot-thispc" class="absolute bottom-0.5 left-1/2 transform -translate-x-1/2 w-1 h-1 bg-blue-400 rounded-full opacity-0"></span>
             </button>
-            <!-- Microsoft Store 工作列 -->
+            <!-- Microsoft Store 工作列 (已對接您本機的 store.png) -->
             <button onclick="toggleWindow('store')" id="taskbar-store" class="w-10 h-10 rounded flex items-center justify-center hover:bg-white/10 relative transition">
                 <img src="store.png" class="w-6 h-6 object-contain" onerror="fallbackIcon(this, 'store')">
                 <span id="dot-store" class="absolute bottom-0.5 left-1/2 transform -translate-x-1/2 w-1 h-1 bg-blue-400 rounded-full opacity-0"></span>
@@ -1167,7 +1168,6 @@
             document.addEventListener('mouseup', dragEnd);
         }
 
-        // 拖曳進行中
         function dragMove(e) {
             if (!dragEl) return;
             const dx = e.clientX - startX;
@@ -1771,7 +1771,7 @@
 
         function rotatePiece(piece) {
             let nShape = [];
-            for (let c = 0; c < piece.shape[0].length; c++) {
+            for (let c = 0; c < piece.shape[0].length; r = 0, c++) {
                 let nRow = [];
                 for (let r = piece.shape.length - 1; r >= 0; r--) {
                     nRow.push(piece.shape[r][c]);
@@ -2053,6 +2053,7 @@
             renderSlidesList();
         }
 
+        // 更新簡報
         function updatePPTSlide() {
             const slide = pptSlides[currentSlideIdx];
             if (pptTitleInput) pptTitleInput.value = slide.title;
