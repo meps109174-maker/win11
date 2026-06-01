@@ -33,7 +33,9 @@
             } else if (type === 'tetris') {
                 svgStr = `<div class="w-10 h-10 bg-red-600 rounded-lg flex items-center justify-center font-bold text-[10px] text-white border-2 border-red-500 shadow-md">T</div>`;
             }
-            container.innerHTML = svgStr;
+            if (container) {
+                container.innerHTML = svgStr;
+            }
         }
 
         // ---------------- 全螢幕主控邏輯 ----------------
@@ -125,12 +127,12 @@
         }
     </style>
 </head>
-<body class="relative">
+<body class="relative" id="desktop-body">
 
     <!-- ================= 桌面區域 ================= -->
     <div id="desktop" class="absolute inset-0 pb-12 p-4 flex flex-col flex-wrap gap-4 items-start content-start">
         
-        <!-- 檔案 (舊稱 此電腦) (使用 1154.png) -->
+        <!-- 檔案 (使用 1154.png) -->
         <div onclick="openWindow('thispc')" class="w-20 h-22 flex flex-col items-center justify-center rounded hover:bg-white/10 active:bg-white/20 cursor-pointer transition p-1">
             <div class="w-10 h-10 flex items-center justify-center">
                 <img src="1154.png" class="w-full h-full object-contain" onerror="fallbackIcon(this, 'thispc')">
@@ -138,7 +140,7 @@
             <span class="text-white text-xs text-center drop-shadow-md truncate w-full mt-1">檔案</span>
         </div>
 
-        <!-- Microsoft Store 桌面圖示 (優先讀取您的 store.png 檔案) -->
+        <!-- Microsoft Store 桌面圖示 -->
         <div onclick="openWindow('store')" class="w-20 h-22 flex flex-col items-center justify-center rounded hover:bg-white/10 active:bg-white/20 cursor-pointer transition p-1">
             <div class="w-10 h-10 flex items-center justify-center">
                 <img src="store.png" class="w-9 h-9 object-contain" onerror="fallbackIcon(this, 'store')">
@@ -152,7 +154,7 @@
             <span class="text-white text-xs text-center drop-shadow-md truncate w-full">Edge</span>
         </div>
 
-        <!-- Word 自製桌面圖示 (使用 winWord.png) -->
+        <!-- Word 自製桌面圖示 -->
         <div onclick="openWindow('word')" class="w-20 h-22 flex flex-col items-center justify-center rounded hover:bg-white/10 active:bg-white/20 cursor-pointer transition p-1">
             <div class="w-10 h-10 flex items-center justify-center">
                 <img src="winWord.png" class="w-full h-full object-contain" onerror="fallbackIcon(this, 'word')">
@@ -160,7 +162,7 @@
             <span class="text-white text-xs text-center drop-shadow-md truncate w-full mt-1">Word</span>
         </div>
 
-        <!-- Excel 自製桌面圖示 (使用 excel.png) -->
+        <!-- Excel 自製桌面圖示 -->
         <div onclick="openWindow('excel')" class="w-20 h-22 flex flex-col items-center justify-center rounded hover:bg-white/10 active:bg-white/20 cursor-pointer transition p-1">
             <div class="w-10 h-10 flex items-center justify-center">
                 <img src="excel.png" class="w-full h-full object-contain" onerror="fallbackIcon(this, 'excel')">
@@ -168,7 +170,7 @@
             <span class="text-white text-xs text-center drop-shadow-md truncate w-full mt-1">Excel</span>
         </div>
 
-        <!-- PowerPoint 自製桌面圖示 (使用 powerpoint.png) -->
+        <!-- PowerPoint 自製桌面圖示 -->
         <div onclick="openWindow('powerpoint')" class="w-20 h-22 flex flex-col items-center justify-center rounded hover:bg-white/10 active:bg-white/20 cursor-pointer transition p-1">
             <div class="w-10 h-10 flex items-center justify-center">
                 <img src="powerpoint.png" class="w-full h-full object-contain" onerror="fallbackIcon(this, 'ppt')">
@@ -176,7 +178,7 @@
             <span class="text-white text-xs text-center drop-shadow-md truncate w-full mt-1">PowerPoint</span>
         </div>
 
-        <!-- 記事本 桌面圖示 (使用 notepad.png) -->
+        <!-- 記事本 桌面圖示 -->
         <div onclick="openWindow('notepad')" class="w-20 h-22 flex flex-col items-center justify-center rounded hover:bg-white/10 active:bg-white/20 cursor-pointer transition p-1">
             <div class="w-10 h-10 flex items-center justify-center">
                 <img src="notepad.png" class="w-full h-full object-contain" onerror="fallbackIcon(this, 'notepad')">
@@ -190,7 +192,7 @@
             <span class="text-white text-xs text-center drop-shadow-md truncate w-full mt-1">小算盤</span>
         </div>
 
-        <!-- =================== 🔥 桌面區域：Minecraft 預設直接加載，並具有強制最前台鎖定機制！ =================== -->
+        <!-- =================== 🔥 桌面區域：Minecraft 預設直接加載 =================== -->
         <div id="desktop-app-minecraft" class="w-20 h-22 flex flex-col items-center justify-center rounded hover:bg-white/10 active:bg-white/20 cursor-pointer transition p-1">
             <div class="w-10 h-10 flex items-center justify-center" onclick="openWindow('minecraft')">
                 <img src="minecraft.png" class="w-full h-full object-contain rounded-md" onerror="fallbackIcon(this, 'minecraft')">
@@ -222,15 +224,20 @@
             </div>
             <span class="text-white text-xs text-center drop-shadow-md truncate w-full mt-1">俄羅斯方塊</span>
         </div>
+
+        <!-- =================== 🔥 新增桌面動態檔案區域 =================== -->
+        <!-- 這是用來放置在桌面生成的實體文件（比如記事本下載的 txt） -->
+        <div id="desktop-dynamic-files" class="contents"></div>
     </div>
 
 
-    <!-- ================= 視窗：檔案總管 ================= -->
-    <div id="win-thispc" class="window-transition window-hidden absolute glass rounded-lg overflow-hidden win-shadow text-white flex flex-col border border-white/10" style="width: 750px; height: 480px; top: 15%; left: 18%; z-index: 10;">
-        <div class="h-10 bg-black/40 flex justify-between items-center px-4 cursor-move" onmousedown="dragStart(event, 'win-thispc')">
+    <!-- ================= 視窗：檔案總管 (比照微軟原版檔案總管介面還原) ================= -->
+    <div id="win-thispc" class="window-transition window-hidden absolute glass rounded-lg overflow-hidden win-shadow text-white flex flex-col border border-white/10" style="width: 820px; height: 520px; top: 10%; left: 15%; z-index: 10;">
+        <!-- 檔案總管最上方標題列 -->
+        <div class="h-10 bg-[#1e1e1e] flex justify-between items-center px-4 cursor-move border-b border-zinc-800" onmousedown="dragStart(event, 'win-thispc')">
             <div class="flex items-center gap-2">
-                <img src="1154.png" class="w-4 h-4" onerror="this.src='https://images.unsplash.com/photo-1618005182384-a83a8bd57fbe?auto=format&fit=crop&w=30&q=80'">
-                <span class="text-xs font-semibold text-gray-200">檔案 - 檔案總管</span>
+                <img id="explorer-title-icon" src="1154.png" class="w-4 h-4 object-contain" onerror="fallbackIcon(this, 'thispc')">
+                <span class="text-xs font-semibold text-gray-200">檔案總管</span>
             </div>
             <div class="flex gap-1 items-center">
                 <button onclick="minimizeWindow('thispc')" class="w-8 h-8 flex items-center justify-center hover:bg-white/10 rounded transition"><i class="fa-solid fa-minus text-xs"></i></button>
@@ -238,112 +245,62 @@
                 <button onclick="closeWindow('thispc')" class="w-8 h-8 flex items-center justify-center hover:bg-red-500 rounded transition"><i class="fa-solid fa-xmark text-xs"></i></button>
             </div>
         </div>
-        <div class="flex-1 flex bg-zinc-900 text-sm">
+
+        <!-- Windows 11 原版工具列 -->
+        <div class="bg-[#2a2a2e] px-4 py-2 border-b border-zinc-800 flex items-center gap-3 text-xs text-zinc-300">
+            <button class="flex items-center gap-1.5 hover:bg-zinc-800 px-2.5 py-1 rounded text-white" onclick="navigateFolder('root')">
+                <i class="fa-solid fa-circle-plus text-blue-400"></i> 新增
+            </button>
+            <span class="text-zinc-700">|</span>
+            <button class="hover:bg-zinc-800 p-1.5 rounded" title="剪下"><i class="fa-solid fa-scissors"></i></button>
+            <button class="hover:bg-zinc-800 p-1.5 rounded" title="複製"><i class="fa-solid fa-copy"></i></button>
+            <button class="hover:bg-zinc-800 p-1.5 rounded" title="重新命名"><i class="fa-solid fa-pen-to-square"></i></button>
+            <button class="hover:bg-zinc-800 p-1.5 rounded" title="刪除"><i class="fa-solid fa-trash"></i></button>
+            <span class="text-zinc-700">|</span>
+            <button class="flex items-center gap-1.5 hover:bg-zinc-800 px-2 py-1 rounded"><i class="fa-solid fa-arrow-down-wide-short"></i> 排序</button>
+            <button class="flex items-center gap-1.5 hover:bg-zinc-800 px-2 py-1 rounded"><i class="fa-solid fa-table-cells-large"></i> 檢視</button>
+        </div>
+
+        <!-- Windows 11 原版路徑列與搜尋列 -->
+        <div class="bg-[#1e1e1e] px-3 py-1.5 border-b border-zinc-800 flex items-center gap-2">
+            <!-- 導航鍵 -->
+            <div class="flex gap-1 text-zinc-400 text-xs">
+                <button class="w-7 h-7 rounded hover:bg-zinc-800 flex items-center justify-center" onclick="navigateFolder('root')" title="回到根目錄"><i class="fa-solid fa-arrow-left"></i></button>
+                <button class="w-7 h-7 rounded hover:bg-zinc-800 flex items-center justify-center text-zinc-600 cursor-not-allowed"><i class="fa-solid fa-arrow-right"></i></button>
+                <button class="w-7 h-7 rounded hover:bg-zinc-800 flex items-center justify-center" onclick="navigateFolder('root')" title="向上"><i class="fa-solid fa-arrow-up"></i></button>
+            </div>
+            <!-- 本地路徑列 -->
+            <div class="flex-1 bg-zinc-900 border border-zinc-800 rounded px-3 py-1 text-xs flex items-center gap-2 text-zinc-300">
+                <i class="fa-solid fa-house text-[10px] text-blue-400"></i>
+                <span class="text-zinc-500">&gt;</span>
+                <span id="explorer-path-text">本機</span>
+            </div>
+            <!-- 搜尋框 -->
+            <div class="w-48 bg-zinc-900 border border-zinc-800 rounded px-2.5 py-1 text-xs flex items-center gap-2 text-zinc-400">
+                <i class="fa-solid fa-magnifying-glass"></i>
+                <input type="text" placeholder="搜尋本機" class="bg-transparent border-none outline-none w-full text-zinc-300">
+            </div>
+        </div>
+
+        <!-- 主要工作區 (左導航、右內容) -->
+        <div class="flex-1 flex bg-[#19191c] text-sm overflow-hidden">
             <!-- 左側導覽列 -->
-            <div class="w-44 border-r border-white/5 p-3 space-y-1 bg-zinc-950/40">
-                <div onclick="navigateFolder('root')" class="flex items-center gap-2 p-1.5 rounded hover:bg-white/10 cursor-pointer transition text-xs"><i class="fa-solid fa-hard-drive text-blue-400"></i> 本機 C 槽</div>
-                <div onclick="navigateFolder('documents')" class="flex items-center gap-2 p-1.5 rounded hover:bg-white/10 cursor-pointer transition text-xs"><i class="fa-regular fa-folder text-yellow-400"></i> 我的文件</div>
-                <div onclick="navigateFolder('pictures')" class="flex items-center gap-2 p-1.5 rounded hover:bg-white/10 cursor-pointer transition text-xs"><i class="fa-regular fa-image text-emerald-400"></i> 圖片藝廊</div>
+            <div class="w-48 border-r border-zinc-800 p-3 space-y-1 bg-[#1e1e1e]/60 flex flex-col justify-between">
+                <div class="space-y-1.5">
+                    <p class="text-[10px] font-bold text-zinc-500 px-2 py-1 uppercase tracking-wider">快速存取</p>
+                    <div onclick="navigateFolder('root')" class="flex items-center gap-2.5 px-3 py-1.5 rounded hover:bg-zinc-800 cursor-pointer transition text-zinc-200 text-xs"><i class="fa-solid fa-star text-amber-500"></i> 桌面</div>
+                    <div onclick="navigateFolder('documents')" class="flex items-center gap-2.5 px-3 py-1.5 rounded hover:bg-zinc-800 cursor-pointer transition text-zinc-200 text-xs"><i class="fa-solid fa-file-lines text-blue-400"></i> 我的文件</div>
+                    <div onclick="navigateFolder('pictures')" class="flex items-center gap-2.5 px-3 py-1.5 rounded hover:bg-zinc-800 cursor-pointer transition text-zinc-200 text-xs"><i class="fa-regular fa-image text-emerald-400"></i> 圖片藝廊</div>
+                    
+                    <p class="text-[10px] font-bold text-zinc-500 px-2 py-2 uppercase tracking-wider">此電腦</p>
+                    <div onclick="navigateFolder('drive_c')" class="flex items-center gap-2.5 px-3 py-1.5 rounded hover:bg-zinc-800 cursor-pointer transition text-zinc-200 text-xs"><i class="fa-solid fa-hard-drive text-blue-500"></i> 本機 C 槽</div>
+                </div>
+                <div class="text-[9px] text-zinc-500 px-2">容量剩餘: 118 GB / 256 GB</div>
             </div>
             <!-- 右側主要資料夾內容 -->
             <div class="flex-1 p-6 overflow-y-auto" id="explorer-content">
                 <!-- 由 JS 動態渲染內部檔案 -->
             </div>
-        </div>
-    </div>
-
-
-    <!-- ================= 視窗：Microsoft Store (官方正版視覺優化商店) ================= -->
-    <div id="win-store" class="window-transition window-hidden absolute glass rounded-lg overflow-hidden win-shadow text-white flex flex-col border border-white/10" style="width: 820px; height: 560px; top: 11%; left: 19%; z-index: 10;">
-        <div class="h-10 bg-[#0f0f0f] flex justify-between items-center px-4 cursor-move" onmousedown="dragStart(event, 'win-store')">
-            <div class="flex items-center gap-2">
-                <img src="store.png" class="w-4 h-4 object-contain" onerror="fallbackIcon(this, 'store')">
-                <span class="text-xs font-semibold text-gray-200">Microsoft Store</span>
-            </div>
-            <div class="flex gap-1 items-center">
-                <button onclick="minimizeWindow('store')" class="w-8 h-8 flex items-center justify-center hover:bg-white/10 rounded transition"><i class="fa-solid fa-minus text-xs"></i></button>
-                <button onclick="maximizeWindow('store')" class="w-8 h-8 flex items-center justify-center hover:bg-white/10 rounded transition"><i class="fa-regular fa-square text-xs"></i></button>
-                <button onclick="closeWindow('store')" class="w-8 h-8 flex items-center justify-center hover:bg-red-500 rounded transition"><i class="fa-solid fa-xmark text-xs"></i></button>
-            </div>
-        </div>
-        
-        <!-- 商店頂部橫幅 -->
-        <div class="p-6 bg-gradient-to-r from-[#1b1c24] to-[#121319] border-b border-white/5 flex justify-between items-center relative overflow-hidden">
-            <div class="absolute -right-10 -top-10 w-40 h-40 bg-blue-600/10 rounded-full blur-3xl pointer-events-none"></div>
-            <div class="z-10 flex items-center gap-4">
-                <img src="store.png" class="w-12 h-12 object-contain" onerror="fallbackIcon(this, 'store')">
-                <div>
-                    <h2 class="text-lg font-bold text-white flex items-center gap-1.5">Microsoft Store <span class="text-[10px] bg-blue-500 text-white font-medium py-0.5 px-1.5 rounded-full">官方正版</span></h2>
-                    <p class="text-xs text-gray-400">探索受信任的本地應用程式與熱門遊戲</p>
-                </div>
-            </div>
-            <div class="bg-zinc-800/80 rounded-lg py-1.5 px-3 border border-white/5 flex items-center gap-2 text-xs z-10">
-                <i class="fa-solid fa-magnifying-glass text-gray-400"></i>
-                <input type="text" placeholder="搜尋應用程式與遊戲..." class="bg-transparent border-none outline-none text-white w-40">
-            </div>
-        </div>
-
-        <!-- 商店主展示區 -->
-        <div class="flex-1 bg-[#131313] p-6 overflow-y-auto no-scrollbar">
-            <h3 class="text-xs font-extrabold text-gray-300 uppercase tracking-widest mb-4 flex items-center gap-1.5">
-                <span class="w-1.5 h-3.5 bg-blue-500 rounded-sm inline-block"></span> 🎮 精選熱門暢銷小遊戲 (點選安裝將在桌面建立獨立 App)
-            </h3>
-            <div class="grid grid-cols-3 gap-6">
-                
-                <!-- 應用 1：Minecraft (預設已安裝) -->
-                <div class="bg-[#1c1c1f]/80 rounded-xl p-5 border border-white/5 flex flex-col items-center text-center shadow-md hover:scale-[1.02] transition">
-                    <img src="minecraft.png" class="w-16 h-16 object-contain rounded-lg mb-4 shadow-lg" onerror="fallbackIcon(this, 'minecraft')">
-                    <h4 class="text-sm font-bold text-white mb-1 flex items-center gap-1">Minecraft 2D <i class="fa-solid fa-circle-check text-blue-400 text-[10px]"></i></h4>
-                    <p class="text-[10px] text-gray-400 mb-4 h-12 flex items-center">高度整合 Scratch 麥塊系統！一鍵進入原汁原味的方塊搭建世界。</p>
-                    
-                    <div class="w-full" id="store-action-minecraft">
-                        <button onclick="openWindow('minecraft'); closeWindow('store');" class="w-full py-2 bg-emerald-600 hover:bg-emerald-500 text-white rounded text-xs font-bold transition flex items-center justify-center gap-1">
-                            <i class="fa-solid fa-play"></i> 啟動遊戲
-                        </button>
-                    </div>
-                </div>
-
-                <!-- 應用 2：2048 -->
-                <div class="bg-[#1c1c1f]/80 rounded-xl p-5 border border-white/5 flex flex-col items-center text-center shadow-md hover:scale-[1.02] transition">
-                    <div class="w-16 h-16 bg-amber-500 rounded-xl flex items-center justify-center font-black text-white text-xl mb-4 shadow-lg">2048</div>
-                    <h4 class="text-sm font-bold text-white mb-1 flex items-center gap-1">2048 益智遊戲 <i class="fa-solid fa-circle-check text-blue-400 text-[10px]"></i></h4>
-                    <p class="text-[10px] text-gray-400 mb-4 h-12 flex items-center">經典數字方塊滑動合併益智小遊戲，向 2048 方塊進發！</p>
-                    
-                    <div class="w-full" id="store-action-game2048">
-                        <button onclick="installApp('game2048')" class="w-full py-2 bg-blue-600 hover:bg-blue-500 text-white rounded text-xs font-bold transition">取得 (免費安裝)</button>
-                    </div>
-                </div>
-
-                <!-- 應用 3：小恐龍 (已升級為超高質感精美綠色像素 dinosaur SVG 圖像) -->
-                <div class="bg-[#1c1c1f]/80 rounded-xl p-5 border border-white/5 flex flex-col items-center text-center shadow-md hover:scale-[1.02] transition">
-                    <div class="w-16 h-16 bg-zinc-800 rounded-xl flex items-center justify-center mb-4 shadow-lg border border-zinc-700/30">
-                        <svg class="w-10 h-10" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
-                            <path d="M14,2h6v2h1v3h-3v1h-1v1h-2V7h-1V6h-1V4h2V2z M17,3h1v1h-1V3z M11,6h1v1h-1V6z M10,7h1v1h-1V7z M9,8h1v1h-1V8z M8,9h1v3h-1V9z M7,10h1v4h-1V10z M6,11h1v4h-1V11z M5,12h1v4h-1V12z M2,14h3v1H2v-1z M1,15h3v1H1v-1z M0,16h3v1H0v-1z M1,17h1v1H1v-1z M2,18h1v1H2v-1z M3,19h2v1H3v-1z M5,15h1v1H5v-1z M6,14h1v1H6v-1z M11,10h2v1h-2v-1z M12,11h1v1h-1v-1z M13,12h2v1h-2v-1z M14,13h1v2h-1v-2z M10,16h2v1h-2v-1z M9,17h1v1H9v-1z M8,18h1v3h-1v-3z M7,21h2v1H7v-1z M11,18h1v3h-1v-3z M10,21h2v1H7v-1z" fill="#10b981"/>
-                        </svg>
-                    </div>
-                    <h4 class="text-sm font-bold text-white mb-1 flex items-center gap-1">跳躍小恐龍 <i class="fa-solid fa-circle-check text-blue-400 text-[10px]"></i></h4>
-                    <p class="text-[10px] text-gray-400 mb-4 h-12 flex items-center">點擊跳躍來躲避障礙仙人掌。經典綠色像素像素風格。</p>
-                    
-                    <div class="w-full" id="store-action-gamedino">
-                        <button onclick="installApp('gamedino')" class="w-full py-2 bg-blue-600 hover:bg-blue-500 text-white rounded text-xs font-bold transition">取得 (免費安裝)</button>
-                    </div>
-                </div>
-
-            </div>
-
-            <!-- 應用 4：俄羅斯方塊 (Tetris) -->
-            <div class="bg-[#1c1c1f]/80 rounded-xl p-5 border border-white/5 flex flex-col items-center text-center shadow-md hover:scale-[1.02] transition mt-6 w-[220px]">
-                <div class="w-16 h-16 bg-red-600 rounded-xl flex items-center justify-center mb-4 shadow-lg border border-red-500/30 text-white text-3xl">
-                    <i class="fa-solid fa-shapes"></i>
-                </div>
-                <h4 class="text-sm font-bold text-white mb-1 flex items-center gap-1">俄羅斯方塊 <i class="fa-solid fa-circle-check text-blue-400 text-[10px]"></i></h4>
-                <p class="text-[10px] text-gray-400 mb-4 h-12 flex items-center">經典自製高流暢堆疊與消行挑戰！支援鍵盤極限操作與即時計分。</p>
-                
-                <div class="w-full" id="store-action-tetris">
-                    <button onclick="installApp('tetris')" class="w-full py-2 bg-blue-600 hover:bg-blue-500 text-white rounded text-xs font-bold transition">取得 (免費安裝)</button>
-                </div>
-            </div>
-
         </div>
     </div>
 
@@ -481,14 +438,14 @@
             <table class="border-collapse table-fixed w-full text-xs" id="excel-table">
                 <thead>
                     <tr class="bg-zinc-100 text-center text-zinc-600">
-                        <th class="border border-zinc-300 w-10 py-1 font-semibold"></th>
-                        <th class="border border-zinc-300 w-24 font-semibold">A</th>
-                        <th class="border border-zinc-300 w-24 font-semibold">B</th>
-                        <th class="border border-zinc-300 w-24 font-semibold">C</th>
-                        <th class="border border-zinc-300 w-24 font-semibold">D</th>
-                        <th class="border border-zinc-300 w-24 font-semibold">E</th>
-                        <th class="border border-zinc-300 w-24 font-semibold">F</th>
-                        <th class="border border-zinc-300 w-24 font-semibold">G</th>
+                        <th class="border border-zinc-300 w-10 py-1 font-semibold text-gray-500"></th>
+                        <th class="border border-zinc-300 w-24 font-semibold text-gray-500">A</th>
+                        <th class="border border-zinc-300 w-24 font-semibold text-gray-500">B</th>
+                        <th class="border border-zinc-300 w-24 font-semibold text-gray-500">C</th>
+                        <th class="border border-zinc-300 w-24 font-semibold text-gray-500">D</th>
+                        <th class="border border-zinc-300 w-24 font-semibold text-gray-500">E</th>
+                        <th class="border border-zinc-300 w-24 font-semibold text-gray-500">F</th>
+                        <th class="border border-zinc-300 w-24 font-semibold text-gray-500">G</th>
                     </tr>
                 </thead>
                 <tbody id="excel-tbody">
@@ -538,8 +495,8 @@
             <!-- Right editing space -->
             <div class="flex-1 p-8 flex items-center justify-center relative">
                 <div id="ppt-canvas" class="w-[480px] h-[320px] bg-white text-black p-8 shadow-xl flex flex-col justify-center rounded border border-zinc-700/20 transition-colors duration-300">
-                    <input id="ppt-title" type="text" value="第一張簡報標題" class="bg-transparent border-b border-transparent hover:border-zinc-300 focus:border-orange-500 focus:outline-none text-2xl font-extrabold text-center w-full mb-6 user-select-text" placeholder="點擊編輯標題">
-                    <textarea id="ppt-content" class="bg-transparent border border-transparent hover:border-zinc-200 focus:border-orange-500 focus:outline-none text-xs text-center resize-none flex-1 w-full user-select-text" placeholder="點擊編輯簡報內容">在此處輸入投影片的詳細介紹與清單...</textarea>
+                    <input id="ppt-title" type="text" value="第一張簡報標題" class="bg-transparent border-b border-transparent hover:border-gray-300 focus:border-orange-500 focus:outline-none text-2xl font-extrabold text-center w-full mb-6 user-select-text" placeholder="點擊編輯標題">
+                    <textarea id="ppt-content" class="bg-transparent border border-transparent hover:border-gray-200 focus:border-orange-500 focus:outline-none text-xs text-center resize-none flex-1 w-full user-select-text" placeholder="點擊編輯簡報內容">在此處輸入投影片的詳細介紹與清單...</textarea>
                 </div>
             </div>
         </div>
@@ -561,8 +518,8 @@
         </div>
         <!-- 嵌入外部 Minecraft html -->
         <div class="flex-1 bg-black relative">
-            <!-- 添加 keydown 攔截與焦點管理 -->
-            <iframe id="minecraft-iframe" src="2026.4.20.html" class="w-full h-full border-none" allow="autoplay; fullscreen; keyboard" sandbox="allow-same-origin allow-scripts allow-popups allow-forms"></iframe>
+            <!-- 🔥 鎖定防護升級：開啟「pointer-lock」權限，確保 Minecraft 滑鼠旋轉可以正常鎖定！ -->
+            <iframe id="minecraft-iframe" src="2026.4.20.html" class="w-full h-full border-none" allow="autoplay; fullscreen; keyboard; pointer-lock" allowfullscreen sandbox="allow-same-origin allow-scripts allow-popups allow-forms"></iframe>
         </div>
     </div>
 
@@ -819,48 +776,48 @@
             </button>
             
             <!-- 工作列圖示 -->
-            <!-- 檔案總管 -->
+            <!-- 檔案總管 (釘選點與 dot 還原) -->
             <button onclick="toggleWindow('thispc')" id="taskbar-thispc" class="w-10 h-10 rounded flex items-center justify-center hover:bg-white/10 relative transition">
                 <img src="1154.png" class="w-6 h-6 object-contain" onerror="fallbackIcon(this, 'thispc')">
-                <span id="dot-thispc" class="absolute bottom-0.5 left-1/2 transform -translate-x-1/2 w-1 h-1 bg-blue-400 rounded-full opacity-0"></span>
+                <span id="dot-thispc" class="absolute bottom-0.5 left-1/2 transform -translate-x-1/2 w-1.5 h-1.5 bg-zinc-300 rounded-full opacity-0 transition-opacity duration-200 shadow-md"></span>
             </button>
             <!-- Microsoft Store 工作列 (已對接您本機的 store.png) -->
             <button onclick="toggleWindow('store')" id="taskbar-store" class="w-10 h-10 rounded flex items-center justify-center hover:bg-white/10 relative transition">
                 <img src="store.png" class="w-6 h-6 object-contain" onerror="fallbackIcon(this, 'store')">
-                <span id="dot-store" class="absolute bottom-0.5 left-1/2 transform -translate-x-1/2 w-1 h-1 bg-blue-400 rounded-full opacity-0"></span>
+                <span id="dot-store" class="absolute bottom-0.5 left-1/2 transform -translate-x-1/2 w-1.5 h-1.5 bg-zinc-300 rounded-full opacity-0 transition-opacity duration-200 shadow-md"></span>
             </button>
             <!-- Edge -->
             <button onclick="toggleWindow('edge')" id="taskbar-edge" class="w-10 h-10 rounded flex items-center justify-center hover:bg-white/10 relative transition">
                 <img src="https://upload.wikimedia.org/wikipedia/commons/9/98/Microsoft_Edge_logo_%282019%29.svg" class="w-6 h-6">
-                <span id="dot-edge" class="absolute bottom-0.5 left-1/2 transform -translate-x-1/2 w-1 h-1 bg-blue-400 rounded-full opacity-0"></span>
+                <span id="dot-edge" class="absolute bottom-0.5 left-1/2 transform -translate-x-1/2 w-1.5 h-1.5 bg-zinc-300 rounded-full opacity-0 transition-opacity duration-200 shadow-md"></span>
             </button>
             <!-- Word -->
             <button onclick="toggleWindow('word')" id="taskbar-word" class="w-10 h-10 rounded flex items-center justify-center hover:bg-white/10 relative transition">
                 <img src="winWord.png" class="w-6 h-6 object-contain" onerror="fallbackIcon(this, 'word')">
-                <span id="dot-word" class="absolute bottom-0.5 left-1/2 transform -translate-x-1/2 w-1 h-1 bg-blue-400 rounded-full opacity-0"></span>
+                <span id="dot-word" class="absolute bottom-0.5 left-1/2 transform -translate-x-1/2 w-1.5 h-1.5 bg-zinc-300 rounded-full opacity-0 transition-opacity duration-200 shadow-md"></span>
             </button>
             <!-- Excel -->
             <button onclick="toggleWindow('excel')" id="taskbar-excel" class="w-10 h-10 rounded flex items-center justify-center hover:bg-white/10 relative transition">
                 <img src="excel.png" class="w-6 h-6 object-contain" onerror="fallbackIcon(this, 'excel')">
-                <span id="dot-excel" class="absolute bottom-0.5 left-1/2 transform -translate-x-1/2 w-1 h-1 bg-blue-400 rounded-full opacity-0"></span>
+                <span id="dot-excel" class="absolute bottom-0.5 left-1/2 transform -translate-x-1/2 w-1.5 h-1.5 bg-zinc-300 rounded-full opacity-0 transition-opacity duration-200 shadow-md"></span>
             </button>
             <!-- PowerPoint -->
             <button onclick="toggleWindow('powerpoint')" id="taskbar-powerpoint" class="w-10 h-10 rounded flex items-center justify-center hover:bg-white/10 relative transition">
                 <img src="powerpoint.png" class="w-6 h-6 object-contain" onerror="fallbackIcon(this, 'ppt')">
-                <span id="dot-powerpoint" class="absolute bottom-0.5 left-1/2 transform -translate-x-1/2 w-1 h-1 bg-blue-400 rounded-full opacity-0"></span>
+                <span id="dot-powerpoint" class="absolute bottom-0.5 left-1/2 transform -translate-x-1/2 w-1.5 h-1.5 bg-zinc-300 rounded-full opacity-0 transition-opacity duration-200 shadow-md"></span>
             </button>
 
             <!-- =================== 🔥 工作列：Minecraft 預設直接加載 =================== -->
             <button onclick="toggleWindow('minecraft')" id="taskbar-minecraft" class="w-10 h-10 rounded flex justify-center items-center hover:bg-white/10 relative transition">
                 <img src="minecraft.png" class="w-6 h-6 object-contain" onerror="fallbackIcon(this, 'minecraft')">
-                <span id="dot-minecraft" class="absolute bottom-0.5 left-1/2 transform -translate-x-1/2 w-1 h-1 bg-blue-400 rounded-full opacity-0"></span>
+                <span id="dot-minecraft" class="absolute bottom-0.5 left-1/2 transform -translate-x-1/2 w-1.5 h-1.5 bg-zinc-300 rounded-full opacity-0 transition-opacity duration-200 shadow-md"></span>
             </button>
 
             <!-- =================== 🔥 動態商店下載 App 工作列 (安裝完成由 JS 自動顯現) =================== -->
             <!-- 2048 工作列 -->
             <button onclick="toggleWindow('game2048')" id="taskbar-game2048" class="w-10 h-10 rounded hidden justify-center items-center hover:bg-white/10 relative transition">
                 <div class="w-6 h-6 bg-amber-500 rounded text-center text-[10px] leading-6 font-bold text-white">2048</div>
-                <span id="dot-game2048" class="absolute bottom-0.5 left-1/2 transform -translate-x-1/2 w-1 h-1 bg-blue-400 rounded-full opacity-0"></span>
+                <span id="dot-game2048" class="absolute bottom-0.5 left-1/2 transform -translate-x-1/2 w-1.5 h-1.5 bg-zinc-300 rounded-full opacity-0 transition-opacity duration-200 shadow-md"></span>
             </button>
             <!-- 小恐龍 工作列 -->
             <button onclick="toggleWindow('gamedino')" id="taskbar-gamedino" class="w-10 h-10 rounded hidden justify-center items-center hover:bg-white/10 relative transition">
@@ -869,14 +826,14 @@
                         <path d="M14,2h6v2h1v3h-3v1h-1v1h-2V7h-1V6h-1V4h2V2z M17,3h1v1h-1V3z M11,6h1v1h-1V6z M10,7h1v1h-1V7z M9,8h1v1h-1V8z M8,9h1v3h-1V9z M7,10h1v4h-1V10z M6,11h1v4h-1V11z M5,12h1v4h-1V12z M2,14h3v1H2v-1z M1,15h3v1H1v-1z M0,16h3v1H0v-1z M1,17h1v1H1v-1z M2,18h1v1H2v-1z M3,19h2v1H3v-1z M5,15h1v1H5v-1z M6,14h1v1H6v-1z M11,10h2v1h-2v-1z M12,11h1v1h-1v-1z M13,12h2v1h-2v-1z M14,13h1v2h-1v-2z M10,16h2v1h-2v-1z M9,17h1v1H9v-1z M8,18h1v3h-1v-3z M7,21h2v1H7v-1z M11,18h1v3h-1v-3z M10,21h2v1H7v-1z" fill="#10b981"/>
                     </svg>
                 </div>
-                <span id="dot-gamedino" class="absolute bottom-0.5 left-1/2 transform -translate-x-1/2 w-1 h-1 bg-blue-400 rounded-full opacity-0"></span>
+                <span id="dot-gamedino" class="absolute bottom-0.5 left-1/2 transform -translate-x-1/2 w-1.5 h-1.5 bg-zinc-300 rounded-full opacity-0 transition-opacity duration-200 shadow-md"></span>
             </button>
             <!-- 俄羅斯方塊 工作列 -->
             <button onclick="toggleWindow('tetris')" id="taskbar-tetris" class="w-10 h-10 rounded hidden justify-center items-center hover:bg-white/10 relative transition">
                 <div class="w-6 h-6 bg-red-600 rounded flex items-center justify-center shadow-md">
                     <i class="fa-solid fa-shapes text-[10px] text-white"></i>
                 </div>
-                <span id="dot-tetris" class="absolute bottom-0.5 left-1/2 transform -translate-x-1/2 w-1 h-1 bg-blue-400 rounded-full opacity-0"></span>
+                <span id="dot-tetris" class="absolute bottom-0.5 left-1/2 transform -translate-x-1/2 w-1.5 h-1.5 bg-zinc-300 rounded-full opacity-0 transition-opacity duration-200 shadow-md"></span>
             </button>
         </div>
 
@@ -1288,42 +1245,76 @@
             ]
         };
 
+        const pathNames = {
+            root: '本機',
+            documents: '本機 > 我的文件',
+            pictures: '本機 > 圖片藝廊',
+            drive_c: '本機 > 系統磁碟 (C:)'
+        };
+
+        // 🔥 關鍵修正：修復「檔案總管」圖示替換時直接覆蓋 parentElement 導致檔名 span 消失的錯誤
         function navigateFolder(folderKey) {
             const container = document.getElementById('explorer-content');
             if (!container) return;
             container.innerHTML = '';
             
+            // 更新路徑導覽列
+            const pathText = document.getElementById('explorer-path-text');
+            if (pathText) {
+                pathText.textContent = pathNames[folderKey] || '本機';
+            }
+
             const items = fileSystem[folderKey] || [];
             
             if (items.length === 0) {
-                container.innerHTML = `<div class="text-xs text-gray-400">此資料夾是空的。</div>`;
+                container.innerHTML = `<div class="text-xs text-zinc-500 p-4">此資料夾目前是空的。</div>`;
                 return;
             }
 
             const grid = document.createElement('div');
-            grid.className = "grid grid-cols-4 gap-4";
+            grid.className = "grid grid-cols-4 gap-4 p-2";
 
             items.forEach(item => {
                 const col = document.createElement('div');
-                col.className = "flex flex-col items-center p-2 rounded hover:bg-white/5 active:bg-white/10 cursor-pointer text-center";
+                col.className = "flex flex-col items-center p-3 rounded-lg hover:bg-zinc-800/60 active:bg-zinc-800 cursor-pointer text-center transition";
                 
                 let iconHtml = '';
                 if (item.type === 'folder') {
-                    iconHtml = `<i class="fa-solid fa-folder text-yellow-400 text-3xl mb-2"></i>`;
+                    iconHtml = `<div class="w-10 h-10 flex items-center justify-center mb-2.5">
+                                    <i class="fa-solid fa-folder text-yellow-400 text-3xl"></i>
+                                </div>`;
                     col.onclick = () => navigateFolder(item.target);
                 } else if (item.type === 'image') {
-                    iconHtml = `<div class="w-10 h-10 border border-white/10 rounded mb-2 overflow-hidden flex items-center justify-center bg-black/40">
+                    iconHtml = `<div class="w-11 h-11 border border-zinc-800 rounded-md mb-2.5 overflow-hidden flex items-center justify-center bg-black/40 shadow-sm">
                                    <img src="${item.file}" class="max-w-full max-h-full object-contain" onerror="this.src='https://images.unsplash.com/photo-1618005182384-a83a8bd57fbe?auto=format&fit=crop&w=30&q=80'">
                                 </div>`;
                     col.onclick = () => openPhotoViewer(item.file, item.name);
                 } else {
-                    iconHtml = `<i class="fa-regular fa-file-lines text-blue-400 text-3xl mb-2"></i>`;
+                    // 🔥 關鍵修正：所有圖示一律以 div 包覆隔離。當圖片加載失敗時，fallbackIcon 只會修改此 div 內部的 innerHTML，絕對不會覆蓋並吞掉下方的 span 檔名！
+                    if (item.name.includes('.html')) {
+                        iconHtml = `<div class="w-10 h-10 flex items-center justify-center mb-2.5">
+                                        <i class="fa-solid fa-code text-emerald-400 text-3xl"></i>
+                                    </div>`;
+                    } else if (item.name.endsWith('.doc')) {
+                        iconHtml = `<div class="w-10 h-10 flex items-center justify-center mb-2.5">
+                                        <img src="winWord.png" class="w-full h-full object-contain" onerror="fallbackIcon(this, 'word')">
+                                    </div>`;
+                    } else if (item.name.endsWith('.txt')) {
+                        iconHtml = `<div class="w-10 h-10 flex items-center justify-center mb-2.5">
+                                        <img src="notepad.png" class="w-full h-full object-contain" onerror="fallbackIcon(this, 'notepad')">
+                                    </div>`;
+                    } else {
+                        iconHtml = `<div class="w-10 h-10 flex items-center justify-center mb-2.5">
+                                        <i class="fa-regular fa-file-lines text-blue-400 text-3xl"></i>
+                                    </div>`;
+                    }
                     col.onclick = () => eval(item.action);
                 }
 
-                col.innerHTML += `
+                col.innerHTML = `
                     ${iconHtml}
-                    <span class="text-xs text-gray-200 truncate w-full">${item.name}</span>
+                    <!-- 移除 line-clamp 與高度限制以避免在不同渲染引擎下截斷字體，並添加相容性最高的 webkit-line-clamp 排版 -->
+                    <span class="text-xs text-zinc-300 break-all select-none font-medium mt-1 leading-tight w-full text-center block max-h-12 overflow-hidden" style="display: -webkit-box; -webkit-line-clamp: 2; -webkit-box-orient: vertical;">${item.name}</span>
                 `;
                 grid.appendChild(col);
             });
@@ -1648,7 +1639,7 @@
 
 
         // ==========================================
-        //           自製經典「俄羅斯方塊」代碼
+        //           自製經典「俄羅斯方塊」代碼 (完全除錯重構)
         // ==========================================
         const tetrisCanvas = document.getElementById('tetris-canvas');
         const tetrisCtx = tetrisCanvas ? tetrisCanvas.getContext('2d') : null;
@@ -1769,11 +1760,15 @@
             });
         }
 
+        // 🔥 關鍵修正演算法：完美解決原本無窮迴圈的錯誤！
         function rotatePiece(piece) {
             let nShape = [];
-            for (let c = 0; c < piece.shape[0].length; r = 0, c++) {
+            const rLen = piece.shape.length;
+            const cLen = piece.shape[0].length;
+            
+            for (let c = 0; c < cLen; c++) {
                 let nRow = [];
-                for (let r = piece.shape.length - 1; r >= 0; r--) {
+                for (let r = rLen - 1; r >= 0; r--) {
                     nRow.push(piece.shape[r][c]);
                 }
                 nShape.push(nRow);
@@ -1886,16 +1881,37 @@
             if (page) page.focus();
         }
 
+        // 🔥 Word 下載與檔案系統動態儲存連動
         function saveWordDoc() {
             const page = document.getElementById('word-page');
             if (!page) return;
             const content = page.innerHTML;
+            
+            // 隨機命名文件名稱
+            const docName = "我的Word文件_" + Math.floor(Math.random() * 1000) + ".doc";
+
+            // 1. 動態追加寫入虛擬檔案總管的「我的文件 (documents)」中！
+            fileSystem.documents.push({
+                name: docName,
+                type: 'text',
+                action: `openSavedDoc(\`${content.replace(/`/g, '\\`').replace(/"/g, '\\"')}\`, '${docName}')`
+            });
+
+            // 刷新目前打開的檔案總管介面
+            const explorerWin = windows['thispc'];
+            if (explorerWin && explorerWin.isOpen) {
+                navigateFolder('documents');
+            }
+
+            // 2. 本機實體檔案下載儲存
             const blob = new Blob([content], { type: 'text/html;charset=utf-8' });
             const link = document.createElement('a');
             link.href = URL.createObjectURL(blob);
-            link.download = '自製Word文件.html';
+            link.download = docName;
             link.click();
             URL.revokeObjectURL(link.href);
+
+            alert(`🎉 文件已成功實體下載，並動態儲存至您的檔案總管 > 「我的文件」資料夾中！檔案名稱：${docName}`);
         }
 
 
@@ -2177,15 +2193,62 @@
 
 
         // ---------------- 記事本與小算盤 ----------------
+        // 🔥 記事本下載與檔案系統動態儲存連動
         function saveNotepad() {
             const notepadText = document.getElementById('notepad-content');
             if (!notepadText) return;
             const text = notepadText.value;
+            
+            // 隨機命名文件
+            const fileName = "記事本_" + Math.floor(Math.random() * 1000) + ".txt";
+
+            // 1. 動態將此檔案，同時載入並顯示在 Windows 11 桌面上！
+            const deskFilesContainer = document.getElementById('desktop-dynamic-files');
+            if (deskFilesContainer) {
+                const newFileDiv = document.createElement('div');
+                newFileDiv.className = "w-20 h-22 flex flex-col items-center justify-center rounded hover:bg-white/10 active:bg-white/20 cursor-pointer transition p-1";
+                // 點擊可以呼叫開啟此文件
+                newFileDiv.onclick = () => openSavedDoc(text, fileName);
+                newFileDiv.innerHTML = `
+                    <div class="w-10 h-10 flex items-center justify-center">
+                        <img src="notepad.png" class="w-full h-full object-contain" onerror="fallbackIcon(this, 'notepad')">
+                    </div>
+                    <span class="text-white text-xs text-center drop-shadow-md truncate w-full mt-1">${fileName}</span>
+                `;
+                deskFilesContainer.appendChild(newFileDiv);
+            }
+
+            // 2. 同步將此檔案寫入虛擬檔案總管的「快速存取 > 桌面」數據
+            fileSystem.root.push({
+                name: fileName,
+                type: 'text',
+                action: `openSavedDoc(\`${text.replace(/`/g, '\\`').replace(/"/g, '\\"')}\`, '${fileName}')`
+            });
+
+            // 3. 下載實體檔案到玩家真實本機中
             const blob = new Blob([text], { type: 'text/plain;charset=utf-8' });
             const link = document.createElement('a');
             link.href = URL.createObjectURL(blob);
-            link.download = '記事本.txt';
+            link.download = fileName;
             link.click();
+            URL.revokeObjectURL(link.href);
+
+            alert(`🎉 文件已成功實體下載，並動態儲存至您的系統「桌面」主畫面上！檔案名稱：${fileName}`);
+        }
+
+        // 打開在模擬器內新產生的儲存文件
+        function openSavedDoc(content, title) {
+            // 如果是 Word，直接載入到 Word 編輯區
+            if (title.endsWith('.doc')) {
+                const page = document.getElementById('word-page');
+                if (page) page.innerHTML = content;
+                openWindow('word');
+            } else {
+                // 如果是記事本，載入到記事本
+                const notepadText = document.getElementById('notepad-content');
+                if (notepadText) notepadText.value = content;
+                openWindow('notepad');
+            }
         }
 
         function clearNotepad() {
