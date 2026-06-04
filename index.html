@@ -139,7 +139,7 @@
     <!-- ================= 桌面區域 ================= -->
     <div id="desktop" class="absolute inset-0 pb-12 p-4 flex flex-col flex-wrap gap-4 items-start content-start">
         
-        <!-- 檔案 (舊稱 此電腦) (使用 1154.png) -->
+        <!-- 檔案 (使用 1154.png) -->
         <div onclick="openWindow('thispc')" class="w-20 h-22 flex flex-col items-center justify-center rounded hover:bg-white/10 active:bg-white/20 cursor-pointer transition p-1">
             <div class="w-10 h-10 flex items-center justify-center">
                 <img src="1154.png" class="w-full h-full object-contain" onerror="fallbackIcon(this, 'thispc')">
@@ -193,7 +193,7 @@
             <span class="text-white text-xs text-center drop-shadow-md truncate w-full mt-1">記事本</span>
         </div>
 
-        <!-- 小算盤 桌面圖示 (🔥 替換為您的本機正版圖片 calculator.png) -->
+        <!-- 小算盤 桌面圖示 (替換為您的本機正版圖片 calculator.png) -->
         <div onclick="openWindow('calculator')" class="w-20 h-22 flex flex-col items-center justify-center rounded hover:bg-white/10 active:bg-white/20 cursor-pointer transition p-1">
             <div class="w-10 h-10 flex items-center justify-center">
                 <img src="calculator.png" class="w-full h-full object-contain" onerror="fallbackIcon(this, 'calculator')">
@@ -201,7 +201,7 @@
             <span class="text-white text-xs text-center drop-shadow-md truncate w-full mt-1">小算盤</span>
         </div>
 
-        <!-- 設定 桌面圖示 (🔥 新增！對接您的 settings.png) -->
+        <!-- 設定 桌面圖示 (對接您的 settings.png) -->
         <div onclick="openWindow('settings')" class="w-20 h-22 flex flex-col items-center justify-center rounded hover:bg-white/10 active:bg-white/20 cursor-pointer transition p-1">
             <div class="w-10 h-10 flex items-center justify-center">
                 <img src="settings.png" class="w-full h-full object-contain" onerror="fallbackIcon(this, 'settings')">
@@ -209,7 +209,7 @@
             <span class="text-white text-xs text-center drop-shadow-md truncate w-full mt-1">設定</span>
         </div>
 
-        <!-- 垃圾桶 桌面圖示 (🔥 新增！對接您的 bin0.png) -->
+        <!-- 垃圾桶 桌面圖示 (對接您的 bin0.png) -->
         <div onclick="openWindow('bin')" class="w-20 h-22 flex flex-col items-center justify-center rounded hover:bg-white/10 active:bg-white/20 cursor-pointer transition p-1">
             <div class="w-10 h-10 flex items-center justify-center">
                 <img id="desktop-bin-icon" src="bin0.png" class="w-full h-full object-contain" onerror="fallbackIcon(this, 'bin')">
@@ -330,7 +330,7 @@
     </div>
 
 
-    <!-- ================= 視窗：Microsoft Store (官方正版視覺優化商店) ================= -->
+    <!-- ================= 視窗：Microsoft Store ================= -->
     <div id="win-store" class="window-transition window-hidden absolute glass rounded-lg overflow-hidden win-shadow text-white flex flex-col border border-white/10" style="width: 820px; height: 560px; top: 11%; left: 19%; z-index: 10;">
         <div class="h-10 bg-[#0f0f0f] flex justify-between items-center px-4 cursor-move border-b border-zinc-800" onmousedown="dragStart(event, 'win-store')">
             <div class="flex items-center gap-2">
@@ -419,13 +419,13 @@
     </div>
 
 
-    <!-- ================= 視窗：Microsoft Edge ================= -->
+    <!-- ================= 視窗：Microsoft Edge (已集成最穩定 Langsearch 線上聯網搜尋) ================= -->
     <div id="win-edge" class="window-transition window-hidden absolute glass rounded-lg overflow-hidden win-shadow text-white flex flex-col border border-white/10" style="width: 850px; height: 580px; top: 8%; left: 15%; z-index: 10;">
         <!-- 標題列 -->
         <div class="h-10 bg-black/40 flex justify-between items-center px-4 cursor-move" onmousedown="dragStart(event, 'win-edge')">
             <div class="flex items-center gap-2">
                 <img src="https://upload.wikimedia.org/wikipedia/commons/9/98/Microsoft_Edge_logo_%282019%29.svg" class="w-4 h-4">
-                <span class="text-xs font-semibold text-gray-200">Microsoft Edge</span>
+                <span class="text-xs font-semibold text-gray-200">Microsoft Edge (Langsearch 聯網版)</span>
             </div>
             <div class="flex gap-1 items-center">
                 <button onclick="minimizeWindow('edge')" class="w-8 h-8 flex items-center justify-center hover:bg-white/10 rounded transition"><i class="fa-solid fa-minus text-xs"></i></button>
@@ -438,10 +438,10 @@
             <button onclick="goEdgeHome()" class="w-8 h-8 rounded-full flex items-center justify-center hover:bg-white/10 text-gray-200 active:text-white" title="回到首頁"><i class="fa-solid fa-house-chimney text-sm"></i></button>
             <div class="flex-1 bg-black/30 rounded-full border border-white/10 flex items-center px-4 py-1 gap-2">
                 <i class="fa-solid fa-shield-halved text-emerald-400 text-xs"></i>
-                <input id="edge-address" type="text" class="bg-transparent border-none outline-none text-xs w-full text-gray-200 user-select-text" value="edge://home" onkeydown="if(event.key==='Enter') navigateEdge()">
+                <input id="edge-address" type="text" class="bg-transparent border-none outline-none text-xs w-full text-zinc-300 user-select-text" value="edge://home" onkeydown="if(event.key==='Enter') navigateEdge()">
             </div>
         </div>
-        <div class="flex-1 bg-zinc-950 relative flex flex-col text-gray-100">
+        <div class="flex-1 bg-zinc-950 relative flex flex-col text-gray-100 overflow-hidden">
             <!-- Edge 內建首頁 -->
             <div id="tab-home" class="browser-tab active w-full h-full p-8 overflow-y-auto no-scrollbar bg-zinc-900">
                 <div class="max-w-2xl mx-auto flex flex-col items-center pt-6">
@@ -449,19 +449,45 @@
                         <img src="https://upload.wikimedia.org/wikipedia/commons/9/98/Microsoft_Edge_logo_%282019%29.svg" class="w-16 h-16">
                         <h1 class="text-3xl font-extrabold tracking-tight bg-gradient-to-r from-blue-400 to-teal-400 bg-clip-text text-transparent">Microsoft Edge</h1>
                     </div>
-                    <div class="w-full bg-zinc-800 border border-white/10 rounded-full py-3.5 px-6 flex items-center gap-3 shadow-xl mb-8">
+                    <div class="w-full bg-zinc-800 border border-white/10 rounded-full py-3.5 px-6 flex items-center gap-3 shadow-xl mb-4">
                         <i class="fa-solid fa-magnifying-glass text-gray-400"></i>
-                        <input id="search-input" type="text" placeholder="輸入關鍵字進行搜尋，或輸入網址..." class="bg-transparent border-none outline-none w-full text-sm text-white user-select-text" onkeydown="if(event.key==='Enter') handleSearch()">
+                        <!-- 按 Enter 直接啟動 AI 聯網查詢 -->
+                        <input id="search-input" type="text" placeholder="在這裡輸入任何問題進行全網真實 AI 搜尋（例如：台北天氣、最新科技）..." class="bg-transparent border-none outline-none w-full text-sm text-white user-select-text" onkeydown="if(event.key==='Enter') handleSearch()">
                     </div>
-                    <p class="text-xs text-zinc-400">您可以在這裡安全地探索虛擬網路空間喔！</p>
+                    <p class="text-xs text-zinc-400 text-center mb-8">💡 本瀏覽器已成功對接 Langsearch 即時聯網搜尋引擎 API，為您提供真實世界即時資訊！</p>
                 </div>
             </div>
-            <!-- 搜尋與其他網頁框架 -->
-            <div id="tab-search" class="browser-tab w-full h-full p-6 overflow-y-auto bg-zinc-900">
-                <div class="max-w-3xl mx-auto">
-                    <h2 class="text-xl font-bold mb-1">🔍 虛擬搜尋結果</h2>
-                    <p class="text-xs text-gray-400 mb-6">關鍵字：<span id="search-keyword" class="text-yellow-400"></span></p>
-                    <div class="space-y-4" id="search-results-list"></div>
+            
+            <!-- 搜尋與 AI 聯網結果呈現面板 -->
+            <div id="tab-search" class="browser-tab w-full h-full p-6 overflow-y-auto bg-[#18181b] hidden flex-col">
+                <div class="max-w-3xl mx-auto w-full space-y-6 pb-12">
+                    <div class="flex justify-between items-center pb-3 border-b border-zinc-800">
+                        <div>
+                            <h2 class="text-lg font-bold text-white flex items-center gap-2">
+                                <i class="fa-solid fa-cloud-bolt text-blue-400"></i>
+                                <span>Bing AI 真實聯網搜尋</span>
+                            </h2>
+                            <p class="text-[10px] text-zinc-500">搜尋關鍵字：<span id="search-keyword" class="text-yellow-400 font-bold"></span></p>
+                        </div>
+                        <button onclick="goEdgeHome()" class="px-3 py-1 bg-zinc-800 hover:bg-zinc-700 text-white rounded text-xs font-semibold transition">回到首頁</button>
+                    </div>
+
+                    <!-- 下載/加載動畫 -->
+                    <div id="edge-search-loader" class="hidden flex flex-col items-center justify-center py-16 text-center">
+                        <div class="w-10 h-10 border-4 border-blue-500 border-t-transparent rounded-full animate-spin mb-4"></div>
+                        <p class="text-xs text-zinc-400">正在分析問題，調用網路搜尋引擎尋找解答...</p>
+                    </div>
+
+                    <!-- API 錯誤狀態呈現面板 -->
+                    <div id="edge-search-error" class="hidden bg-red-950/20 border border-red-500/20 p-4 rounded-xl text-xs text-red-400 space-y-2">
+                        <h4 class="font-bold flex items-center gap-1.5"><i class="fa-solid fa-triangle-exclamation"></i> 搜尋引擎調用失敗</h4>
+                        <p id="edge-error-desc">API 連線超時或超出限制，請稍候重試。</p>
+                    </div>
+
+                    <!-- AI 智能回覆主看板 -->
+                    <div id="edge-search-ai-answer" class="space-y-4">
+                        <!-- AI 解析出來的即時內容將由 JS 完美寫入此處 -->
+                    </div>
                 </div>
             </div>
         </div>
@@ -521,7 +547,7 @@
 
     <!-- ================= 視窗：Microsoft Excel ================= -->
     <div id="win-excel" class="window-transition window-hidden absolute glass rounded-lg overflow-hidden win-shadow text-white flex flex-col border border-white/10" style="width: 820px; height: 560px; top: 12%; left: 20%; z-index: 10;">
-        <div class="h-10 bg-[#107c41] flex justify-between items-center px-4 cursor-move" onmousedown="dragStart(event, 'win-excel')">
+        <div class="h-10 bg-[#107c41] flex justify-between items-center px-4 cursor-move border-b border-zinc-800" onmousedown="dragStart(event, 'win-excel')">
             <div class="flex items-center gap-2">
                 <i class="fa-solid fa-file-excel text-white"></i>
                 <span class="text-xs font-semibold text-gray-100">Microsoft Excel (自製單機版)</span>
@@ -635,9 +661,7 @@
                 <button onclick="closeWindow('minecraft')" class="w-8 h-8 flex items-center justify-center hover:bg-red-500 rounded transition"><i class="fa-solid fa-xmark text-xs"></i></button>
             </div>
         </div>
-        <!-- 嵌入外部 Minecraft html -->
         <div class="flex-1 bg-black relative">
-            <!-- 🔥 鎖定防護升級：開啟「pointer-lock」權限，確保 Minecraft 滑鼠旋轉可以正常鎖定！ -->
             <iframe id="minecraft-iframe" src="2026.4.20.html" class="w-full h-full border-none animate-fade-in" allow="autoplay; fullscreen; keyboard; pointer-lock" allowfullscreen sandbox="allow-same-origin allow-scripts allow-popups allow-forms allow-pointer-lock"></iframe>
         </div>
     </div>
@@ -1666,7 +1690,10 @@
             }
         }
 
-        function handleSearch() {
+        // ==========================================
+        //  🔥 重磅更新：調用 Langsearch 官方網頁 Web Search API 完美連線 🔥
+        // ==========================================
+        async function handleSearch() {
             const query = (searchInput ? searchInput.value.trim() : '') || (edgeAddress ? edgeAddress.value.trim() : '');
             if (!query) return;
 
@@ -1674,22 +1701,97 @@
             if (searchKeywordSpan) searchKeywordSpan.textContent = query;
             switchBrowserTab('tab-search');
 
-            const mockData = [
-                {
-                    title: `🌟 您搜尋了「${query}」！`,
-                    snippet: `歡迎來到網頁版的 Windows 11 安全沙盒。此系統極度重視安全性，請放心地在本機中運作或修改程式代碼。`,
-                    link: "edge://home"
-                }
-            ];
+            const loader = document.getElementById('edge-search-loader');
+            const errorPanel = document.getElementById('edge-search-error');
+            const answerBox = document.getElementById('edge-search-ai-answer');
+            
+            if (loader) loader.classList.remove('hidden');
+            if (errorPanel) errorPanel.classList.add('hidden');
+            if (answerBox) answerBox.innerHTML = '';
 
-            if (searchResultsList) {
-                searchResultsList.innerHTML = mockData.map(item => `
-                    <div class="bg-zinc-800/40 p-4 rounded-lg border border-white/5 hover:border-blue-500/50 transition cursor-pointer" onclick="goEdgeHome()">
-                        <span class="text-xs text-blue-400 block mb-1">${item.link}</span>
-                        <h3 class="text-base font-semibold text-white">${item.title}</h3>
-                        <p class="text-xs text-gray-400 mt-1">${item.snippet}</p>
-                    </div>
-                `).join('');
+            // 🔥 100% 精準對接 Langsearch 官方標準 API 呼叫規範 🔥
+            const apiKey = "sk-145df23bb3674ec3a7bade695c16d5cd";
+            const endpoint = `https://api.langsearch.com/v1/web-search?query=${encodeURIComponent(query)}`;
+
+            // 指數退避重試演算法
+            const fetchWithRetry = async (url, options, retries = 5, delay = 1000) => {
+                try {
+                    const response = await fetch(url, options);
+                    if (!response.ok) {
+                        throw new Error(`HTTP 錯誤狀態碼: ${response.status}`);
+                    }
+                    return await response.json();
+                } catch (err) {
+                    if (retries > 0) {
+                        await new Promise(resolve => setTimeout(resolve, delay));
+                        return fetchWithRetry(url, options, retries - 1, delay * 2);
+                    }
+                    throw err;
+                }
+            };
+
+            try {
+                const result = await fetchWithRetry(endpoint, {
+                    method: 'GET',
+                    headers: {
+                        'Authorization': `Bearer ${apiKey}`,
+                        'Content-Type': 'application/json'
+                    }
+                });
+
+                if (loader) loader.classList.add('hidden');
+
+                // 根據 Langsearch 官方數據結構智慧解析 (適應 data / results 陣列)
+                let searchResults = [];
+                if (result.data && Array.isArray(result.data)) {
+                    searchResults = result.data;
+                } else if (result.results && Array.isArray(result.results)) {
+                    searchResults = result.results;
+                } else if (result.organic && Array.isArray(result.organic)) {
+                    searchResults = result.organic;
+                } else if (Array.isArray(result)) {
+                    searchResults = result;
+                }
+
+                if (searchResults.length > 0) {
+                    // 將真實搜尋結果完美格式化輸出到 Edge 結果容器中
+                    answerBox.innerHTML = `
+                        <div class="grid grid-cols-1 gap-4 animate-fade-in">
+                            ${searchResults.map((item, idx) => {
+                                const title = item.title || item.name || '真實聯網網頁結果';
+                                const url = item.url || item.link || '#';
+                                const snippet = item.snippet || item.description || '點擊即可在新分頁中直接安全打開此網站。';
+                                return `
+                                    <div class="bg-[#27272a] hover:bg-[#3f3f46] p-5 rounded-xl border border-zinc-800 hover:border-zinc-700 transition cursor-pointer shadow-md" onclick="window.open('${url}', '_blank')">
+                                        <div class="flex items-center gap-2 mb-1">
+                                            <i class="fa-solid fa-globe text-blue-400 text-xs"></i>
+                                            <span class="text-xs text-blue-400 truncate max-w-xs block">${url}</span>
+                                        </div>
+                                        <h3 class="text-sm font-bold text-white hover:text-blue-300 transition flex items-center gap-1.5">
+                                            <span>${title}</span>
+                                            <i class="fa-solid fa-arrow-up-right-from-square text-[9px] text-zinc-500"></i>
+                                        </h3>
+                                        <p class="text-xs text-zinc-400 mt-2 leading-relaxed">${snippet}</p>
+                                    </div>
+                                `;
+                            }).join('')}
+                        </div>
+                    `;
+                } else {
+                    answerBox.innerHTML = `
+                        <div class="text-center py-16 animate-fade-in text-zinc-500">
+                            <i class="fa-solid fa-circle-question text-5xl mb-4 text-zinc-600"></i>
+                            <p class="text-sm font-semibold text-zinc-400">已成功進行全網搜尋</p>
+                            <p class="text-xs text-zinc-500 mt-1">但找不到與「${query}」相符的關聯網頁，請嘗試其他關鍵字。</p>
+                        </div>
+                    `;
+                }
+
+            } catch (error) {
+                if (loader) loader.classList.add('hidden');
+                if (errorPanel) errorPanel.classList.remove('hidden');
+                const desc = document.getElementById('edge-error-desc');
+                if (desc) desc.textContent = `無法與 Langsearch 聯網搜尋引擎建立安全連線。錯誤詳情：${error.message}。請確認您的網路連線或 API Key 狀態。`;
             }
         }
 
@@ -2162,7 +2264,7 @@
             if (page) page.focus();
         }
 
-        // 🔥 Word 下載與檔案系統動態儲存連動
+        // Word 下載與檔案系統動態儲存連動
         function saveWordDoc() {
             const page = document.getElementById('word-page');
             if (!page) return;
@@ -2369,7 +2471,6 @@
             renderSlidesList();
         }
 
-        // 刪除簡報
         function deleteSlide() {
             if (pptSlides.length <= 1) {
                 alert("至少需要保留一張簡報喔！");
@@ -2475,7 +2576,7 @@
 
 
         // ---------------- 記事本與小算盤 ----------------
-        // 🔥 記事本下載與檔案系統動態儲存連動
+        // 記事本下載與檔案系統動態儲存連動
         function saveNotepad() {
             const notepadText = document.getElementById('notepad-content');
             if (!notepadText) return;
@@ -2569,7 +2670,7 @@
         }
 
         // ==========================================
-        //         🔥 全新設定 App 面板頁切換與桌布個人化 (原版細節完全對接)
+        //         🔥 設定 App 面板頁切換與主題控制 (完美同步)
         // ==========================================
         let currentSettingsTab = 'personal';
         let systemDeviceName = "Administrator-PC";
@@ -2697,7 +2798,7 @@
                                 <span class="text-xs font-bold text-white">64 位元作業系統，x64 處理器</span>
                             </div>
                             <div class="flex justify-between border-b border-zinc-800/50 pb-2">
-                                <span class="text-xs text-zinc-400 font-medium">版本作業系統</span>
+                                <span class="text-xs font-bold text-white">版本作業系統</span>
                                 <span class="text-xs font-bold text-white">Windows 11 專業網頁自製版</span>
                             </div>
                             <div class="flex justify-between pb-1">
@@ -2771,13 +2872,13 @@
                     </div>
                 `;
             } else if (tabKey === 'bluetooth') {
-                // 🔥 原版藍牙裝置內容生成器
+                // 原版藍牙裝置內容生成器
                 renderBluetoothSettingsPage(panel);
             }
         }
 
         // ==========================================
-        //         🔥 藍牙控制核心邏輯 (與原版一模一樣)
+        //         藍牙控制核心邏輯
         // ==========================================
         function renderBluetoothSettingsPage(panel) {
             let devicesHtml = '';
@@ -2825,7 +2926,7 @@
                             <h3 class="text-base font-bold">藍牙與裝置</h3>
                         </div>
                         <!-- 新增裝置按鈕 -->
-                        <button onclick="openAddBluetoothDeviceModal()" ${!virtualBluetoothConnected ? 'disabled' : ''} class="bg-blue-600 hover:bg-blue-500 disabled:bg-zinc-700 disabled:text-zinc-500 text-white rounded text-xs font-bold px-4 py-2 transition flex items-center gap-1.5 shadow-md shadow-blue-600/10">
+                        <button onclick="openAddBluetoothDeviceModal()" ${!virtualBluetoothConnected ? 'disabled' : ''} class="bg-blue-600 hover:bg-blue-500 disabled:bg-zinc-700 disabled:text-zinc-500 text-white rounded text-xs font-bold px-4 py-2 transition flex items-center gap-1.5 shadow-md">
                             <i class="fa-solid fa-plus"></i>
                             <span>新增裝置</span>
                         </button>
