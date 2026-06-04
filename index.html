@@ -547,7 +547,7 @@
 
     <!-- ================= 視窗：Microsoft Excel ================= -->
     <div id="win-excel" class="window-transition window-hidden absolute glass rounded-lg overflow-hidden win-shadow text-white flex flex-col border border-white/10" style="width: 820px; height: 560px; top: 12%; left: 20%; z-index: 10;">
-        <div class="h-10 bg-[#107c41] flex justify-between items-center px-4 cursor-move border-b border-zinc-800" onmousedown="dragStart(event, 'win-excel')">
+        <div class="h-10 bg-[#107c41] flex justify-between items-center px-4 cursor-move" onmousedown="dragStart(event, 'win-excel')">
             <div class="flex items-center gap-2">
                 <i class="fa-solid fa-file-excel text-white"></i>
                 <span class="text-xs font-semibold text-gray-100">Microsoft Excel (自製單機版)</span>
@@ -601,7 +601,7 @@
         <div class="h-10 bg-[#c43e1c] flex justify-between items-center px-4 cursor-move border-b border-zinc-800" onmousedown="dragStart(event, 'win-powerpoint')">
             <div class="flex items-center gap-2">
                 <i class="fa-solid fa-file-powerpoint text-white"></i>
-                <span class="text-xs font-semibold text-gray-100">Microsoft PowerPoint (自製簡報大師)</span>
+                <span class="text-xs font-semibold text-gray-200">Microsoft PowerPoint (自製簡報大師)</span>
             </div>
             <div class="flex gap-1 items-center">
                 <button onclick="minimizeWindow('powerpoint')" class="w-8 h-8 flex items-center justify-center hover:bg-white/10 rounded transition"><i class="fa-solid fa-minus text-xs"></i></button>
@@ -612,9 +612,14 @@
         <!-- PPT 工具列 -->
         <div class="bg-zinc-100 text-zinc-800 p-2.5 border-b border-gray-300 flex justify-between items-center text-xs flex-wrap gap-2">
             <div class="flex items-center gap-2">
-                <button onclick="addSlide()" class="px-3 py-1 bg-orange-600 hover:bg-orange-700 text-white rounded font-semibold text-[11px] transition"><i class="fa-solid fa-plus mr-1"></i>新投影片</button>
-                <button onclick="deleteSlide()" class="px-3 py-1 bg-zinc-600 hover:bg-zinc-700 text-white rounded font-semibold text-[11px] transition"><i class="fa-solid fa-trash mr-1"></i>刪除目前頁</button>
+                <button onclick="addSlide()" class="px-3 py-1 bg-orange-600 hover:bg-orange-700 text-white rounded font-semibold text-[11px] transition flex items-center gap-1">
+                    <i class="fa-solid fa-plus"></i> 新增投影片
+                </button>
+                <button onclick="deleteSlide()" class="px-3 py-1 bg-zinc-600 hover:bg-zinc-700 text-white rounded font-semibold text-[11px] transition flex items-center gap-1">
+                    <i class="fa-solid fa-trash-can"></i> 刪除目前投影片
+                </button>
                 <span class="text-gray-300">|</span>
+                <span class="text-[11px] text-zinc-600">更換背景色:</span>
                 <input type="color" id="ppt-bg-color" onchange="changeSlideBg(this.value)" class="w-6 h-6 border-0 rounded cursor-pointer" value="#ffffff" title="更改投影片背景">
                 <button onclick="startSlideshow()" class="px-4 py-1 bg-green-600 hover:bg-green-700 text-white rounded font-bold text-[11px] transition flex items-center gap-1">
                     <i class="fa-solid fa-play"></i> 播放全螢幕簡報
@@ -810,7 +815,7 @@
                                   <i class="fa-solid fa-tv text-purple-400 text-lg"></i>
                                   <div class="text-left">
                                       <h4 class="text-xs font-bold">無線顯示器或底座</h4>
-                                      <p class="text-[10px] text-zinc-400">無線顯示器、電視或使用 Miracast 的底座</p>
+                                      <p class="text-[10px] text-zinc-400">無線顯示器、電視 or 使用 Miracast 的底座</p>
                                   </div>
                               </div>
                           </div>
@@ -996,7 +1001,7 @@
             <div class="border-l-4 border-emerald-500 pl-3 py-1 bg-emerald-500/10 rounded-r text-xs space-y-1">
                 <h3 class="font-bold text-emerald-400">📂 全新 Office 功能與 Store 微調：</h3>
                 <p>1. <strong>自製 Office 系列</strong>：單機自製 Word、Excel、PowerPoint，隨時隨地離線開啟使用，完全排除任何報錯！</p>
-                <p>2. <strong>Store 商店與小恐龍大升級</strong>：Microsoft Store 圖示完美調用您下載的 <strong>`store.png`</strong> 官方圖片。另外，我們將<strong>小恐龍遊戲</strong>的圖示以及遊玩角色全部升級為超高畫質的<strong>經典 2D 像素裝飾綠色向量 SVG 影像</strong>，質感大幅躍升！</p>
+                <p>2. <strong>Store 商店與小恐龍大升級</strong>：Microsoft Store 圖示完美調用您下載的 <strong>`store.png`</strong> 官方圖片。另外，我們將<strong>小恐龍遊戲</strong>的圖示以及遊玩角色全部升級為超高畫質的<strong>經典 2D 像素綠色向量 SVG 影像</strong>，質感大幅躍升！</p>
                 <p>3. <strong>Minecraft 已預設安裝並完美保護鎖定</strong>：Minecraft 圖示預設就全部直接解鎖！當點擊開啟時，鍵盤鎖定將自動對接，WASD 與 Space 不再失靈！</p>
                 <p>4. <strong>上架自製俄羅斯方塊</strong>：前往 Microsoft Store 下載可直接解鎖獨立桌面/工作列 APP！</p>
                 <p class="text-yellow-400">5. 支援按 F11 鍵一鍵無縫進入或退出「全螢幕」體驗模式！</p>
@@ -1045,7 +1050,7 @@
             </button>
             
             <!-- 工作列圖示 -->
-            <!-- 檔案總管 (釘選點與 dot 還原) -->
+            <!-- 檔案總管 -->
             <button onclick="toggleWindow('thispc')" id="taskbar-thispc" class="w-10 h-10 rounded flex items-center justify-center hover:bg-white/10 relative transition">
                 <img src="1154.png" class="w-6 h-6 object-contain" onerror="fallbackIcon(this, 'thispc')">
                 <span id="dot-thispc" class="absolute bottom-0.5 left-1/2 transform -translate-x-1/2 w-1.5 h-1.5 bg-zinc-300 rounded-full opacity-0 transition-opacity duration-200 shadow-md"></span>
@@ -2466,7 +2471,7 @@
         }
 
         function addSlide() {
-            pptSlides.push({ title: "新簡報頁面標題", content: "在此編輯詳細頁面簡介...", bg: "#ffffff" });
+            pptSlides.push({ title: "新投影片標題", content: "在此編輯詳細頁面簡介...", bg: "#ffffff" });
             currentSlideIdx = pptSlides.length - 1;
             updatePPTSlide();
             renderSlidesList();
