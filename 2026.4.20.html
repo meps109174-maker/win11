@@ -4,7 +4,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Minecraft Scratch 啟動器</title>
+    <title>Eaglercraft 啟動器</title>
     <style>
         /* 載入麥塊專用的像素字體供儲存面板使用 */
         @import url('https://fonts.googleapis.com/css2?family=VT323&display=swap');
@@ -16,7 +16,7 @@
             color: white; user-select: none;
         }
 
-        /* 🔥 確保所有的輸入框和文字區域都可以正常點擊、反白與打字 🔥 */
+        /* 確保所有的輸入框和文字區域都可以正常點擊、反白與打字 */
         input, textarea {
             user-select: text;
         }
@@ -62,7 +62,6 @@
             margin-bottom: 5px; transition: 0.2s; color: #ccc;
         }
         .game-item.active { background-color: #3B3B3B; border-left: 4px solid #3C8527; color: white; }
-        .game-item:hover:not(.active) { background-color: #2A2A2A; color: white; }
 
         .main-content { flex-grow: 1; display: flex; flex-direction: column; position: relative; }
         .hero-banner {
@@ -88,11 +87,6 @@
         }
         .play-button:hover { background-color: #43962B; }
         .play-button:active { box-shadow: inset 0px 4px 0px rgba(0, 0, 0, 0.3), inset 0px -4px 0px rgba(255, 255, 255, 0.1); transform: translateY(2px); }
-
-        .info-message {
-            color: #ffaa00; font-weight: bold; font-size: 16px; background-color: rgba(255, 170, 0, 0.1);
-            padding: 15px 25px; border-radius: 5px; border: 1px solid #ffaa00;
-        }
 
         /* --- 彈出確認視窗樣式 --- */
         .modal-overlay {
@@ -219,66 +213,29 @@
                 <div class="profile-name">玩家 Player</div>
             </div>
             <div class="game-list">
-                <div class="game-item active" data-target="scratch">Minecraft: Scratch 版</div>
-                <div class="game-item" data-target="2d">Minecraft: 2D 版</div>
-                <div class="game-item" data-target="mcjs">Minecraft: JS 網頁版</div>
-                <div class="game-item" data-target="bedrock">Minecraft for Windows</div>
+                <!-- 🔥 簡化版：只留 Eaglercraft (JS 網頁版) 本身，並更新名字 🔥 -->
+                <div class="game-item active" data-target="mcjs">Eaglercraft</div>
             </div>
         </div>
 
         <div class="main-content">
             <div class="hero-banner"></div>
 
-            <div id="version-warning" class="info-message" style="display: none; position: absolute; bottom: 115px; left: 50%; transform: translateX(-50%); z-index: 15; background-color: rgba(255, 85, 85, 0.15); border-color: #ff5555; color: #ff5555; box-shadow: 0px 4px 10px rgba(0,0,0,0.5);">
-                ⚠️ 警告：本版本有諸多問題，建議不要遊玩。
-            </div>
-            <div id="warning-2d" class="info-message" style="display: none; position: absolute; bottom: 115px; left: 50%; transform: translateX(-50%); z-index: 15; background-color: rgba(255, 170, 0, 0.15); border-color: #ffaa00; color: #ffaa00; box-shadow: 0px 4px 10px rgba(0,0,0,0.5);">
-                ⚠️ 提示：本玩法為實驗性功能可能有問題。
-            </div>
-
             <div class="play-bar">
-                <div id="content-scratch" class="play-bar-content active">
-                    <div class="version-selector">
-                        <label>選擇遊戲版本</label>
-                        <select id="version-dropdown">
-                            <option value="game_v0.6.html">最新版本 (v0.6)</option>
-                            <option value="game_v0.5.html">舊版 v0.5.1</option>
-                            <option value="game_v0.4.html">舊版 v0.4.3</option>
-                            <option value="game_v0.3.html">舊版 v0.4.1</option>
-                        </select>
-                    </div>
-                    <button class="play-button" id="start-btn">開始遊戲</button>
-                </div>
-
-                <div id="content-2d" class="play-bar-content">
-                    <div class="version-selector">
-                        <label>選擇遊戲版本</label>
-                        <select id="version-dropdown-2d">
-                            <option value="game 2d v1.html">V1 版本</option>
-                        </select>
-                    </div>
-                    <button class="play-button" id="start-btn-2d">開始遊戲</button>
-                </div>
-
-                <div id="content-mcjs" class="play-bar-content">
+                <div id="content-mcjs" class="play-bar-content active">
                     <div class="version-selector">
                         <label>選擇遊戲版本</label>
                         <select id="version-dropdown-mcjs">
+                            <!-- 🔥 已完全移除 forge1.8 還有 forge1.12 🔥 -->
                             <option value="EaglercraftX_1.8.html">EaglercraftX 1.8</option>
                             <option value="eaglercraftx-194.html">EaglercraftX 1.9.4</option>
                             <option value="Eaglercraft_1.12.html">Eaglercraft 1.12</option>
                             <option value="EaglercraftX_1.5.2.html">EaglercraftX 1.5.2</option>
                             <option value="Eaglercraft_Alpha_1.3.html">Eaglercraft Alpha 1.3</option>
                             <option value="Eaglercraft_Beta_1.3.html">Eaglercraft Beta 1.3</option>
-                            <option value="forge1.8.html">Forge 1.8</option>
-                            <option value="forge1.12.html">Forge 1.12</option>
                         </select>
                     </div>
                     <button class="play-button" id="start-btn-mcjs">開始遊戲</button>
-                </div>
-
-                <div id="content-bedrock" class="play-bar-content">
-                    <button class="play-button" id="bedrock-start-btn">啟動基岩版</button>
                 </div>
             </div>
         </div>
@@ -286,20 +243,9 @@
 
     <!-- 遊戲畫面容器與浮動退出按鈕 -->
     <div id="game-container">
-        <!-- 🔥 新增 tabindex="0" 以及 pointer-lock 權限，確保 JS 遊戲能捕捉鍵盤 🔥 -->
+        <!-- 確保 Eaglercraft 鍵盤鎖定安全 -->
         <iframe id="game-frame" src="" allow="fullscreen; pointer-lock;" allowfullscreen="true" scrolling="no" tabindex="0"></iframe>
         <button id="floating-quit-btn">離開遊戲</button>
-    </div>
-
-    <div id="bedrock-modal" class="modal-overlay">
-        <div class="modal-box">
-            <h3>確認啟動基岩版？</h3>
-            <p>請確認你的電腦中已經安裝了「Minecraft for Windows（基岩版）」。</p>
-            <div class="modal-btn-group">
-                <button id="modal-cancel-btn" class="modal-btn btn-cancel">取消</button>
-                <button id="modal-confirm-btn" class="modal-btn btn-confirm">確認啟動</button>
-            </div>
-        </div>
     </div>
 
     <div id="save-load-modal" class="modal-overlay">
@@ -382,33 +328,6 @@
         passwordSubmit.addEventListener('click', checkPassword);
         passwordInput.addEventListener('keypress', (e) => { if (e.key === 'Enter') checkPassword(); });
 
-        // --- 頁籤切換邏輯 ---
-        const tabs = document.querySelectorAll('.game-item');
-        const contents = document.querySelectorAll('.play-bar-content');
-        const versionWarning = document.getElementById('version-warning');
-        const warning2d = document.getElementById('warning-2d');
-        const versionDropdown = document.getElementById('version-dropdown');
-
-        tabs.forEach(tab => {
-            tab.addEventListener('click', () => {
-                tabs.forEach(t => t.classList.remove('active'));
-                tab.classList.add('active');
-                contents.forEach(c => c.classList.remove('active'));
-                versionWarning.style.display = 'none';
-                warning2d.style.display = 'none';
-
-                const targetId = 'content-' + tab.getAttribute('data-target');
-                document.getElementById(targetId).classList.add('active');
-
-                if (tab.getAttribute('data-target') === '2d') {
-                    warning2d.style.display = 'block';
-                } else if (tab.getAttribute('data-target') === 'scratch') {
-                    const selectedText = versionDropdown.options[versionDropdown.selectedIndex].text;
-                    if (selectedText.includes('v0.4')) versionWarning.style.display = 'block';
-                }
-            });
-        });
-
         // 浮動按鈕控制
         const floatingQuitBtn = document.getElementById('floating-quit-btn');
         floatingQuitBtn.addEventListener('click', () => {
@@ -418,81 +337,16 @@
         // 追蹤目前執行的遊戲版本
         let currentGameMode = null;
 
-        // --- Scratch 版啟動 ---
-        const playBtn = document.getElementById('start-btn');
-        const gameFrame = document.getElementById('game-frame');
-        versionDropdown.addEventListener('change', (e) => {
-            const selectedText = e.target.options[e.target.selectedIndex].text;
-            if (selectedText.includes('v0.4')) versionWarning.style.display = 'block';
-            else versionWarning.style.display = 'none';
-        });
-        playBtn.addEventListener('click', () => {
-            currentGameMode = 'scratch';
-            gameFrame.src = versionDropdown.value;
-            launcherUI.style.display = 'none';
-            versionWarning.style.display = 'none'; 
-            
-            const selectedText = versionDropdown.options[versionDropdown.selectedIndex].text;
-            if (selectedText.includes('v0.5') || selectedText.includes('v0.4')) {
-                floatingQuitBtn.style.display = 'none';
-            } else {
-                floatingQuitBtn.style.display = 'block';
-            }
-            
-            const docElm = document.documentElement;
-            try {
-                let fullscreenPromise;
-                if (docElm.requestFullscreen) fullscreenPromise = docElm.requestFullscreen();
-                else if (docElm.webkitRequestFullscreen) fullscreenPromise = docElm.webkitRequestFullscreen();
-                else if (docElm.mozRequestFullScreen) fullscreenPromise = docElm.mozRequestFullScreen();
-                else if (docElm.msRequestFullscreen) fullscreenPromise = docElm.msRequestFullscreen();
-
-                if (fullscreenPromise && fullscreenPromise.catch) {
-                    fullscreenPromise.catch(err => console.warn("全螢幕受限：", err));
-                }
-            } catch (err) {
-                console.warn("全螢幕錯誤：", err);
-            }
-        });
-
-        // --- 2D 版啟動 ---
-        const playBtn2d = document.getElementById('start-btn-2d');
-        const versionDropdown2d = document.getElementById('version-dropdown-2d');
-        playBtn2d.addEventListener('click', () => {
-            currentGameMode = '2d';
-            gameFrame.src = versionDropdown2d.value;
-            launcherUI.style.display = 'none';
-            warning2d.style.display = 'none'; 
-            floatingQuitBtn.style.display = 'block'; 
-            
-            const docElm = document.documentElement;
-            try {
-                let fullscreenPromise;
-                if (docElm.requestFullscreen) fullscreenPromise = docElm.requestFullscreen();
-                else if (docElm.webkitRequestFullscreen) fullscreenPromise = docElm.webkitRequestFullscreen();
-                else if (docElm.mozRequestFullScreen) fullscreenPromise = docElm.mozRequestFullScreen();
-                else if (docElm.msRequestFullscreen) fullscreenPromise = docElm.msRequestFullscreen();
-
-                if (fullscreenPromise && fullscreenPromise.catch) {
-                    fullscreenPromise.catch(err => console.warn("全螢幕受限：", err));
-                }
-            } catch (err) {
-                console.warn("全螢幕錯誤：", err);
-            }
-        });
-
-        // --- MC JS (Eaglercraft) 版啟動 ---
+        // --- Eaglercraft (MC JS) 版啟動 ---
         const playBtnMcjs = document.getElementById('start-btn-mcjs');
         const versionDropdownMcjs = document.getElementById('version-dropdown-mcjs');
         playBtnMcjs.addEventListener('click', () => {
             currentGameMode = 'mcjs';
             gameFrame.src = versionDropdownMcjs.value;
             launcherUI.style.display = 'none';
-            warning2d.style.display = 'none'; 
-            versionWarning.style.display = 'none';
             floatingQuitBtn.style.display = 'block'; 
 
-            // 🔥 只需要給 iframe 本身焦點即可，不要去動 contentWindow，否則會把內部的 Canvas 焦點搶走 🔥
+            // 強制將焦點聚焦至 iframe
             setTimeout(() => {
                 try { gameFrame.focus(); } catch(e) {}
             }, 100);
@@ -512,24 +366,6 @@
                 console.warn("全螢幕錯誤：", err);
             }
         });
-
-        // --- 基岩版確認 ---
-        const bedrockStartBtn = document.getElementById('bedrock-start-btn');
-        const bedrockModal = document.getElementById('bedrock-modal');
-        document.getElementById('modal-cancel-btn').addEventListener('click', () => bedrockModal.style.display = 'none');
-        
-        document.getElementById('modal-confirm-btn').addEventListener('click', () => {
-            const iframe = document.createElement('iframe');
-            iframe.style.display = 'none';
-            iframe.src = 'minecraft://';
-            document.body.appendChild(iframe);
-
-            setTimeout(() => { 
-                bedrockModal.style.display = 'none'; 
-                launcherUI.style.display = 'none'; 
-            }, 500); 
-        });
-        bedrockStartBtn.addEventListener('click', () => bedrockModal.style.display = 'flex');
 
         // 🚨 ================= 隱藏密技與跨視窗按鍵偵測 ================= 🚨
         let secretCode = ""; 
@@ -565,6 +401,7 @@
         }
 
         function triggerQuitMenu() {
+            // Eaglercraft (MC JS) 不攔截 F1 快捷鍵，避免干擾遊戲內隱藏 HUD
             if (currentGameMode === 'mcjs') return;
 
             if (launcherUI.style.display === 'none' && passwordScreen.style.display === 'none') {
@@ -599,8 +436,9 @@
             handleKeySequence(e.key);
         });
 
+        const gameFrame = document.getElementById('game-frame');
+
         gameFrame.onload = function() {
-            // 🔥 遊戲載入完畢後，立刻把鍵盤焦點轉移給 iframe 🔥
             try {
                 gameFrame.focus();
             } catch(e) {}
@@ -864,10 +702,7 @@
             }
         });
 
-        // 💡 以下為你提供的焦點與打字防護機制程式碼
-
-        // 取得遊戲的 iframe 元素
-        // const gameFrame = document.getElementById('game-frame'); // (已在上方宣告過，故註解避免報錯)
+        // ================= 終極焦點與打字防護機制 =================
 
         // 1. 解決「按鈕」與「下拉選單」搶走焦點的問題
         
@@ -890,7 +725,7 @@
             });
         });
 
-        // 🔥 關鍵修正：【下拉選單處理】必須獨立出來！
+        // 【下拉選單處理】獨立出來
         // 必須等玩家「選擇完畢 (change)」後才可以取消焦點，否則點開會立刻閃退關閉
         document.querySelectorAll('select').forEach(element => {
             element.addEventListener('change', () => {
@@ -910,8 +745,7 @@
         });
 
         // 3. 全局點擊防護
-        // ⚠️ 關鍵修正：如果玩家已經點擊了「遊戲畫面 (iframe) 本身」，絕對不可以再呼叫 focus()！
-        // 否則會把遊戲內部真正的控制權 (Canvas) 給重置掉，這就是導致 WASD 失靈的元凶！
+        // 確保點擊任何空白處，都不會將焦點從 Eaglercraft Canvas 內部的控制權搶走
         document.addEventListener('click', (e) => {
             const isInput = e.target.tagName === 'INPUT' || e.target.tagName === 'TEXTAREA';
             const isGameFrame = e.target === gameFrame; // 判斷點擊的是不是遊戲畫面
