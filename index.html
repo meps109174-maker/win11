@@ -73,7 +73,7 @@
             
             if (e.key === 'F11') {
                 e.preventDefault(); // 阻擋瀏覽器預設的 F11 畫面變動
-                toggleFullscreen(); // 改用我們自訂的完美無縫全螢幕
+                toggleFullscreen(); // 改用我們自訂的完美無螢幕全螢幕
             }
         });
 
@@ -136,6 +136,9 @@
 </head>
 <body class="relative" id="desktop-body">
 
+    <!-- 模擬螢幕亮度遮罩 -->
+    <div id="brightness-dimmer" class="pointer-events-none fixed inset-0 bg-black opacity-0 z-[9999] transition-opacity duration-100"></div>
+
     <!-- ================= 桌面區域 ================= -->
     <div id="desktop" class="absolute inset-0 pb-12 p-4 flex flex-col flex-wrap gap-4 items-start content-start">
         
@@ -144,7 +147,7 @@
             <div class="w-10 h-10 flex items-center justify-center">
                 <img src="1154.png" class="w-full h-full object-contain" onerror="fallbackIcon(this, 'thispc')">
             </div>
-            <span class="text-white text-xs text-center drop-shadow-md truncate w-full mt-1">檔案</span>
+            <span class="text-white text-xs text-center drop-shadow-md truncate w-full mt-1 font-medium select-none">檔案</span>
         </div>
 
         <!-- Microsoft Store 桌面圖示 (優先讀取您的 store.png 檔案) -->
@@ -152,13 +155,13 @@
             <div class="w-10 h-10 flex items-center justify-center">
                 <img src="store.png" class="w-9 h-9 object-contain" onerror="fallbackIcon(this, 'store')">
             </div>
-            <span class="text-white text-xs text-center drop-shadow-md truncate w-full mt-1">Microsoft Store</span>
+            <span class="text-white text-xs text-center drop-shadow-md truncate w-full mt-1 font-medium select-none">Microsoft Store</span>
         </div>
 
         <!-- Edge 桌面圖示 -->
         <div onclick="openWindow('edge')" class="w-20 h-22 flex flex-col items-center justify-center rounded hover:bg-white/10 active:bg-white/20 cursor-pointer transition p-1">
             <img src="https://upload.wikimedia.org/wikipedia/commons/9/98/Microsoft_Edge_logo_%282019%29.svg" class="w-10 h-10 mb-1" alt="Edge">
-            <span class="text-white text-xs text-center drop-shadow-md truncate w-full">Edge</span>
+            <span class="text-white text-xs text-center drop-shadow-md truncate w-full font-medium select-none">Edge</span>
         </div>
 
         <!-- Word 自製桌面圖示 -->
@@ -166,7 +169,7 @@
             <div class="w-10 h-10 flex items-center justify-center">
                 <img src="winWord.png" class="w-full h-full object-contain" onerror="fallbackIcon(this, 'word')">
             </div>
-            <span class="text-white text-xs text-center drop-shadow-md truncate w-full mt-1">Word</span>
+            <span class="text-white text-xs text-center drop-shadow-md truncate w-full mt-1 font-medium select-none">Word</span>
         </div>
 
         <!-- Excel 自製桌面圖示 -->
@@ -174,7 +177,7 @@
             <div class="w-10 h-10 flex items-center justify-center">
                 <img src="excel.png" class="w-full h-full object-contain" onerror="fallbackIcon(this, 'excel')">
             </div>
-            <span class="text-white text-xs text-center drop-shadow-md truncate w-full mt-1">Excel</span>
+            <span class="text-white text-xs text-center drop-shadow-md truncate w-full mt-1 font-medium select-none">Excel</span>
         </div>
 
         <!-- PowerPoint 自製桌面圖示 -->
@@ -182,7 +185,7 @@
             <div class="w-10 h-10 flex items-center justify-center">
                 <img src="powerpoint.png" class="w-full h-full object-contain" onerror="fallbackIcon(this, 'ppt')">
             </div>
-            <span class="text-white text-xs text-center drop-shadow-md truncate w-full mt-1">PowerPoint</span>
+            <span class="text-white text-xs text-center drop-shadow-md truncate w-full mt-1 font-medium select-none">PowerPoint</span>
         </div>
 
         <!-- 記事本 桌面圖示 -->
@@ -190,7 +193,7 @@
             <div class="w-10 h-10 flex items-center justify-center">
                 <img src="notepad.png" class="w-full h-full object-contain" onerror="fallbackIcon(this, 'notepad')">
             </div>
-            <span class="text-white text-xs text-center drop-shadow-md truncate w-full mt-1">記事本</span>
+            <span class="text-white text-xs text-center drop-shadow-md truncate w-full mt-1 font-medium select-none">記事本</span>
         </div>
 
         <!-- 小算盤 桌面圖示 (替換為您的本機正版圖片 calculator.png) -->
@@ -198,7 +201,7 @@
             <div class="w-10 h-10 flex items-center justify-center">
                 <img src="calculator.png" class="w-full h-full object-contain" onerror="fallbackIcon(this, 'calculator')">
             </div>
-            <span class="text-white text-xs text-center drop-shadow-md truncate w-full mt-1">小算盤</span>
+            <span class="text-white text-xs text-center drop-shadow-md truncate w-full mt-1 font-medium select-none">小算盤</span>
         </div>
 
         <!-- 設定 桌面圖示 (對接您的 settings.png) -->
@@ -206,7 +209,7 @@
             <div class="w-10 h-10 flex items-center justify-center">
                 <img src="settings.png" class="w-full h-full object-contain" onerror="fallbackIcon(this, 'settings')">
             </div>
-            <span class="text-white text-xs text-center drop-shadow-md truncate w-full mt-1">設定</span>
+            <span class="text-white text-xs text-center drop-shadow-md truncate w-full mt-1 font-medium select-none">設定</span>
         </div>
 
         <!-- 垃圾桶 桌面圖示 (對接您的 bin0.png) -->
@@ -214,7 +217,7 @@
             <div class="w-10 h-10 flex items-center justify-center">
                 <img id="desktop-bin-icon" src="bin0.png" class="w-full h-full object-contain" onerror="fallbackIcon(this, 'bin')">
             </div>
-            <span class="text-white text-xs text-center drop-shadow-md truncate w-full mt-1">垃圾桶</span>
+            <span class="text-white text-xs text-center drop-shadow-md truncate w-full mt-1 font-medium select-none">垃圾桶</span>
         </div>
 
         <!-- =================== 桌面區域：Minecraft 預設直接加載 =================== -->
@@ -222,14 +225,14 @@
             <div class="w-10 h-10 flex items-center justify-center" onclick="openWindow('minecraft')">
                 <img src="minecraft.png" class="w-full h-full object-contain rounded-md" onerror="fallbackIcon(this, 'minecraft')">
             </div>
-            <span class="text-white text-xs text-center drop-shadow-md truncate w-full mt-1">Minecraft</span>
+            <span class="text-white text-xs text-center drop-shadow-md truncate w-full mt-1 font-medium select-none">Minecraft</span>
         </div>
 
-        <!-- =================== 🔥 動態商店下載 App 桌面欄位 (安裝完成由 JS 自動顯現) =================== -->
+        <!-- =================== 🔥 動態商店下載 App 桌面欄位 =================== -->
         <!-- 2048 桌面 -->
         <div id="desktop-app-game2048" class="w-20 h-22 hidden flex-col items-center justify-center rounded hover:bg-white/10 active:bg-white/20 cursor-pointer transition p-1">
             <div class="w-10 h-10 bg-amber-500 rounded-lg flex items-center justify-center font-extrabold text-white text-lg" onclick="openWindow('game2048')">2048</div>
-            <span class="text-white text-xs text-center drop-shadow-md truncate w-full mt-1">2048 遊戲</span>
+            <span class="text-white text-xs text-center drop-shadow-md truncate w-full mt-1 font-medium select-none">2048 遊戲</span>
         </div>
 
         <!-- 小恐龍 桌面 -->
@@ -239,7 +242,7 @@
                     <path d="M14,2h6v2h1v3h-3v1h-1v1h-2V7h-1V6h-1V4h2V2z M17,3h1v1h-1V3z M11,6h1v1h-1V6z M10,7h1v1h-1V7z M9,8h1v1h-1V8z M8,9h1v3h-1V9z M7,10h1v4h-1V10z M6,11h1v4h-1V11z M5,12h1v4h-1V12z M2,14h3v1H2v-1z M1,15h3v1H1v-1z M0,16h3v1H0v-1z M1,17h1v1H1v-1z M2,18h1v1H2v-1z M3,19h2v1H3v-1z M5,15h1v1H5v-1z M6,14h1v1H6v-1z M11,10h2v1h-2v-1z M12,11h1v1h-1v-1z M13,12h2v1h-2v-1z M14,13h1v2h-1v-2z M10,16h2v1h-2v-1z M9,17h1v1H9v-1z M8,18h1v3h-1v-3z M7,21h2v1H7v-1z M11,18h1v3h-1v-3z M10,21h2v1H7v-1z" fill="#10b981"/>
                 </svg>
             </div>
-            <span class="text-white text-xs text-center drop-shadow-md truncate w-full mt-1">跳躍小恐龍</span>
+            <span class="text-white text-xs text-center drop-shadow-md truncate w-full mt-1 font-medium select-none">跳躍小恐龍</span>
         </div>
 
         <!-- 俄羅斯方塊 桌面 -->
@@ -247,7 +250,7 @@
             <div class="w-10 h-10 bg-red-600 rounded-lg flex items-center justify-center font-black text-white text-lg cursor-pointer shadow-md" onclick="openWindow('tetris')">
                 <i class="fa-solid fa-shapes text-white"></i>
             </div>
-            <span class="text-white text-xs text-center drop-shadow-md truncate w-full mt-1">俄羅斯方塊</span>
+            <span class="text-white text-xs text-center drop-shadow-md truncate w-full mt-1 font-medium select-none">俄羅斯方塊</span>
         </div>
 
         <!-- =================== 🔥 新增桌面動態檔案區域 =================== -->
@@ -256,7 +259,7 @@
     </div>
 
 
-    <!-- ================= 視窗：檔案總管 (檔案) ================= -->
+    <!-- ================= 視窗：檔案總管 ================= -->
     <div id="win-thispc" class="window-transition window-hidden absolute glass rounded-lg overflow-hidden win-shadow text-white flex flex-col border border-white/10" style="width: 820px; height: 520px; top: 10%; left: 15%; z-index: 10;">
         <!-- 檔案總管最上方標題列 -->
         <div class="h-10 bg-[#1e1e1e] flex justify-between items-center px-4 cursor-move border-b border-zinc-800" onmousedown="dragStart(event, 'win-thispc')">
@@ -271,7 +274,6 @@
             </div>
         </div>
 
-        <!-- Windows 11 原版工具列 -->
         <div class="bg-[#2a2a2e] px-4 py-2 border-b border-zinc-800 flex items-center gap-3 text-xs text-zinc-300">
             <button class="flex items-center gap-1.5 hover:bg-zinc-800 px-2.5 py-1 rounded text-white" onclick="navigateFolder('root')">
                 <i class="fa-solid fa-circle-plus text-blue-400"></i> 新增
@@ -286,35 +288,29 @@
             <button class="flex items-center gap-1.5 hover:bg-zinc-800 px-2 py-1 rounded"><i class="fa-solid fa-table-cells-large"></i> 檢視</button>
         </div>
 
-        <!-- Windows 11 原版路徑列與搜尋列 -->
         <div class="bg-[#1e1e1e] px-3 py-1.5 border-b border-zinc-800 flex items-center gap-2">
-            <!-- 導航鍵 -->
             <div class="flex gap-1 text-zinc-400 text-xs">
                 <button class="w-7 h-7 rounded hover:bg-zinc-800 flex items-center justify-center" onclick="navigateFolder('root')" title="回到根目錄"><i class="fa-solid fa-arrow-left"></i></button>
                 <button class="w-7 h-7 rounded hover:bg-zinc-800 flex items-center justify-center text-zinc-600 cursor-not-allowed"><i class="fa-solid fa-arrow-right"></i></button>
                 <button class="w-7 h-7 rounded hover:bg-zinc-800 flex items-center justify-center" onclick="navigateFolder('root')" title="向上"><i class="fa-solid fa-arrow-up"></i></button>
             </div>
-            <!-- 本地路徑列 -->
             <div class="flex-1 bg-zinc-900 border border-zinc-800 rounded px-3 py-1 text-xs flex items-center gap-2 text-zinc-300">
                 <i class="fa-solid fa-house text-[10px] text-blue-400"></i>
                 <span class="text-zinc-500">&gt;</span>
                 <span id="explorer-path-text">本機</span>
             </div>
-            <!-- 搜尋框 -->
             <div class="w-48 bg-zinc-900 border border-zinc-800 rounded px-2.5 py-1 text-xs flex items-center gap-2 text-zinc-400">
                 <i class="fa-solid fa-magnifying-glass"></i>
                 <input type="text" placeholder="搜尋本機" class="bg-transparent border-none outline-none w-full text-zinc-300">
             </div>
         </div>
 
-        <!-- 主要工作區 (左導航、右內容) -->
         <div class="flex-1 flex bg-[#19191c] text-sm overflow-hidden">
-            <!-- 左側導覽列 -->
             <div class="w-48 border-r border-zinc-800 p-3 space-y-1 bg-[#1e1e1e]/60 flex flex-col justify-between">
                 <div class="space-y-1.5">
                     <p class="text-[10px] font-bold text-zinc-500 px-2 py-1 uppercase tracking-wider">快速存取</p>
                     <div onclick="navigateFolder('root')" class="flex items-center gap-2.5 px-3 py-1.5 rounded hover:bg-zinc-800 cursor-pointer transition text-zinc-200 text-xs"><i class="fa-solid fa-star text-amber-500"></i> 桌面</div>
-                    <div onclick="navigateFolder('documents')" class="flex items-center gap-2.5 px-3 py-1.5 rounded hover:bg-zinc-800 cursor-pointer transition text-zinc-200 text-xs"><i class="fa-solid fa-file-lines text-blue-400"></i> 我的文件</div>
+                    <div onclick="navigateFolder('documents')" class="flex items-center gap-2.5 px-3 py-1.5 rounded hover:bg-zinc-800/60 cursor-pointer transition text-zinc-200 text-xs"><i class="fa-solid fa-file-lines text-blue-400"></i> 我的文件</div>
                     <div onclick="navigateFolder('pictures')" class="flex items-center gap-2.5 px-3 py-1.5 rounded hover:bg-zinc-800 cursor-pointer transition text-zinc-200 text-xs"><i class="fa-regular fa-image text-emerald-400"></i> 圖片藝廊</div>
                     
                     <p class="text-[10px] font-bold text-zinc-500 px-2 py-2 uppercase tracking-wider">此電腦</p>
@@ -322,7 +318,6 @@
                 </div>
                 <div class="text-[9px] text-zinc-500 px-2">容量剩餘: 118 GB / 256 GB</div>
             </div>
-            <!-- 右側主要資料夾內容 -->
             <div class="flex-1 p-6 overflow-y-auto" id="explorer-content">
                 <!-- 由 JS 動態渲染內部檔案 -->
             </div>
@@ -344,9 +339,7 @@
             </div>
         </div>
         
-        <!-- 商店主要拆分面板 (左：主要商店，右：匯入 HTML App 物理面板) -->
         <div class="flex-1 flex bg-[#131313] overflow-hidden">
-            
             <!-- 左主要商店內容區 -->
             <div class="flex-1 p-6 overflow-y-auto no-scrollbar border-r border-zinc-800">
                 <h3 class="text-xs font-extrabold text-gray-300 uppercase tracking-widest mb-4 flex items-center gap-1.5 select-none">
@@ -427,7 +420,7 @@
                         <i class="fa-solid fa-file-import"></i> 匯入自訂 HTML 應用程式
                     </h3>
                     <p class="text-[10px] text-zinc-400 leading-normal">
-                        您可以在這裡直接上傳或貼上任何本地的 HTML 程式碼！系統會自動將其封裝為獨立視窗，並動態在桌面上生成帶有名稱前兩個字高質感圖示的應用程式！
+                        您可以在這裡直接上傳或貼上任何本地的 HTML 程式碼！系統會自動將其封裝為獨立視窗，並建立對應之精美啟動圖標！
                     </p>
                     
                     <!-- 應用程式名稱 -->
@@ -436,10 +429,16 @@
                         <input id="import-app-name" type="text" placeholder="例如：貪食蛇大作戰" class="w-full bg-[#131313] border border-zinc-800 rounded px-2.5 py-1.5 text-xs text-white outline-none focus:border-blue-500">
                     </div>
 
-                    <!-- 代碼輸入區或檔案上傳 -->
+                    <!-- 🔥 匯入應用程式圖片 (自訂圖標) -->
+                    <div class="space-y-1">
+                        <label class="text-[10px] font-bold text-zinc-300">自訂應用程式圖示 (選填)</label>
+                        <input id="import-app-icon" type="file" accept="image/*" class="w-full bg-[#131313] border border-zinc-800 rounded px-2 py-1.5 text-xs text-zinc-400 file:mr-2 file:py-1 file:px-2 file:rounded file:border-0 file:text-[10px] file:font-semibold file:bg-zinc-800 file:text-white hover:file:bg-zinc-700 cursor-pointer">
+                    </div>
+
+                    <!-- 代碼輸入區 -->
                     <div class="space-y-1">
                         <label class="text-[10px] font-bold text-zinc-300">貼上 HTML 程式碼</label>
-                        <textarea id="import-app-code" placeholder="<!DOCTYPE html>&#10;<html>&#10;<body>&#10;  <h1>Hello World</h1>&#10;</body>&#10;</html>" class="w-full h-36 bg-[#131313] border border-zinc-800 rounded p-2.5 text-[10px] font-mono text-zinc-300 outline-none focus:border-blue-500 resize-none no-scrollbar"></textarea>
+                        <textarea id="import-app-code" placeholder="<!DOCTYPE html>&#10;<html>&#10;<body>&#10;  <h1>Hello World</h1>&#10;</body>&#10;</html>" class="w-full h-32 bg-[#131313] border border-zinc-800 rounded p-2.5 text-[10px] font-mono text-zinc-300 outline-none focus:border-blue-500 resize-none no-scrollbar"></textarea>
                     </div>
 
                     <div class="flex items-center justify-between gap-2">
@@ -518,7 +517,7 @@
                     <!-- 下載/加載動畫 -->
                     <div id="edge-search-loader" class="hidden flex flex-col items-center justify-center py-16 text-center">
                         <div class="w-10 h-10 border-4 border-blue-500 border-t-transparent rounded-full animate-spin mb-4"></div>
-                        <p class="text-xs text-zinc-400">正在 analysis 問題，調用網路搜尋引擎尋找解答...</p>
+                        <p class="text-xs text-zinc-400">正在分析問題，調用網路搜尋引擎尋找解答...</p>
                     </div>
 
                     <!-- API 錯誤狀態呈現面板 -->
@@ -644,7 +643,7 @@
         <div class="h-10 bg-[#c43e1c] flex justify-between items-center px-4 cursor-move border-b border-zinc-800" onmousedown="dragStart(event, 'win-powerpoint')">
             <div class="flex items-center gap-2">
                 <i class="fa-solid fa-file-powerpoint text-white"></i>
-                <span class="text-xs font-semibold text-gray-100">Microsoft PowerPoint (自製簡報大師)</span>
+                <span class="text-xs font-semibold text-gray-200">Microsoft PowerPoint (自製簡報大師)</span>
             </div>
             <div class="flex gap-1 items-center">
                 <button onclick="minimizeWindow('powerpoint')" class="w-8 h-8 flex items-center justify-center hover:bg-white/10 rounded transition"><i class="fa-solid fa-minus text-xs"></i></button>
@@ -655,9 +654,14 @@
         <!-- PPT 工具列 -->
         <div class="bg-zinc-100 text-zinc-800 p-2.5 border-b border-gray-300 flex justify-between items-center text-xs flex-wrap gap-2">
             <div class="flex items-center gap-2">
-                <button onclick="addSlide()" class="px-3 py-1 bg-orange-600 hover:bg-orange-700 text-white rounded font-semibold text-[11px] transition"><i class="fa-solid fa-plus mr-1"></i>新投影片</button>
-                <button onclick="deleteSlide()" class="px-3 py-1 bg-zinc-600 hover:bg-zinc-700 text-white rounded font-semibold text-[11px] transition"><i class="fa-solid fa-trash mr-1"></i>刪除目前頁</button>
+                <button onclick="addSlide()" class="px-3 py-1 bg-orange-600 hover:bg-orange-700 text-white rounded font-semibold text-[11px] transition flex items-center gap-1">
+                    <i class="fa-solid fa-plus"></i> 新增投影片
+                </button>
+                <button onclick="deleteSlide()" class="px-3 py-1 bg-zinc-600 hover:bg-zinc-700 text-white rounded font-semibold text-[11px] transition flex items-center gap-1">
+                    <i class="fa-solid fa-trash-can"></i> 刪除目前投影片
+                </button>
                 <span class="text-gray-300">|</span>
+                <span class="text-[11px] text-zinc-600">更換背景色:</span>
                 <input type="color" id="ppt-bg-color" onchange="changeSlideBg(this.value)" class="w-6 h-6 border-0 rounded cursor-pointer" value="#ffffff" title="更改投影片背景">
                 <button onclick="startSlideshow()" class="px-4 py-1 bg-green-600 hover:bg-green-700 text-white rounded font-bold text-[11px] transition flex items-center gap-1">
                     <i class="fa-solid fa-play"></i> 播放全螢幕簡報
@@ -731,7 +735,7 @@
 
     <!-- ================= 視窗：小恐龍獨立遊戲視窗 ================= -->
     <div id="win-gamedino" class="window-transition window-hidden absolute glass rounded-lg overflow-hidden win-shadow text-white flex flex-col border border-white/10" style="width: 500px; height: 400px; top: 15%; left: 28%; z-index: 10;">
-        <div class="h-10 bg-zinc-800 flex justify-between items-center px-4 cursor-move border-b border-zinc-700" onmousedown="dragStart(event, 'win-gamedino')">
+        <div class="h-10 bg-zinc-800 flex justify-between items-center px-4 cursor-move" onmousedown="dragStart(event, 'win-gamedino')">
             <div class="flex items-center gap-2">
                 <svg class="w-4 h-4 text-green-500" viewBox="0 0 24 24" fill="currentColor">
                     <path d="M14,2h6v2h1v3h-3v1h-1v1h-2V7h-1V6h-1V4h2V2z M17,3h1v1h-1V3z M11,6h1v1h-1V6z M10,7h1v1h-1V7z M9,8h1v1h-1V8z M8,9h1v3h-1V9z M7,10h1v4h-1V10z M6,11h1v4h-1V11z M5,12h1v4h-1V12z M2,14h3v1H2v-1z M1,15h3v1H1v-1z M0,16h3v1H0v-1z M1,17h1v1H1v-1z M2,18h1v1H2v-1z M3,19h2v1H3v-1z M5,15h1v1H5v-1z M6,14h1v1H6v-1z M11,10h2v1h-2v-1z M12,11h1v1h-1v-1z M13,12h2v1h-2v-1z M14,13h1v2h-1v-2z M10,16h2v1h-2v-1z M9,17h1v1H9v-1z M8,18h1v3h-1v-3z M7,21h2v1H7v-1z M11,18h1v3h-1v-3z M10,21h2v1H7v-1z"/>
@@ -1068,6 +1072,56 @@
     </div>
 
 
+    <!-- ================= 🔥 快捷設定面板 (Quick Settings Panel) ================= -->
+    <div id="quick-settings-panel" class="window-transition hidden absolute bottom-14 right-3 w-80 p-5 glass rounded-xl win-shadow text-white z-[99] border border-white/10 flex flex-col gap-4 select-none animate-fade-in">
+        <!-- 頂部按鈕網格 (3x2) -->
+        <div class="grid grid-cols-3 gap-2">
+            <!-- Wi-Fi -->
+            <button onclick="toggleVirtualWifi()" id="quick-wifi-btn" class="flex flex-col items-center justify-center p-3 rounded-lg bg-blue-600 hover:bg-blue-500 transition text-center focus:outline-none">
+                <i id="quick-wifi-icon" class="fa-solid fa-wifi text-lg mb-1"></i>
+                <span class="text-[10px] font-semibold">Wi-Fi</span>
+            </button>
+            <!-- 藍牙 -->
+            <button onclick="toggleVirtualBluetooth()" id="quick-bluetooth-btn" class="flex flex-col items-center justify-center p-3 rounded-lg bg-blue-600 hover:bg-blue-500 transition text-center focus:outline-none">
+                <i id="quick-bluetooth-icon" class="fa-solid fa-bluetooth text-lg mb-1"></i>
+                <span class="text-[10px] font-semibold">藍牙</span>
+            </button>
+            <!-- 飛航模式 -->
+            <button onclick="toggleAirplaneMode()" id="quick-airplane-btn" class="flex flex-col items-center justify-center p-3 rounded-lg bg-zinc-800 hover:bg-zinc-700 transition text-center focus:outline-none">
+                <i id="quick-airplane-icon" class="fa-solid fa-plane text-lg mb-1"></i>
+                <span class="text-[10px] font-semibold">飛航模式</span>
+            </button>
+        </div>
+        
+        <!-- 亮度 & 音量滑桿 -->
+        <div class="space-y-3 pt-2 border-t border-white/5">
+            <!-- 亮度 Slider -->
+            <div class="flex items-center gap-3">
+                <i class="fa-solid fa-sun text-zinc-400 text-sm w-4 text-center"></i>
+                <input type="range" id="quick-brightness" min="20" max="100" value="100" oninput="adjustBrightness(this.value)" class="flex-1 accent-blue-500 h-1 bg-zinc-700 rounded-lg appearance-none cursor-pointer">
+            </div>
+            <!-- 音量 Slider -->
+            <div class="flex items-center gap-3">
+                <i id="quick-volume-icon" class="fa-solid fa-volume-high text-zinc-400 text-sm w-4 text-center"></i>
+                <input type="range" id="quick-volume" min="0" max="100" value="80" oninput="adjustVolume(this.value)" class="flex-1 accent-blue-500 h-1 bg-zinc-700 rounded-lg appearance-none cursor-pointer">
+            </div>
+        </div>
+
+        <!-- 底部電量與設定鏈結 -->
+        <div class="flex justify-between items-center pt-2 border-t border-white/5 text-xs text-zinc-400">
+            <div class="flex items-center gap-1.5">
+                <i class="fa-solid fa-battery-three-quarters text-emerald-400"></i>
+                <span>78% 電量剩餘</span>
+            </div>
+            <div class="flex gap-2">
+                <button onclick="openWindow('settings'); toggleQuickSettings();" class="w-8 h-8 rounded-full bg-zinc-800 hover:bg-zinc-700 text-white flex items-center justify-center transition" title="開啟設定">
+                    <i class="fa-solid fa-gear text-xs"></i>
+                </button>
+            </div>
+        </div>
+    </div>
+
+
     <!-- ================= 工作列 (Taskbar) ================= -->
     <div id="taskbar" class="absolute bottom-0 left-0 right-0 h-12 glass flex items-center justify-between px-3 z-50">
         <div class="w-24 flex items-center gap-2" id="taskbar-left-widget">
@@ -1077,7 +1131,7 @@
         </div>
 
         <!-- 中間：Windows 11 置中圖示群 -->
-        <div class="flex items-center gap-2">
+        <div class="flex items-center gap-2" id="taskbar-icon-container">
             <button onclick="toggleStartMenu()" class="w-10 h-10 rounded flex items-center justify-center hover:bg-white/10 active:bg-white/20 transition">
                 <svg class="w-5 h-5" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
                     <path d="M1.5 1.5H11V11H1.5V1.5Z" fill="#0078D4"/>
@@ -1088,7 +1142,7 @@
             </button>
             
             <!-- 工作列圖示 -->
-            <!-- 檔案總管 -->
+            <!-- 檔案總管 (釘選點與 dot 還原) -->
             <button onclick="toggleWindow('thispc')" id="taskbar-thispc" class="w-10 h-10 rounded flex items-center justify-center hover:bg-white/10 relative transition">
                 <img src="1154.png" class="w-6 h-6 object-contain" onerror="fallbackIcon(this, 'thispc')">
                 <span id="dot-thispc" class="absolute bottom-0.5 left-1/2 transform -translate-x-1/2 w-1.5 h-1.5 bg-zinc-300 rounded-full opacity-0 transition-opacity duration-200 shadow-md"></span>
@@ -1125,7 +1179,7 @@
                 <span id="dot-minecraft" class="absolute bottom-0.5 left-1/2 transform -translate-x-1/2 w-1.5 h-1.5 bg-zinc-300 rounded-full opacity-0 transition-opacity duration-200 shadow-md"></span>
             </button>
 
-            <!-- =================== 🔥 動態商店下載 App 工作列 (安裝完成由 JS 自動顯現) =================== -->
+            <!-- =================== 🔥 動態商店下載 App 工作列 =================== -->
             <!-- 2048 工作列 -->
             <button onclick="toggleWindow('game2048')" id="taskbar-game2048" class="w-10 h-10 rounded hidden justify-center items-center hover:bg-white/10 relative transition">
                 <div class="w-6 h-6 bg-amber-500 rounded text-center text-[10px] leading-6 font-bold text-white">2048</div>
@@ -1149,14 +1203,14 @@
             </button>
         </div>
 
-        <!-- 右下角狀態列 -->
+        <!-- 右下角狀態列 (🔥 已綁定點擊開關 Quick Settings 功能！) -->
         <div class="flex items-center gap-3 text-white text-xs mr-2">
             <!-- 網路 / 音量 / 電池 捷徑 -->
-            <div class="flex items-center gap-2 hover:bg-white/10 p-1.5 rounded transition cursor-pointer">
+            <div onclick="toggleQuickSettings()" class="flex items-center gap-2 hover:bg-white/10 p-1.5 rounded transition cursor-pointer select-none">
                 <!-- WiFi 圖示 (動態關聯設定) -->
                 <i id="taskbar-wifi-icon" class="fa-solid fa-wifi text-white"></i>
-                <i class="fa-solid fa-volume-high"></i>
-                <i class="fa-solid fa-battery-three-quarters"></i>
+                <i id="taskbar-volume-icon" class="fa-solid fa-volume-high text-white"></i>
+                <i class="fa-solid fa-battery-three-quarters text-emerald-400"></i>
             </div>
             
             <!-- 全螢幕 / 視窗切換按鈕 (與 F11 同步) -->
@@ -1182,7 +1236,7 @@
             </div>
             <div class="mb-6">
                 <span class="text-xs font-semibold block mb-4">已釘選</span>
-                <div class="grid grid-cols-6 gap-y-4">
+                <div class="grid grid-cols-6 gap-y-4" id="start-menu-grid">
                     <div onclick="openWindow('thispc'); toggleStartMenu();" class="flex flex-col items-center justify-center rounded hover:bg-white/10 p-2 cursor-pointer transition">
                         <img src="1154.png" class="w-8 h-8 mb-1 object-contain" onerror="fallbackIcon(this, 'thispc')">
                         <span class="text-[10px] text-center truncate w-full">檔案</span>
@@ -1214,24 +1268,24 @@
                         <span class="text-[10px] text-center truncate w-full">Minecraft</span>
                     </div>
 
-                    <!-- =================== 🔥 動態商店下載 App 開始功能表 (安裝完成由 JS 自動顯現) =================== -->
+                    <!-- =================== 🔥 動態商店下載 App 開始功能表 =================== -->
                     <div id="start-app-game2048" class="hidden flex-col items-center justify-center rounded hover:bg-white/10 p-2 cursor-pointer transition" onclick="openWindow('game2048'); toggleStartMenu();">
                         <div class="w-8 h-8 bg-amber-500 rounded text-center text-xs leading-8 font-bold text-white mb-1">2048</div>
-                        <span class="text-[10px] text-center truncate w-full">2048</span>
+                        <span class="text-[10px] text-center truncate w-full font-medium">2048</span>
                     </div>
                     <div id="start-app-gamedino" class="hidden flex-col items-center justify-center rounded hover:bg-white/10 p-2 cursor-pointer transition" onclick="openWindow('gamedino'); toggleStartMenu();">
-                        <div class="w-8 h-8 bg-zinc-800 rounded flex items-center justify-center mb-1">
+                        <div class="w-8 h-8 bg-zinc-800 rounded flex items-center justify-center mb-1 shadow border border-zinc-700/30">
                             <svg class="w-5 h-5" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
                                 <path d="M14,2h6v2h1v3h-3v1h-1v1h-2V7h-1V6h-1V4h2V2z M17,3h1v1h-1V3z M11,6h1v1h-1V6z M10,7h1v1h-1V7z M9,8h1v1h-1V8z M8,9h1v3h-1V9z M7,10h1v4h-1V10z M6,11h1v4h-1V11z M5,12h1v4h-1V12z M2,14h3v1H2v-1z M1,15h3v1H1v-1z M0,16h3v1H0v-1z M1,17h1v1H1v-1z M2,18h1v1H2v-1z M3,19h2v1H3v-1z M5,15h1v1H5v-1z M6,14h1v1H6v-1z M11,10h2v1h-2v-1z M12,11h1v1h-1v-1z M13,12h2v1h-2v-1z M14,13h1v2h-1v-2z M10,16h2v1h-2v-1z M9,17h1v1H9v-1z M8,18h1v3h-1v-3z M7,21h2v1H7v-1z M11,18h1v3h-1v-3z M10,21h2v1H7v-1z" fill="#10b981"/>
                             </svg>
                         </div>
-                        <span class="text-[10px] text-center truncate w-full">小恐龍</span>
+                        <span class="text-[10px] text-center truncate w-full font-medium">小恐龍</span>
                     </div>
                     <div id="start-app-tetris" class="hidden flex-col items-center justify-center rounded hover:bg-white/10 p-2 cursor-pointer transition" onclick="openWindow('tetris'); toggleStartMenu();">
                         <div class="w-8 h-8 bg-red-600 rounded flex items-center justify-center text-lg mb-1 shadow-sm text-white">
                             <i class="fa-solid fa-shapes text-xs"></i>
                         </div>
-                        <span class="text-[10px] text-center truncate w-full">方塊</span>
+                        <span class="text-[10px] text-center truncate w-full font-medium">方塊</span>
                     </div>
                 </div>
             </div>
@@ -1260,2053 +1314,80 @@
 
     <!-- ================= JavaScript 控制邏輯 ================= -->
     <script>
-        // ---------------- 狀態與視窗管理器 (包含正確的工作列、指示燈綁定) ----------------
-        const windows = {
-            thispc: { elementId: 'win-thispc', taskbarId: 'taskbar-thispc', dotId: 'dot-thispc', isOpen: false, isMinimized: false, isMaximized: false },
-            store: { elementId: 'win-store', taskbarId: 'taskbar-store', dotId: 'dot-store', isOpen: false, isMinimized: false, isMaximized: false },
-            edge: { elementId: 'win-edge', taskbarId: 'taskbar-edge', dotId: 'dot-edge', isOpen: false, isMinimized: false, isMaximized: false },
-            word: { elementId: 'win-word', taskbarId: 'taskbar-word', dotId: 'dot-word', isOpen: false, isMinimized: false, isMaximized: false },
-            excel: { elementId: 'win-excel', taskbarId: 'taskbar-excel', dotId: 'dot-excel', isOpen: false, isMinimized: false, isMaximized: false },
-            powerpoint: { elementId: 'win-powerpoint', taskbarId: 'taskbar-powerpoint', dotId: 'dot-powerpoint', isOpen: false, isMinimized: false, isMaximized: false },
-            
-            // 商店下載之獨立 App (Minecraft 預設直接開啟；其餘預設 hidden、dotId 安全防錯)
-            minecraft: { elementId: 'win-minecraft', taskbarId: 'taskbar-minecraft', dotId: 'dot-minecraft', isOpen: false, isMinimized: false, isMaximized: false },
-            game2048: { elementId: 'win-game2048', taskbarId: 'taskbar-game2048', dotId: 'dot-game2048', isOpen: false, isMinimized: false, isMaximized: false },
-            gamedino: { elementId: 'win-gamedino', taskbarId: 'taskbar-gamedino', dotId: 'dot-gamedino', isOpen: false, isMinimized: false, isMaximized: false },
-            tetris: { elementId: 'win-tetris', taskbarId: 'taskbar-tetris', dotId: 'dot-tetris', isOpen: false, isMinimized: false, isMaximized: false },
-            
-            settings: { elementId: 'win-settings', taskbarId: '', dotId: '', isOpen: false, isMinimized: false, isMaximized: false },
-            bin: { elementId: 'win-bin', taskbarId: '', dotId: '', isOpen: false, isMinimized: false, isMaximized: false },
-            notepad: { elementId: 'win-notepad', taskbarId: 'taskbar-notepad', dotId: 'dot-notepad', isOpen: false, isMinimized: false, isMaximized: false },
-            calculator: { elementId: 'win-calculator', taskbarId: 'taskbar-calculator', dotId: 'dot-calculator', isOpen: false, isMinimized: false, isMaximized: false },
-            photoviewer: { elementId: 'win-photoviewer', taskbarId: '', dotId: '', isOpen: false, isMinimized: false, isMaximized: false },
-            readme: { elementId: 'win-readme', taskbarId: '', dotId: '', isOpen: false, isMinimized: false, isMaximized: false }
-        };
-
-        let highestZ = 10;
-        let activeWindow = null; // 紀錄當前焦點視窗
-
-        // ---------------- 視窗基本控制 ----------------
-        function openWindow(winKey) {
-            const win = windows[winKey];
-            if (!win) return;
-            const el = document.getElementById(win.elementId);
-            if (!el) return;
-            
-            el.classList.remove('window-hidden');
-            win.isOpen = true;
-            win.isMinimized = false;
-            
-            // 修正：檢查 win.dotId 和對應的元素是否存在，再對 classList 進行操作，防止拋出 ReferenceError / TypeError
-            if (win.dotId && document.getElementById(win.dotId)) {
-                document.getElementById(win.dotId).classList.add('opacity-100');
-            }
-            if (win.taskbarId && document.getElementById(win.taskbarId)) {
-                document.getElementById(win.taskbarId).classList.add('bg-white/10');
-            }
-
-            focusWindow(winKey);
-            
-            // 🔥 關鍵鎖定防搶機制：當開啟 Minecraft 視窗時，必須強制把鍵盤焦點 focus 到 iframe 內部！
-            // 並且設置多個定時器以確保載入完成後能正確鎖定！
-            if (winKey === 'minecraft') {
-                const mcIframe = document.getElementById('minecraft-iframe');
-                if (mcIframe) {
-                    setTimeout(() => { mcIframe.focus(); }, 100);
-                    setTimeout(() => { mcIframe.focus(); }, 500);
-                    setTimeout(() => { mcIframe.focus(); }, 1000);
-                }
-            }
-            
-            if (winKey === 'thispc') {
-                navigateFolder('root');
-            }
-            if (winKey === 'powerpoint') {
-                renderSlidesList();
-                updatePPTSlide();
-            }
-            if (winKey === 'game2048') {
-                init2048();
-            }
-            if (winKey === 'tetris') {
-                startTetris();
-            }
-            if (winKey === 'settings') {
-                switchSettingsTab('personal');
-            }
-            if (winKey === 'bin') {
-                renderRecycleBin();
-            }
-        }
-
-        // 🔥 呼叫滑鼠鎖定：主動向 Minecraft iframe 內的 Canvas 要求 Pointer Lock！
-        function requestMcPointerLock() {
-            const iframe = document.getElementById('minecraft-iframe');
-            if (iframe) {
-                // 強制焦點，並引導玩家點擊進行鎖定
-                iframe.focus();
-                // 由於同源沙盒機制 (allow-same-origin)，玩家直接點擊 Iframe 內部即可觸發鎖定
-                alert("👉 提示：已授權滑鼠鎖定權限！請在點擊此確定後，【直接在 Minecraft 遊戲畫面上點一下】，即可完美鎖定滑鼠進行 3D 視角控制！\n\n(若要解鎖滑鼠，按鍵盤左上角的 Esc 鍵即可)");
-            }
-        }
-
-        // 監聽鍵盤快捷鍵「L」一鍵輔助鎖定滑鼠
-        window.addEventListener('keydown', (e) => {
-            if (activeWindow === 'minecraft' && (e.key === 'l' || e.key === 'L')) {
-                e.preventDefault();
-                requestMcPointerLock();
-            }
-        });
-
-        function closeWindow(winKey) {
-            const win = windows[winKey];
-            if (!win) return;
-            const el = document.getElementById(win.elementId);
-            if (!el) return;
-            
-            el.classList.add('window-hidden');
-            win.isOpen = false;
-            
-            // 修正：檢查 win.dotId 和對應 of 元素是否存在，防止 TypeError
-            if (win.dotId && document.getElementById(win.dotId)) {
-                document.getElementById(win.dotId).classList.remove('opacity-100');
-            }
-            if (win.taskbarId && document.getElementById(win.taskbarId)) {
-                document.getElementById(win.taskbarId).classList.remove('bg-white/10');
-            }
-            
-            if (activeWindow === winKey) {
-                activeWindow = null;
-            }
-        }
-
-        // 縮小視窗
-        function minimizeWindow(winKey) {
-            const win = windows[winKey];
-            const el = document.getElementById(win.elementId);
-            el.classList.add('window-hidden');
-            win.isMinimized = true;
-            if (activeWindow === winKey) activeWindow = null;
-        }
-
-        // 放大視窗
-        function maximizeWindow(winKey) {
-            const win = windows[winKey];
-            const el = document.getElementById(win.elementId);
-            
-            if (win.isMaximized) {
-                el.style.width = el.dataset.oldWidth || '780px';
-                el.style.height = el.dataset.oldHeight || '500px';
-                el.style.top = el.dataset.oldTop || '15%';
-                el.style.left = el.dataset.oldLeft || '20%';
-                win.isMaximized = false;
-            } else {
-                el.dataset.oldWidth = el.style.width;
-                el.dataset.oldHeight = el.style.height;
-                el.dataset.oldTop = el.style.top;
-                el.dataset.oldLeft = el.style.left;
-                
-                el.style.width = '100vw';
-                el.style.height = 'calc(100vh - 48px)';
-                el.style.top = '0';
-                el.style.left = '0';
-                win.isMaximized = true;
-            }
-        }
-
-        function toggleWindow(winKey) {
-            const win = windows[winKey];
-            if (!win.isOpen) {
-                openWindow(winKey);
-            } else if (win.isMinimized) {
-                openWindow(winKey);
-            } else {
-                minimizeWindow(winKey);
-            }
-        }
-
-        function focusWindow(winKey) {
-            highestZ += 1;
-            const el = document.getElementById(windows[winKey].elementId);
-            if (el) el.style.zIndex = highestZ;
-            activeWindow = winKey; // 標記為當前活動視窗
-        }
-
-        Object.keys(windows).forEach(key => {
-            const el = document.getElementById(windows[key].elementId);
-            if (el) {
-                el.addEventListener('mousedown', () => {
-                    focusWindow(key);
-                    document.getElementById('start-menu').classList.add('window-hidden');
-                });
-            }
-        });
-
-        // ---------------- 視窗拖曳 功能 ----------------
-        let dragEl = null;
-        let startX, startY, startLeft, startTop;
-
-        function dragStart(e, elementId) {
-            const key = elementId.replace('win-', '');
-            if (windows[key] && windows[key].isMaximized) return;
-            if (e.target.tagName === 'BUTTON' || e.target.closest('button') || e.target.tagName === 'INPUT' || e.target.tagName === 'SELECT' || e.target.tagName === 'TEXTAREA' || e.target.hasAttribute('contenteditable')) return;
-
-            dragEl = document.getElementById(elementId);
-            startX = e.clientX;
-            startY = e.clientY;
-            
-            const style = window.getComputedStyle(dragEl);
-            startLeft = parseInt(style.left, 10);
-            startTop = parseInt(style.top, 10);
-
-            document.addEventListener('mousemove', dragMove);
-            document.addEventListener('mouseup', dragEnd);
-        }
-
-        function dragMove(e) {
-            if (!dragEl) return;
-            const dx = e.clientX - startX;
-            const dy = e.clientY - startY;
-            dragEl.style.left = (startLeft + dx) + 'px';
-            dragEl.style.top = (startTop + dy) + 'px';
-        }
-
-        function dragEnd() {
-            dragEl = null;
-            document.removeEventListener('mousemove', dragMove);
-            document.removeEventListener('mouseup', dragEnd);
-        }
-
-        // ==========================================
-        //        🔥 應用程式商店：下載安裝與桌面 APP 連動控制
-        // ==========================================
-        const installedApps = {
-            minecraft: true, // Minecraft 預設已安裝
-            game2048: false,
-            gamedino: false,
-            tetris: false
-        };
-
-        function installApp(appKey) {
-            const container = document.getElementById(`store-action-${appKey}`);
-            if (!container) return;
-
-            // 1. 顯示下載安裝進度條
-            container.innerHTML = `
-                <div class="w-full bg-zinc-800 rounded-full h-2.5 overflow-hidden mb-2">
-                    <div id="progress-bar-${appKey}" class="bg-blue-600 h-2.5 rounded-full transition-all duration-300" style="width: 0%"></div>
-                </div>
-                <div class="text-[10px] text-gray-400 text-center flex justify-between px-1">
-                    <span>下載中...</span>
-                    <span id="progress-text-${appKey}">0%</span>
-                </div>
-            `;
-
-            let progress = 0;
-            const interval = setInterval(() => {
-                progress += Math.floor(Math.random() * 15) + 5;
-                if (progress >= 100) {
-                    progress = 100;
-                    clearInterval(interval);
-                    
-                    // 下載成功！觸發桌面、工作列與開始功能表的 APP 生成
-                    installedApps[appKey] = true;
-                    unlockAppOnSystem(appKey);
-
-                    // 商店按鈕改為「啟動」
-                    container.innerHTML = `
-                        <button onclick="openWindow('${appKey}'); closeWindow('store');" class="w-full py-2 bg-emerald-600 hover:bg-emerald-500 text-white rounded text-xs font-bold transition flex items-center justify-center gap-1">
-                            <i class="fa-solid fa-play"></i> 啟動遊戲
-                        </button>
-                    `;
-                    alert('資源已下載完畢！已成功自動新增至桌面與工作列！');
-                }
-
-                const bar = document.getElementById(`progress-bar-${appKey}`);
-                const text = document.getElementById(`progress-text-${appKey}`);
-                if (bar) bar.style.width = progress + '%';
-                if (text) text.textContent = progress + '%';
-            }, 250);
-        }
-
-        // 解鎖應用程式
-        function unlockAppOnSystem(appKey) {
-            // 解鎖桌面 App 圖示
-            const deskApp = document.getElementById(`desktop-app-${appKey}`);
-            if (deskApp) {
-                deskApp.classList.remove('hidden');
-                deskApp.classList.add('flex');
-            }
-
-            // 解鎖工作列 App
-            const taskbarApp = document.getElementById(`taskbar-${appKey}`);
-            if (taskbarApp) {
-                taskbarApp.classList.remove('hidden');
-                taskbarApp.classList.add('flex');
-            }
-
-            // 解鎖開始功能表 App
-            const startApp = document.getElementById(`start-app-${appKey}`);
-            if (startApp) {
-                startApp.classList.remove('hidden');
-                startApp.classList.add('flex');
-            }
-        }
-
-
-        // ==========================================
-        //           檔案總管 控制核心
-        // ==========================================
-        const fileSystem = {
-            root: [
-                { name: '我的文件', type: 'folder', target: 'documents' },
-                { name: '圖片藝廊', type: 'folder', target: 'pictures' },
-                { name: '本機 C 槽 (System C:)', type: 'folder', target: 'drive_c' }
-            ],
-            documents: [
-                { name: '上網與微軟Office說明.txt', type: 'text', action: "openWindow('readme')" },
-                { name: '我的記事本草稿.txt', type: 'text', action: "openWindow('notepad')" }
-            ],
-            pictures: [
-                { name: '170.png (預設桌布)', type: 'image', file: '170.png' },
-                { name: '1154.png (檔案圖示)', type: 'image', file: '1154.png' },
-                { name: 'winWord.png (Word)', type: 'image', file: 'winWord.png' },
-                { name: 'excel.png (Excel)', type: 'image', file: 'excel.png' },
-                { name: 'powerpoint.png (PPT)', type: 'image', file: 'powerpoint.png' },
-                { name: 'minecraft.png (創世神)', type: 'image', file: 'minecraft.png' },
-                { name: 'notepad.png (記事本)', type: 'image', file: 'notepad.png' }
-            ],
-            drive_c: [
-                { name: 'Program Files', type: 'folder', target: 'root' },
-                { name: 'Windows', type: 'folder', target: 'root' },
-                { name: 'Users', type: 'folder', target: 'root' },
-                { name: '2026.4.20.html (Minecraft啟動器)', type: 'text', action: "openWindow('minecraft')" }
-            ]
-        };
-
-        const pathNames = {
-            root: '本機',
-            documents: '本機 > 我的文件',
-            pictures: '本機 > 圖片藝廊',
-            drive_c: '本機 > 系統磁碟 (C:)'
-        };
-
-        // 🔥 關鍵修正：修復「檔案總管」圖示替換時直接覆蓋 parentElement 導致檔名 span 消失的錯誤
-        function navigateFolder(folderKey) {
-            const container = document.getElementById('explorer-content');
-            if (!container) return;
-            container.innerHTML = '';
-            
-            // 更新路徑導覽列
-            const pathText = document.getElementById('explorer-path-text');
-            if (pathText) {
-                pathText.textContent = pathNames[folderKey] || '本機';
-            }
-
-            const items = fileSystem[folderKey] || [];
-            
-            if (items.length === 0) {
-                container.innerHTML = `<div class="text-xs text-zinc-500 p-4">此資料夾目前是空的。</div>`;
-                return;
-            }
-
-            const grid = document.createElement('div');
-            grid.className = "grid grid-cols-4 gap-4 p-2";
-
-            items.forEach(item => {
-                const col = document.createElement('div');
-                col.className = "flex flex-col items-center p-3 rounded-lg hover:bg-zinc-800/60 active:bg-zinc-800 cursor-pointer text-center transition";
-                
-                let iconHtml = '';
-                if (item.type === 'folder') {
-                    iconHtml = `<div class="w-10 h-10 flex items-center justify-center mb-2.5">
-                                    <i class="fa-solid fa-folder text-yellow-400 text-3xl"></i>
-                                </div>`;
-                    col.onclick = () => navigateFolder(item.target);
-                } else if (item.type === 'image') {
-                    iconHtml = `<div class="w-11 h-11 border border-zinc-800 rounded-md mb-2.5 overflow-hidden flex items-center justify-center bg-black/40 shadow-sm">
-                                   <img src="${item.file}" class="max-w-full max-h-full object-contain" onerror="this.src='https://images.unsplash.com/photo-1618005182384-a83a8bd57fbe?auto=format&fit=crop&w=30&q=80'">
-                                </div>`;
-                    col.onclick = () => openPhotoViewer(item.file, item.name);
-                } else {
-                    // 根據檔案類型使用正版精美圖示或精緻圖標
-                    if (item.name.includes('.html')) {
-                        iconHtml = `<div class="w-10 h-10 flex items-center justify-center mb-2.5">
-                                        <i class="fa-solid fa-code text-emerald-400 text-3xl"></i>
-                                    </div>`;
-                    } else if (item.name.endsWith('.doc')) {
-                        iconHtml = `<div class="w-10 h-10 flex items-center justify-center mb-2.5">
-                                        <img src="winWord.png" class="w-full h-full object-contain" onerror="fallbackIcon(this, 'word')">
-                                    </div>`;
-                    } else if (item.name.endsWith('.txt')) {
-                        iconHtml = `<div class="w-10 h-10 flex items-center justify-center mb-2.5">
-                                        <img src="notepad.png" class="w-full h-full object-contain" onerror="fallbackIcon(this, 'notepad')">
-                                    </div>`;
-                    } else {
-                        iconHtml = `<div class="w-10 h-10 flex items-center justify-center mb-2.5">
-                                        <i class="fa-regular fa-file-lines text-blue-400 text-3xl"></i>
-                                    </div>`;
-                    }
-                    col.onclick = () => eval(item.action);
-                }
-
-                col.innerHTML = `
-                    ${iconHtml}
-                    <!-- 移除 line-clamp 與高度限制以避免在不同渲染引擎下字體，並添加相容性最高的 webkit-line-clamp 排版 -->
-                    <span class="text-xs text-zinc-300 break-all select-none font-medium mt-1 leading-tight w-full text-center block max-h-12 overflow-hidden" style="display: -webkit-box; -webkit-line-clamp: 2; -webkit-box-orient: vertical;">${item.name}</span>
-                `;
-                grid.appendChild(col);
-            });
-            container.appendChild(grid);
-        }
-
-        function openPhotoViewer(src, title) {
-            const viewerImg = document.getElementById('photoviewer-img');
-            const viewerTitle = document.getElementById('photoviewer-title');
-            if (viewerImg) viewerImg.src = src;
-            if (viewerTitle) viewerTitle.textContent = title;
-            openWindow('photoviewer');
-        }
-
-
-        // ==========================================
-        //         Microsoft Edge 內建首頁與虛擬搜尋
-        // ==========================================
-        const edgeAddress = document.getElementById('edge-address');
-        const searchInput = document.getElementById('search-input');
-        const searchKeywordSpan = document.getElementById('search-keyword');
-        const searchResultsList = document.getElementById('search-results-list');
-
-        function goEdgeHome() {
-            switchBrowserTab('tab-home');
-            if (edgeAddress) edgeAddress.value = "edge://home";
-        }
-
-        function switchBrowserTab(tabId) {
-            document.querySelectorAll('.browser-tab').forEach(tab => {
-                tab.classList.remove('active');
-            });
-            const target = document.getElementById(tabId);
-            if (target) target.classList.add('active');
-            
-            if (tabId !== 'tab-game-dino') {
-                clearInterval(dinoInterval);
-                dinoRunning = false;
-            }
-        }
-
-        function openWebTab(tabName, virtualUrl) {
-            switchBrowserTab('tab-' + tabName);
-            if (edgeAddress) edgeAddress.value = virtualUrl;
-
-            if (tabName === 'game-2048') init2048();
-            if (tabName === 'game-dino') startDinoGame();
-        }
-
-        function navigateEdge() {
-            const inputVal = edgeAddress.value.trim();
-            if (!inputVal) return;
-
-            if (inputVal.startsWith('edge://')) {
-                const action = inputVal.replace('edge://', '');
-                if (action === 'home') goEdgeHome();
-                else openWebTab(action, inputVal);
-                return;
-            }
-
-            const isUrl = /^(https?:\/\/)?([\da-z\.-]+)\.([a-z\.]{2,6})([\/\w \.-]*)*\/?$/.test(inputVal);
-            if (isUrl) {
-                let formattedUrl = inputVal;
-                if (!inputVal.startsWith('http://') && !inputVal.startsWith('https://')) {
-                    formattedUrl = 'https://' + inputVal;
-                }
-                window.open(formattedUrl, '_blank');
-                alert('為了保障安全並突破網頁框架嵌入限制，已為您在新分頁安全開啟此網頁！');
-            } else {
-                if (searchInput) searchInput.value = inputVal;
-                handleSearch();
-            }
-        }
-
-        // ==========================================
-        //  🔥 重磅更新：使用安全 CORS 代理，真正實現 Edge 線上搜尋連線 🔥
-        // ==========================================
-        async function handleSearch() {
-            const query = (searchInput ? searchInput.value.trim() : '') || (edgeAddress ? edgeAddress.value.trim() : '');
-            if (!query) return;
-
-            if (edgeAddress) edgeAddress.value = `https://www.bing.com/search?q=${encodeURIComponent(query)}`;
-            if (searchKeywordSpan) searchKeywordSpan.textContent = query;
-            switchBrowserTab('tab-search');
-
-            const loader = document.getElementById('edge-search-loader');
-            const errorPanel = document.getElementById('edge-search-error');
-            const answerBox = document.getElementById('edge-search-ai-answer');
-            
-            if (loader) loader.classList.remove('hidden');
-            if (errorPanel) errorPanel.classList.add('hidden');
-            if (answerBox) answerBox.innerHTML = '';
-
-            // 🔥 100% 精準對接 Langsearch 官方標準 API 呼叫規範 🔥
-            const apiKey = "sk-145df23bb3674ec3a7bade695c16d5cd";
-            
-            // 💡 關鍵修正：透過安全且無限制的 CORS Proxy 中轉，繞過 GitHub Pages HTTPS 的安全封鎖限制！
-            const targetApiUrl = `https://api.langsearch.com/v1/web-search?query=${encodeURIComponent(query)}`;
-            const endpoint = `https://corsproxy.io/?${encodeURIComponent(targetApiUrl)}`;
-
-            // 指數退避重試演算法
-            const fetchWithRetry = async (url, options, retries = 5, delay = 1000) => {
-                try {
-                    const response = await fetch(url, options);
-                    if (!response.ok) {
-                        throw new Error(`HTTP 錯誤狀態碼: ${response.status}`);
-                    }
-                    return await response.json();
-                } catch (err) {
-                    if (retries > 0) {
-                        await new Promise(resolve => setTimeout(resolve, delay));
-                        return fetchWithRetry(url, options, retries - 1, delay * 2);
-                    }
-                    throw err;
-                }
-            };
-
+        // ---------------- 狀態與時鐘管理 ----------------
+        function updateClock() {
             try {
-                const result = await fetchWithRetry(endpoint, {
-                    method: 'GET',
-                    headers: {
-                        'Authorization': `Bearer ${apiKey}`,
-                        'Content-Type': 'application/json'
-                    }
-                });
-
-                if (loader) loader.classList.add('hidden');
-
-                // 智慧解析 Langsearch 的回傳 JSON 架構
-                let searchResults = [];
-                if (result.data && Array.isArray(result.data)) {
-                    searchResults = result.data;
-                } else if (result.results && Array.isArray(result.results)) {
-                    searchResults = result.results;
-                } else if (result.organic && Array.isArray(result.organic)) {
-                    searchResults = result.organic;
-                } else if (Array.isArray(result)) {
-                    searchResults = result;
-                }
-
-                if (searchResults.length > 0) {
-                    // 將真實搜尋結果完美格式化輸出到 Edge 結果容器中
-                    answerBox.innerHTML = `
-                        <div class="grid grid-cols-1 gap-4 animate-fade-in text-left">
-                            ${searchResults.map((item, idx) => {
-                                const title = item.title || item.name || '真實聯網網頁結果';
-                                const url = item.url || item.link || '#';
-                                const snippet = item.snippet || item.description || '點擊即可在新分頁中直接安全打開此網站。';
-                                return `
-                                    <div class="bg-[#27272a] hover:bg-[#3f3f46] p-5 rounded-xl border border-zinc-800 hover:border-zinc-700 transition cursor-pointer shadow-md" onclick="window.open('${url}', '_blank')">
-                                        <div class="flex items-center gap-2 mb-1">
-                                            <i class="fa-solid fa-globe text-blue-400 text-xs"></i>
-                                            <span class="text-xs text-blue-400 truncate max-w-xs block">${url}</span>
-                                        </div>
-                                        <h3 class="text-sm font-bold text-white hover:text-blue-300 transition flex items-center gap-1.5">
-                                            <span>${title}</span>
-                                            <i class="fa-solid fa-arrow-up-right-from-square text-[9px] text-zinc-500"></i>
-                                        </h3>
-                                        <p class="text-xs text-zinc-400 mt-2 leading-relaxed">${snippet}</p>
-                                    </div>
-                                `;
-                            }).join('')}
-                        </div>
-                    `;
-                } else {
-                    answerBox.innerHTML = `
-                        <div class="text-center py-16 animate-fade-in text-zinc-500">
-                            <i class="fa-solid fa-circle-question text-5xl mb-4 text-zinc-600"></i>
-                            <p class="text-sm font-semibold text-zinc-400">已成功進行全網搜尋</p>
-                            <p class="text-xs text-zinc-500 mt-1">但找不到與「${query}」相符的關聯網頁，請嘗試其他關鍵字。</p>
-                        </div>
-                    `;
-                }
-
-            } catch (error) {
-                if (loader) loader.classList.add('hidden');
-                if (errorPanel) errorPanel.classList.remove('hidden');
-                const desc = document.getElementById('edge-error-desc');
-                if (desc) desc.textContent = `無法與 Langsearch 聯網搜尋引擎建立安全連線。錯誤詳情：${error.message}。請確認您的網路連線或 API Key 狀態。`;
-            }
-        }
-
-        // ==========================================
-        //           內建小遊戲 1：2048 核心代碼
-        // ==========================================
-        let board2048 = [];
-        let score2048 = 0;
-
-        function init2048() {
-            board2048 = Array(16).fill(0);
-            score2048 = 0;
-            const scoreDisplay = document.getElementById('score-2048');
-            if (scoreDisplay) scoreDisplay.textContent = score2048;
-            addRandomTile();
-            addRandomTile();
-            render2048();
-        }
-
-        // 隨機增加格子
-        function addRandomTile() {
-            const emptyCells = board2048.map((v, i) => v === 0 ? i : null).filter(v => v !== null);
-            if (emptyCells.length > 0) {
-                const randomCell = emptyCells[Math.floor(Math.random() * emptyCells.length)];
-                board2048[randomCell] = Math.random() < 0.9 ? 2 : 4;
-            }
-        }
-
-        function render2048() {
-            const grid = document.getElementById('grid-2048');
-            if (!grid) return;
-            grid.innerHTML = '';
-            const colorMap = {
-                0: 'bg-zinc-700/50',
-                2: 'bg-amber-100 text-zinc-900',
-                4: 'bg-amber-200 text-zinc-900',
-                8: 'bg-orange-300 text-white font-bold',
-                16: 'bg-orange-400 text-white font-bold',
-                32: 'bg-orange-500 text-white font-bold',
-                64: 'bg-red-500 text-white font-bold',
-                128: 'bg-yellow-400 text-white font-bold shadow-lg',
-                256: 'bg-yellow-500 text-white font-bold shadow-lg',
-                512: 'bg-emerald-400 text-white font-bold',
-                1024: 'bg-teal-500 text-white font-bold',
-                2048: 'bg-blue-600 text-white font-bold animate-pulse'
-            };
-            board2048.forEach(value => {
-                const cell = document.createElement('div');
-                cell.className = `flex items-center justify-center rounded font-semibold text-lg ${colorMap[value] || 'bg-purple-600 text-white'}`;
-                cell.textContent = value === 0 ? '' : value;
-                grid.appendChild(cell);
-            });
-        }
-
-        // 2048 移動演算法控制
-        window.addEventListener('keydown', (e) => {
-            // 🔥 鎖定防搶機制：若當前焦點在 Minecraft
-            if (activeWindow === 'minecraft') return;
-
-            const win2048 = document.getElementById('win-game2048');
-            if (win2048 && !win2048.classList.contains('window-hidden') && activeWindow === 'game2048') {
-                let moved = false;
-                if (e.key === 'ArrowLeft') { moveLeft(); moved = true; }
-                else if (e.key === 'ArrowRight') { moveRight(); moved = true; }
-                else if (e.key === 'ArrowUp') { moveUp(); moved = true; }
-                else if (e.key === 'ArrowDown') { moveDown(); moved = true; }
+                const now = new Date();
+                let hours = now.getHours();
+                const minutes = String(now.getMinutes()).padStart(2, '0');
+                const ampm = hours >= 12 ? 'PM' : 'AM';
+                hours = hours % 12;
+                hours = hours ? hours : 12; // 12 小時制轉換
+                const timeStr = `${hours}:${minutes} ${ampm}`;
                 
-                if (moved) {
-                    e.preventDefault();
-                    addRandomTile();
-                    render2048();
-                    checkGameOver2048();
-                }
-            }
-        });
-
-        function compress(row) {
-            let nRow = row.filter(val => val !== 0);
-            while (nRow.length < 4) nRow.push(0);
-            return nRow;
-        }
-        function merge(row) {
-            for (let i = 0; i < 3; i++) {
-                if (row[i] !== 0 && row[i] === row[i+1]) {
-                    row[i] *= 2;
-                    score2048 += row[i];
-                    const display = document.getElementById('score-2048');
-                    if (display) display.textContent = score2048;
-                    row[i+1] = 0;
-                }
-            }
-            return row;
-        }
-        function moveLeft() {
-            for (let i = 0; i < 16; i += 4) {
-                let row = [board2048[i], board2048[i+1], board2048[i+2], board2048[i+3]];
-                row = compress(row);
-                row = merge(row);
-                row = compress(row);
-                board2048[i] = row[0]; board2048[i+1] = row[1]; board2048[i+2] = row[2]; board2048[i+3] = row[3];
-            }
-        }
-        function moveRight() {
-            for (let i = 0; i < 16; i += 4) {
-                let row = [board2048[i+3], board2048[i+2], board2048[i+1], board2048[i]];
-                row = compress(row);
-                row = merge(row);
-                row = compress(row);
-                board2048[i+3] = row[0]; board2048[i+2] = row[1]; board2048[i+1] = row[2]; board2048[i] = row[3];
-            }
-        }
-        function moveUp() {
-            for (let i = 0; i < 4; i++) {
-                let row = [board2048[i], board2048[i+4], board2048[i+8], board2048[i+12]];
-                row = compress(row);
-                row = merge(row);
-                row = compress(row);
-                board2048[i] = row[0]; board2048[i+4] = row[1]; board2048[i+8] = row[2]; board2048[i+12] = row[3];
-            }
-        }
-        function moveDown() {
-            for (let i = 0; i < 4; i++) {
-                let row = [board2048[i+12], board2048[i+8], board2048[i+4], board2048[i]];
-                row = compress(row);
-                row = merge(row);
-                row = compress(row);
-                board2048[i+12] = row[0]; board2048[i+8] = row[1]; board2048[i+4] = row[2]; board2048[i] = row[3];
-            }
-        }
-        function checkGameOver2048() {
-            if (!board2048.includes(0)) {
-                let canMove = false;
-                for (let i = 0; i < 16; i++) {
-                    if (i % 4 < 3 && board2048[i] === board2048[i+1]) canMove = true;
-                    if (i < 12 && board2048[i] === board2048[i+4]) canMove = true;
-                }
-                if (!canMove) {
-                    alert('遊戲結束！您的最終得分是：' + score2048);
-                }
-            }
-        }
-
-
-        // ==========================================
-        //           內建小遊戲 2：小恐龍跳躍
-        // ==========================================
-        const dinoChar = document.getElementById('dino-char');
-        const dinoObstacle = document.getElementById('dino-obstacle');
-        const dinoMsg = document.getElementById('dino-msg');
-        let dinoScore = 0;
-        let isJumping = false;
-        let dinoInterval = null;
-        let dinoRunning = false;
-        let obstaclePos = 400;
-
-        function startDinoGame() {
-            dinoScore = 0;
-            obstaclePos = 400;
-            dinoRunning = true;
-            if (dinoMsg) dinoMsg.classList.add('hidden');
-            const scoreDisplay = document.getElementById('dino-score');
-            if (scoreDisplay) scoreDisplay.textContent = dinoScore;
-            
-            clearInterval(dinoInterval);
-            dinoInterval = setInterval(() => {
-                if (!dinoRunning) return;
+                const yyyy = now.getFullYear();
+                const mm = String(now.getMonth() + 1).padStart(2, '0');
+                const dd = String(now.getDate()).padStart(2, '0');
+                const dateStr = `${yyyy}/${mm}/${dd}`;
                 
-                obstaclePos -= 6;
-                if (obstaclePos < -20) {
-                    obstaclePos = 400;
-                    dinoScore += 10;
-                    if (scoreDisplay) scoreDisplay.textContent = dinoScore;
-                }
-                if (dinoObstacle) dinoObstacle.style.left = obstaclePos + 'px';
-
-                const dinoBottom = parseInt(dinoChar.style.bottom) || 16;
-                if (obstaclePos > 40 && obstaclePos < 70 && dinoBottom <= 32) {
-                    gameOverDino();
-                }
-            }, 20);
-        }
-
-        function dinoJump() {
-            if (isJumping || !dinoRunning) return;
-            isJumping = true;
-            let count = 0;
-            
-            let jumpInterval = setInterval(() => {
-                let bottom = parseInt(dinoChar.style.bottom) || 16;
-                if (count < 15) {
-                    bottom += 6;
-                } else {
-                    bottom -= 6;
-                }
-                if (dinoChar) dinoChar.style.bottom = bottom + 'px';
-                count++;
-                if (count >= 30) {
-                    clearInterval(jumpInterval);
-                    if (dinoChar) dinoChar.style.bottom = '16px';
-                    isJumping = false;
-                }
-            }, 12);
-        }
-
-        // 監聽小恐龍空白鍵
-        window.addEventListener('keydown', (e) => {
-            // 🔥 鎖定防搶機制：若當前焦點在 Minecraft
-            if (activeWindow === 'minecraft') return;
-
-            const winDino = document.getElementById('win-gamedino');
-            if (winDino && !winDino.classList.contains('window-hidden') && activeWindow === 'gamedino') {
-                if (e.key === ' ' || e.key === 'ArrowUp') {
-                    e.preventDefault();
-                    dinoJump();
-                }
+                const timeEl = document.getElementById('clock-time');
+                const dateEl = document.getElementById('clock-date');
+                if (timeEl) timeEl.textContent = timeStr;
+                if (dateEl) dateEl.textContent = dateStr;
+            } catch (err) {
+                console.error("時鐘更新失敗:", err);
             }
-        });
-
-        if (document.getElementById('dino-container')) {
-            document.getElementById('dino-container').addEventListener('mousedown', dinoJump);
         }
+        setInterval(updateClock, 1000);
 
-        function gameOverDino() {
-            dinoRunning = false;
-            clearInterval(dinoInterval);
-            if (dinoMsg) dinoMsg.classList.remove('hidden');
-            alert('小恐龍被撞到了！您的分數是：' + dinoScore);
-        }
-
-
-        // ==========================================
-        //           自製經典「俄羅斯方塊」代碼 (完全除錯重構)
-        // ==========================================
-        const tetrisCanvas = document.getElementById('tetris-canvas');
-        const tetrisCtx = tetrisCanvas ? tetrisCanvas.getContext('2d') : null;
-        const tetrisNextCanvas = document.getElementById('tetris-next-canvas');
-        const tetrisNextCtx = tetrisNextCanvas ? tetrisNextCanvas.getContext('2d') : null;
-
-        const BLOCK_SIZE = 20;
-        const ROWS = 20;
-        const COLS = 10;
-        let tetrisScore = 0;
-        let tetrisLines = 0;
-        let tetrisBoard = [];
-        let currentPiece = null;
-        let nextPiece = null;
-        let tetrisInterval = null;
-        let tetrisGameOver = false;
-
-        const SHAPES = {
-            'I': [[1,1,1,1]],
-            'O': [[2,2],[2,2]],
-            'T': [[0,3,0],[3,3,3]],
-            'S': [[0,4,4],[4,4,0]],
-            'Z': [[5,5,0],[0,5,5]],
-            'J': [[6,0,0],[6,6,6]],
-            'L': [[0,0,7],[7,7,7]]
-        };
-
-        const COLORS = {
-            1: '#00f0f0', // Cyan
-            2: '#f0f000', // Yellow
-            3: '#a000f0', // Purple
-            4: '#00f000', // Green
-            5: '#f00000', // Red
-            6: '#0000f0', // Blue
-            7: '#f0a000'  // Orange
-        };
-
-        function createPiece(type) {
-            return {
-                shape: SHAPES[type],
-                color: COLORS[Object.keys(SHAPES).indexOf(type) + 1],
-                val: Object.keys(SHAPES).indexOf(type) + 1,
-                x: Math.floor((COLS - SHAPES[type][0].length) / 2),
-                y: 0
-            };
-        }
-
-        function drawBlock(ctx, x, y, val) {
-            ctx.fillStyle = COLORS[val];
-            ctx.fillRect(x * BLOCK_SIZE, y * BLOCK_SIZE, BLOCK_SIZE, BLOCK_SIZE);
-            ctx.strokeStyle = '#222';
-            ctx.strokeRect(x * BLOCK_SIZE, y * BLOCK_SIZE, BLOCK_SIZE, BLOCK_SIZE);
-        }
-
-        function drawTetris() {
-            if (!tetrisCtx) return;
-            tetrisCtx.clearRect(0, 0, tetrisCanvas.width, tetrisCanvas.height);
-
-            // 畫棋盤
-            for (let r = 0; r < ROWS; r++) {
-                for (let c = 0; c < COLS; c++) {
-                    if (tetrisBoard[r][c] > 0) {
-                        drawBlock(tetrisCtx, c, r, tetrisBoard[r][c]);
-                    }
-                }
-            }
-
-            // 畫現有的方塊
-            if (currentPiece) {
-                currentPiece.shape.forEach((row, dy) => {
-                    row.forEach((value, dx) => {
-                        if (value > 0) {
-                            drawBlock(tetrisCtx, currentPiece.x + dx, currentPiece.y + dy, currentPiece.val);
-                        }
-                    });
-                });
+        // ---------------- 快捷設定面板 (Quick Settings) ----------------
+        function toggleQuickSettings() {
+            const panel = document.getElementById('quick-settings-panel');
+            if (panel) {
+                panel.classList.toggle('hidden');
+                // 關閉開始選單
+                const startMenu = document.getElementById('start-menu');
+                if (startMenu) startMenu.classList.add('window-hidden');
             }
         }
 
-        function drawNextPiece() {
-            if (!tetrisNextCtx || !nextPiece) return;
-            tetrisNextCtx.clearRect(0, 0, tetrisNextCanvas.width, tetrisNextCanvas.height);
-            
-            const offset = (60 - nextPiece.shape[0].length * 15) / 2;
-            nextPiece.shape.forEach((row, dy) => {
-                row.forEach((value, dx) => {
-                    if (value > 0) {
-                        tetrisNextCtx.fillStyle = COLORS[nextPiece.val];
-                        tetrisNextCtx.fillRect(offset + dx * 15, offset + dy * 15, 15, 15);
-                        tetrisNextCtx.strokeStyle = '#111';
-                        tetrisNextCtx.strokeRect(offset + dx * 15, offset + dy * 15, 15, 15);
-                    }
-                });
-            });
-        }
-
-        function collide(piece, board, offsetX = 0, offsetY = 0) {
-            for (let r = 0; r < piece.shape.length; r++) {
-                for (let c = 0; c < piece.shape[r].length; c++) {
-                    if (piece.shape[r][c] > 0) {
-                        let nextX = piece.x + c + offsetX;
-                        let nextY = piece.y + r + offsetY;
-                        if (nextX < 0 || nextX >= COLS || nextY >= ROWS) return true;
-                        if (nextY >= 0 && board[nextY][nextX] > 0) return true;
-                    }
-                }
-            }
-            return false;
-        }
-
-        function mergePiece() {
-            currentPiece.shape.forEach((row, dy) => {
-                row.forEach((value, dx) => {
-                    if (value > 0) {
-                        tetrisBoard[currentPiece.y + dy][currentPiece.x + dx] = currentPiece.val;
-                    }
-                });
-            });
-        }
-
-        // 🔥 關鍵修正演算法：完美解決原本無窮迴圈的錯誤！
-        function rotatePiece(piece) {
-            let nShape = [];
-            const rLen = piece.shape.length;
-            const cLen = piece.shape[0].length;
-            
-            for (let c = 0; c < cLen; c++) {
-                let nRow = [];
-                for (let r = rLen - 1; r >= 0; r--) {
-                    nRow.push(piece.shape[r][c]);
-                }
-                nShape.push(nRow);
-            }
-            return { ...piece, shape: nShape };
-        }
-
-        function checkTetrisLines() {
-            let linesCleared = 0;
-            for (let r = ROWS - 1; r >= 0; r--) {
-                if (tetrisBoard[r].every(val => val > 0)) {
-                    tetrisBoard.splice(r, 1);
-                    tetrisBoard.unshift(Array(COLS).fill(0));
-                    linesCleared++;
-                    r++; // 重複檢查
-                }
-            }
-            if (linesCleared > 0) {
-                tetrisLines += linesCleared;
-                tetrisScore += [0, 100, 300, 500, 800][linesCleared];
-                document.getElementById('tetris-score').textContent = tetrisScore;
-                document.getElementById('tetris-lines').textContent = tetrisLines;
+        function adjustBrightness(val) {
+            const dimmer = document.getElementById('brightness-dimmer');
+            if (dimmer) {
+                const opacity = (100 - val) / 100;
+                dimmer.style.opacity = opacity * 0.7; // 最大調暗度 70%
             }
         }
 
-        function tetrisTick() {
-            if (collide(currentPiece, tetrisBoard, 0, 1)) {
-                mergePiece();
-                checkTetrisLines();
-                currentPiece = nextPiece;
-                const types = Object.keys(SHAPES);
-                nextPiece = createPiece(types[Math.floor(Math.random() * types.length)]);
-                drawNextPiece();
-                if (collide(currentPiece, tetrisBoard)) {
-                    tetrisGameOver = true;
-                    clearInterval(tetrisInterval);
-                    alert('俄羅斯方塊結束！最終分數：' + tetrisScore);
-                }
-            } else {
-                currentPiece.y++;
+        function adjustVolume(val) {
+            const volIcon = document.getElementById('quick-volume-icon');
+            const tbVolIcon = document.getElementById('taskbar-volume-icon');
+            let iconClass = "fa-solid fa-volume-xmark";
+            if (val > 0 && val <= 30) {
+                iconClass = "fa-solid fa-volume-low";
+            } else if (val > 30 && val <= 70) {
+                iconClass = "fa-solid fa-volume-medium";
+            } else if (val > 70) {
+                iconClass = "fa-solid fa-volume-high";
             }
-            drawTetris();
+            if (volIcon) volIcon.className = `${iconClass} text-zinc-400 text-sm w-4 text-center`;
+            if (tbVolIcon) tbVolIcon.className = `${iconClass} text-white`;
         }
 
-        function startTetris() {
-            if (!tetrisCanvas) return;
-            tetrisCanvas.width = COLS * BLOCK_SIZE;
-            tetrisCanvas.height = ROWS * BLOCK_SIZE;
-            if (tetrisNextCanvas) {
-                tetrisNextCanvas.width = 60;
-                tetrisNextCanvas.height = 60;
-            }
-
-            tetrisBoard = Array(ROWS).fill().map(() => Array(COLS).fill(0));
-            tetrisScore = 0;
-            tetrisLines = 0;
-            tetrisGameOver = false;
-            document.getElementById('tetris-score').textContent = '0';
-            document.getElementById('tetris-lines').textContent = '0';
-
-            const types = Object.keys(SHAPES);
-            currentPiece = createPiece(types[Math.floor(Math.random() * types.length)]);
-            nextPiece = createPiece(types[Math.floor(Math.random() * types.length)]);
-
-            drawNextPiece();
-            drawTetris();
-
-            clearInterval(tetrisInterval);
-            tetrisInterval = setInterval(tetrisTick, 800);
-        }
-
-        // 俄羅斯方塊鍵盤監聽
-        window.addEventListener('keydown', (e) => {
-            // 🔥 鎖定防搶機制：若當前焦點在 Minecraft
-            if (activeWindow === 'minecraft') return;
-
-            const winTetris = document.getElementById('win-tetris');
-            if (winTetris && !winTetris.classList.contains('window-hidden') && activeWindow === 'tetris' && !tetrisGameOver) {
-                if (e.key === 'ArrowLeft') {
-                    e.preventDefault();
-                    if (!collide(currentPiece, tetrisBoard, -1, 0)) currentPiece.x--;
-                } else if (e.key === 'ArrowRight') {
-                    e.preventDefault();
-                    if (!collide(currentPiece, tetrisBoard, 1, 0)) currentPiece.x++;
-                } else if (e.key === 'ArrowDown') {
-                    e.preventDefault();
-                    if (!collide(currentPiece, tetrisBoard, 0, 1)) currentPiece.y++;
-                } else if (e.key === 'ArrowUp') {
-                    e.preventDefault();
-                    let rotated = rotatePiece(currentPiece);
-                    if (!collide(rotated, tetrisBoard)) currentPiece = rotated;
-                } else if (e.key === ' ') {
-                    e.preventDefault();
-                    while (!collide(currentPiece, tetrisBoard, 0, 1)) {
-                        currentPiece.y++;
-                    }
-                    tetrisTick();
-                }
-                drawTetris();
-            }
-        });
-
-
-        // ==========================================
-        //       Microsoft Word 自製排版器控制代碼
-        // ==========================================
-        function formatWord(command, value = null) {
-            document.execCommand(command, false, value);
-            const page = document.getElementById('word-page');
-            if (page) page.focus();
-        }
-
-        // Word 下載與檔案系統動態儲存連動
-        function saveWordDoc() {
-            const page = document.getElementById('word-page');
-            if (!page) return;
-            const content = page.innerHTML;
-            
-            // 隨機命名文件名稱
-            const docName = "我的Word文件_" + Math.floor(Math.random() * 1000) + ".doc";
-
-            // 1. 動態追加寫入虛擬檔案總管的「我的文件 (documents)」中！
-            fileSystem.documents.push({
-                name: docName,
-                type: 'text',
-                action: `openSavedDoc(\`${content.replace(/`/g, '\\`').replace(/"/g, '\\"')}\`, '${docName}')`
-            });
-
-            // 刷新目前打開的檔案總管介面
-            const explorerWin = windows['thispc'];
-            if (explorerWin && explorerWin.isOpen) {
-                navigateFolder('documents');
-            }
-
-            // 2. 本機實體檔案下載儲存
-            const blob = new Blob([content], { type: 'text/html;charset=utf-8' });
-            const link = document.createElement('a');
-            link.href = URL.createObjectURL(blob);
-            link.download = docName;
-            link.click();
-            URL.revokeObjectURL(link.href);
-
-            alert(`🎉 文件已成功實體下載，並動態儲存至您的檔案總管 > 「我的文件」資料夾中！檔案名稱：${docName}`);
-        }
-
-
-        // ==========================================
-        //       Microsoft Excel 自製試算表控制代碼
-        // ==========================================
-        let selectedCellId = 'A1';
-
-        function initExcel() {
-            const tbody = document.getElementById('excel-tbody');
-            if (!tbody) return;
-            tbody.innerHTML = '';
-            
-            for (let i = 1; i <= 12; i++) {
-                const tr = document.createElement('tr');
-                tr.innerHTML = `
-                    <td class="bg-zinc-100 text-center border border-zinc-300 text-zinc-500 font-medium py-1 w-10">${i}</td>
-                    <td contenteditable="true" id="A${i}" onfocus="selectCell('A${i}')" class="border border-zinc-300 px-2 outline-none focus:bg-emerald-50 focus:ring-1 focus:ring-emerald-500 user-select-text"></td>
-                    <td contenteditable="true" id="B${i}" onfocus="selectCell('B${i}')" class="border border-zinc-300 px-2 outline-none focus:bg-emerald-50 focus:ring-1 focus:ring-emerald-500 user-select-text"></td>
-                    <td contenteditable="true" id="C${i}" onfocus="selectCell('C${i}')" class="border border-zinc-300 px-2 outline-none focus:bg-emerald-50 focus:ring-1 focus:ring-emerald-500 user-select-text"></td>
-                    <td contenteditable="true" id="D${i}" onfocus="selectCell('D${i}')" class="border border-zinc-300 px-2 outline-none focus:bg-emerald-50 focus:ring-1 focus:ring-emerald-500 user-select-text"></td>
-                    <td contenteditable="true" id="E${i}" onfocus="selectCell('E${i}')" class="border border-zinc-300 px-2 outline-none focus:bg-emerald-50 focus:ring-1 focus:ring-emerald-500 user-select-text"></td>
-                    <td contenteditable="true" id="F${i}" onfocus="selectCell('F${i}')" class="border border-zinc-300 px-2 outline-none focus:bg-emerald-50 focus:ring-1 focus:ring-emerald-500 user-select-text"></td>
-                    <td contenteditable="true" id="G${i}" onfocus="selectCell('G${i}')" class="border border-zinc-300 px-2 outline-none focus:bg-emerald-50 focus:ring-1 focus:ring-emerald-500 user-select-text"></td>
-                `;
-                tbody.appendChild(tr);
-            }
-            
-            const a1 = document.getElementById('A1');
-            const b1 = document.getElementById('B1');
-            const a2 = document.getElementById('A2');
-            const b2 = document.getElementById('B2');
-            const a3 = document.getElementById('A3');
-            const b3 = document.getElementById('B3');
-
-            if (a1) a1.textContent = 'Minecraft 原木方塊';
-            if (b1) b1.textContent = '64';
-            if (a2) a2.textContent = '黃金礦石';
-            if (b2) b2.textContent = '32';
-            if (a3) a3.textContent = '總方塊數量 (SUM)';
-            if (b3) {
-                b3.className += ' font-bold text-emerald-600 bg-emerald-50/40';
-                b3.textContent = '96';
+        // ---------------- 開始選單切換 ----------------
+        function toggleStartMenu() {
+            const startMenu = document.getElementById('start-menu');
+            if (startMenu) {
+                startMenu.classList.toggle('window-hidden');
+                // 關閉快捷面板
+                const qPanel = document.getElementById('quick-settings-panel');
+                if (qPanel) qPanel.classList.add('hidden');
             }
         }
 
-        function selectCell(id) {
-            selectedCellId = id;
-            const display = document.getElementById('excel-active-cell');
-            if (display) display.textContent = id;
-        }
-
-        // 自動加總
-        function calculateExcelSum() {
-            const col = selectedCellId.charAt(0);
-            const row = parseInt(selectedCellId.substring(1), 10);
-            
-            let sum = 0;
-            for (let i = 1; i < row; i++) {
-                const cell = document.getElementById(`${col}${i}`);
-                if (cell) {
-                    const cellVal = parseFloat(cell.textContent);
-                    if (!isNaN(cellVal)) {
-                        sum += cellVal;
-                    }
-                }
-            }
-            const targetCell = document.getElementById(selectedCellId);
-            if (targetCell) targetCell.textContent = sum;
-            alert(`已自動為 ${selectedCellId} 計算上方整欄的「加總數值」！`);
-        }
-
-        function calculateExcelAverage() {
-            const col = selectedCellId.charAt(0);
-            const row = parseInt(selectedCellId.substring(1), 10);
-            
-            let sum = 0;
-            let count = 0;
-            for (let i = 1; i < row; i++) {
-                const cell = document.getElementById(`${col}${i}`);
-                if (cell) {
-                    const cellVal = parseFloat(cell.textContent);
-                    if (!isNaN(cellVal)) {
-                        sum += cellVal;
-                        count++;
-                    }
-                }
-            }
-            if (count > 0) {
-                const avg = (sum / count).toFixed(2);
-                const targetCell = document.getElementById(selectedCellId);
-                if (targetCell) targetCell.textContent = avg;
-                alert(`已自動為 ${selectedCellId} 計算上方 ${count} 個格子的「平均值」：${avg}`);
-            } else {
-                alert('上方欄位沒有找到可以計算的數字喔！');
-            }
-        }
-
-        function clearExcelSheet() {
-            for (let i = 1; i <= 12; i++) {
-                ['A', 'B', 'C', 'D', 'E', 'F', 'G'].forEach(col => {
-                    const cell = document.getElementById(`${col}${i}`);
-                    if (cell) cell.textContent = '';
-                });
-            }
-        }
-
-
-        // ==========================================
-        //     Microsoft PowerPoint 自製簡報控制代碼
-        // ==========================================
-        let pptSlides = [
-            { title: "自製 PowerPoint 簡報大師", content: "歡迎來到您專屬的 Windows 11 本地完全自製簡報軟體！\n\n您可以自由修改這兩頁投影片，或新增更多創意頁面。\n\n點選右上方「播放簡報」按鈕即可開始全螢幕放映！", bg: "#fff7ed" },
-            { title: "關於 Minecraft 世界", content: "已經收納於 Microsoft Store 中！\n\n這是一個由您提供的 2026.4.20.html 完美整合版。可在商店中直接點選「啟動遊戲」！", bg: "#ecfdf5" }
-        ];
-        let currentSlideIdx = 0;
-
-        const pptTitleInput = document.getElementById('ppt-title');
-        const pptContentInput = document.getElementById('ppt-content');
-        const pptCanvas = document.getElementById('ppt-canvas');
-
-        if (pptTitleInput) {
-            pptTitleInput.addEventListener('input', () => {
-                pptSlides[currentSlideIdx].title = pptTitleInput.value;
-                renderSlidesList();
-            });
-        }
-        if (pptContentInput) {
-            pptContentInput.addEventListener('input', () => {
-                pptSlides[currentSlideIdx].content = pptContentInput.value;
-            });
-        }
-
-        function renderSlidesList() {
-            const listContainer = document.getElementById('ppt-slides-list');
-            if (!listContainer) return;
-            listContainer.innerHTML = '';
-            
-            pptSlides.forEach((slide, idx) => {
-                const slideThumb = document.createElement('div');
-                slideThumb.className = `w-36 h-24 rounded p-2 text-left cursor-pointer transition flex flex-col justify-between border-2 overflow-hidden ${idx === currentSlideIdx ? 'border-orange-500 bg-orange-950/20' : 'border-zinc-700 bg-zinc-900/40 hover:border-zinc-500'}`;
-                slideThumb.onclick = () => selectSlide(idx);
-                slideThumb.innerHTML = `
-                    <div class="text-[9px] text-gray-400 font-bold">Slide ${idx + 1}</div>
-                    <div class="text-[11px] font-bold text-white truncate">${slide.title || '無標題'}</div>
-                    <div class="text-[8px] text-gray-500 truncate whitespace-pre-line">${slide.content || '無內容'}</div>
-                `;
-                listContainer.appendChild(slideThumb);
-            });
-        }
-
-        function selectSlide(idx) {
-            currentSlideIdx = idx;
-            updatePPTSlide();
-            renderSlidesList();
-        }
-
-        // 更新簡報
-        function updatePPTSlide() {
-            const slide = pptSlides[currentSlideIdx];
-            if (pptTitleInput) pptTitleInput.value = slide.title;
-            if (pptContentInput) pptContentInput.value = slide.content;
-            if (pptCanvas) {
-                pptCanvas.style.backgroundColor = slide.bg;
-                const bgPicker = document.getElementById('ppt-bg-color');
-                if (bgPicker) bgPicker.value = slide.bg;
-            }
-        }
-
-        function addSlide() {
-            pptSlides.push({ title: "新簡報頁面標題", content: "在此編輯詳細頁面簡介...", bg: "#ffffff" });
-            currentSlideIdx = pptSlides.length - 1;
-            updatePPTSlide();
-            renderSlidesList();
-        }
-
-        function deleteSlide() {
-            if (pptSlides.length <= 1) {
-                alert("至少需要保留一張簡報喔！");
-                return;
-            }
-            pptSlides.splice(currentSlideIdx, 1);
-            currentSlideIdx = Math.max(0, currentSlideIdx - 1);
-            updatePPTSlide();
-            renderSlidesList();
-        }
-
-        function changeSlideBg(color) {
-            pptSlides[currentSlideIdx].bg = color;
-            if (pptCanvas) pptCanvas.style.backgroundColor = color;
-            renderSlidesList();
-        }
-
-        // PPT 全螢幕簡報播放邏輯
-        let slideshowIdx = 0;
-        function startSlideshow() {
-            slideshowIdx = currentSlideIdx;
-            const modal = document.getElementById('ppt-slideshow-modal');
-            if (modal) {
-                modal.classList.remove('hidden');
-                modal.classList.add('flex');
-                updateSlideshowView();
-            }
-        }
-
-        function updateSlideshowView() {
-            const slide = pptSlides[slideshowIdx];
-            const title = document.getElementById('slideshow-title');
-            const content = document.getElementById('slideshow-content');
-            const container = document.getElementById('slideshow-container');
-            const indexSpan = document.getElementById('slideshow-index');
-            const totalSpan = document.getElementById('slideshow-total');
-
-            if (title) title.textContent = slide.title;
-            if (content) content.textContent = slide.content;
-            if (container) {
-                container.style.backgroundColor = slide.bg;
-                const isDark = isColorDark(slide.bg);
-                if (title) title.style.color = isDark ? '#ffffff' : '#111827';
-                if (content) content.style.color = isDark ? '#e4e4e7' : '#374151';
-            }
-
-            if (indexSpan) indexSpan.textContent = slideshowIdx + 1;
-            if (totalSpan) totalSpan.textContent = pptSlides.length;
-        }
-
-        function nextSlideshow() {
-            if (slideshowIdx < pptSlides.length - 1) {
-                slideshowIdx++;
-                updateSlideshowView();
-            } else {
-                alert("投影片播放完畢囉！");
-                exitSlideshow();
-            }
-        }
-
-        function prevSlideshow() {
-            if (slideshowIdx > 0) {
-                slideshowIdx--;
-                updateSlideshowView();
-            }
-        }
-
-        function exitSlideshow() {
-            const modal = document.getElementById('ppt-slideshow-modal');
-            if (modal) {
-                modal.classList.add('hidden');
-                modal.classList.remove('flex');
-            }
-        }
-
-        // 簡報鍵盤控制監聽
-        window.addEventListener('keydown', (e) => {
-            const modal = document.getElementById('ppt-slideshow-modal');
-            if (modal && !modal.classList.contains('hidden')) {
-                if (e.key === 'ArrowRight' || e.key === ' ' || e.key === 'Enter') {
-                    e.preventDefault();
-                    nextSlideshow();
-                }
-                if (e.key === 'ArrowLeft') {
-                    e.preventDefault();
-                    prevSlideshow();
-                }
-                if (e.key === 'Escape') {
-                    e.preventDefault();
-                    exitSlideshow();
-                }
-            }
-        });
-
-        function isColorDark(color) {
-            if (!color.startsWith('#')) return false;
-            const r = parseInt(color.substring(1, 3), 16);
-            const g = parseInt(color.substring(3, 5), 16);
-            const b = parseInt(color.substring(5, 7), 16);
-            const brightness = (r * 299 + g * 587 + b * 114) / 1000;
-            return brightness < 128;
-        }
-
-
-        // ---------------- 記事本與小算盤 ----------------
-        // 記事本下載與檔案系統動態儲存連動
-        function saveNotepad() {
-            const notepadText = document.getElementById('notepad-content');
-            if (!notepadText) return;
-            const text = notepadText.value;
-            
-            // 隨機命名文件
-            const fileName = "記事本_" + Math.floor(Math.random() * 1000) + ".txt";
-
-            // 1. 動態將此檔案，同時載入並顯示在 Windows 11 桌面上！
-            const deskFilesContainer = document.getElementById('desktop-dynamic-files');
-            if (deskFilesContainer) {
-                const newFileDiv = document.createElement('div');
-                newFileDiv.className = "w-20 h-22 flex flex-col items-center justify-center rounded hover:bg-white/10 active:bg-white/20 cursor-pointer transition p-1 text-center";
-                // 點擊可以呼叫開啟此文件
-                newFileDiv.onclick = () => openSavedDoc(text, fileName);
-                newFileDiv.innerHTML = `
-                    <div class="w-10 h-10 flex items-center justify-center">
-                        <img src="notepad.png" class="w-full h-full object-contain" onerror="fallbackIcon(this, 'notepad')">
-                    </div>
-                    <span class="text-white text-xs text-center drop-shadow-md truncate w-full mt-1">${fileName}</span>
-                `;
-                deskFilesContainer.appendChild(newFileDiv);
-            }
-
-            // 2. 同步將此檔案寫入虛擬檔案總管的「快速存取 > 桌面」數據
-            fileSystem.root.push({
-                name: fileName,
-                type: 'text',
-                action: `openSavedDoc(\`${text.replace(/`/g, '\\`').replace(/"/g, '\\"')}\`, '${fileName}')`
-            });
-
-            // 3. 下載實體檔案到玩家真實本機中
-            const blob = new Blob([text], { type: 'text/plain;charset=utf-8' });
-            const link = document.createElement('a');
-            link.href = URL.createObjectURL(blob);
-            link.download = fileName;
-            link.click();
-            URL.revokeObjectURL(link.href);
-
-            alert(`🎉 文件已成功實體下載，並動態儲存至您的系統「桌面」主畫面上！檔案名稱：${fileName}`);
-        }
-
-        // 打開在模擬器內新產生的儲存文件
-        function openSavedDoc(content, title) {
-            // 如果是 Word，直接載入到 Word 編輯區
-            if (title.endsWith('.doc')) {
-                const page = document.getElementById('word-page');
-                if (page) page.innerHTML = content;
-                openWindow('word');
-            } else {
-                // 如果是記事本，載入到記事本
-                const notepadText = document.getElementById('notepad-content');
-                if (notepadText) notepadText.value = content;
-                openWindow('notepad');
-            }
-        }
-
-        function clearNotepad() {
-            const notepadText = document.getElementById('notepad-content');
-            if (notepadText) notepadText.value = '';
-        }
-
-        let calcVal = '0';
-        const calcScreen = document.getElementById('calc-screen');
-        function calcPress(val) {
-            if (calcVal === '0' && !isNaN(val)) calcVal = val;
-            else calcVal += val;
-            if (calcScreen) calcScreen.textContent = calcVal;
-        }
-        function calcClear() {
-            calcVal = '0';
-            if (calcScreen) calcScreen.textContent = '0';
-            const calcHist = document.getElementById('calc-history');
-            if (calcHist) calcHist.textContent = '';
-        }
-        function calcBack() {
-            calcVal = calcVal.length > 1 ? calcVal.slice(0, -1) : '0';
-            if (calcScreen) calcScreen.textContent = calcVal;
-        }
-        function calcEqual() {
-            try {
-                const result = eval(calcVal);
-                const calcHist = document.getElementById('calc-history');
-                if (calcHist) calcHist.textContent = calcVal + ' =';
-                calcVal = String(result);
-                if (calcScreen) calcScreen.textContent = calcVal;
-            } catch {
-                if (calcScreen) calcScreen.textContent = '錯誤';
-                calcVal = '0';
-            }
-        }
-
-        // ==========================================
-        //         🔥 設定 App 面板頁切換與主題控制 (完美同步)
-        // ==========================================
-        let currentSettingsTab = 'personal';
-        let systemDeviceName = "Administrator-PC";
-        let virtualWifiConnected = true;
-        let virtualBluetoothConnected = true; // 預設開啟藍牙
-        let settingsTheme = "dark"; // 預設深色模式
-
-        // 藍牙設備動態列表資料庫
-        let bluetoothDevices = [
-            { id: 'dev1', name: "Xbox Wireless Controller", status: "已配對", icon: "fa-gamepad" },
-            { id: 'dev2', name: "WH-1000XM4 (無線耳機)", status: "已連線 音訊", icon: "fa-headphones" },
-            { id: 'dev3', name: "Microsoft Designer Keyboard", status: "已配對", icon: "fa-keyboard" }
-        ];
-
-        // 模擬搜尋藍牙設備清單
-        const searchPoolDevices = [
-            { name: "Dino's Phone (手機)", icon: "fa-mobile-screen-button" },
-            { name: "Wireless Magic Mouse (滑鼠)", icon: "fa-mouse" },
-            { name: "Sony HT-S40R (音響喇叭)", icon: "fa-volume-high" },
-            { name: "Pixel Buds Pro (藍牙耳機)", icon: "fa-headphones" }
-        ];
-
-        function switchSettingsTab(tabKey) {
-            currentSettingsTab = tabKey;
-            const panel = document.getElementById('settings-main-panel');
-            if (!panel) return;
-
-            // 移除左側菜單所有 active 狀態，並為選中的加上樣式
-            const menuDivs = document.querySelectorAll('#settings-sidebar div');
-            menuDivs.forEach(div => {
-                div.classList.remove('bg-zinc-800/80', 'text-white', 'font-bold');
-                div.classList.add('text-zinc-300');
-            });
-            
-            // 添加 active 樣式至選定項目
-            const currentBtn = document.getElementById(`settings-btn-${tabKey}`);
-            if (currentBtn) {
-                currentBtn.classList.add('bg-zinc-800/80', 'text-white', 'font-bold');
-                currentBtn.classList.remove('text-zinc-300');
-            }
-
-            if (tabKey === 'personal') {
-                panel.innerHTML = `
-                    <div class="space-y-6 animate-fade-in text-zinc-100">
-                        <div class="flex items-center gap-2 pb-2 border-b border-zinc-800">
-                            <i class="fa-solid fa-palette text-cyan-400 text-lg"></i>
-                            <h3 class="text-base font-bold">個人化桌布與主題設計</h3>
-                        </div>
-                        <p class="text-xs text-zinc-400">點擊下方任一桌布縮圖，即可一鍵將 Windows 11 模擬器的桌面壁紙進行即時切換！</p>
-                        
-                        <!-- 桌布庫 -->
-                        <div class="grid grid-cols-2 gap-4">
-                            <div onclick="changeWallpaper('170.png')" class="border border-zinc-700/60 rounded-lg p-2 bg-zinc-800/40 cursor-pointer hover:border-cyan-500 transition text-center group">
-                                <div class="w-full h-24 rounded overflow-hidden mb-2 bg-zinc-950 flex items-center justify-center">
-                                    <img src="170.png" class="w-full h-full object-cover group-hover:scale-105 transition duration-300" onerror="this.src='https://images.unsplash.com/photo-1620121692029-d088224ddc74?auto=format&fit=crop&w=100&q=80'">
-                                </div>
-                                <span class="text-xs font-semibold">170.png 預設緞帶</span>
-                            </div>
-                            <div onclick="changeWallpaper('https://images.unsplash.com/photo-1618005182384-a83a8bd57fbe?auto=format&fit=crop&w=1920&q=80')" class="border border-zinc-700/60 rounded-lg p-2 bg-zinc-800/40 cursor-pointer hover:border-cyan-500 transition text-center group">
-                                <div class="w-full h-24 rounded overflow-hidden mb-2 bg-zinc-950">
-                                    <img src="https://images.unsplash.com/photo-1618005182384-a83a8bd57fbe?auto=format&fit=crop&w=100&q=80" class="w-full h-full object-cover group-hover:scale-105 transition duration-300">
-                                </div>
-                                <span class="text-xs font-semibold">流金幻彩極光</span>
-                            </div>
-                            <div onclick="changeWallpaper('https://images.unsplash.com/photo-1579546929518-9e396f3cc809?auto=format&fit=crop&w=1920&q=80')" class="border border-zinc-700/60 rounded-lg p-2 bg-zinc-800/40 cursor-pointer hover:border-cyan-500 transition text-center group">
-                                <div class="w-full h-24 rounded overflow-hidden mb-2 bg-zinc-950">
-                                    <img src="https://images.unsplash.com/photo-1579546929518-9e396f3cc809?auto=format&fit=crop&w=100&q=80" class="w-full h-full object-cover group-hover:scale-105 transition duration-300">
-                                </div>
-                                <span class="text-xs font-semibold">炫彩霓虹漸層</span>
-                            </div>
-                            <div onclick="changeWallpaper('https://images.unsplash.com/photo-1557683316-973673baf926?auto=format&fit=crop&w=1920&q=80')" class="border border-zinc-700/60 rounded-lg p-2 bg-zinc-800/40 cursor-pointer hover:border-cyan-500 transition text-center group">
-                                <div class="w-full h-24 rounded overflow-hidden mb-2 bg-zinc-950">
-                                    <img src="https://images.unsplash.com/photo-1557683316-973673baf926?auto=format&fit=crop&w=100&q=80" class="w-full h-full object-cover group-hover:scale-105 transition duration-300">
-                                </div>
-                                <span class="text-xs font-semibold">深邃極夜暗紅</span>
-                            </div>
-                        </div>
-
-                        <!-- 淺色/深色模式 -->
-                        <div class="pt-4 border-t border-zinc-800 flex justify-between items-center bg-zinc-850/30 p-4 rounded-lg border border-zinc-800">
-                            <div>
-                                <h4 class="text-xs font-bold text-white mb-0.5">選擇您的顏色模式</h4>
-                                <p class="text-[10px] text-zinc-400">變更設定視窗與系統環境主題</p>
-                            </div>
-                            <select id="theme-select" onchange="toggleSystemTheme(this.value)" class="bg-zinc-800 border border-zinc-700 rounded px-2 py-1 text-xs text-white outline-none">
-                                <option value="dark" ${settingsTheme === 'dark' ? 'selected' : ''}>深色模式</option>
-                                <option value="light" ${settingsTheme === 'light' ? 'selected' : ''}>淺色模式</option>
-                            </select>
-                        </div>
-                    </div>
-                `;
-            } else if (tabKey === 'system') {
-                panel.innerHTML = `
-                    <div class="space-y-6 animate-fade-in text-zinc-100">
-                        <div class="flex items-center gap-2 pb-2 border-b border-zinc-800">
-                            <i class="fa-solid fa-laptop text-blue-400 text-lg"></i>
-                            <h3 class="text-base font-bold">系統規格與關於本機</h3>
-                        </div>
-                        
-                        <!-- 修改電腦名稱區塊 -->
-                        <div class="bg-zinc-850/30 p-4 rounded-lg border border-zinc-800 flex justify-between items-center gap-4">
-                            <div>
-                                <h4 class="text-xs font-bold text-white mb-0.5">裝置名稱</h4>
-                                <p class="text-[11px] text-zinc-400">目前本機的虛擬名稱是：<span id="settings-device-label" class="text-blue-400 font-bold">${systemDeviceName}</span></p>
-                            </div>
-                            <button onclick="renameDevice()" class="bg-blue-600 hover:bg-blue-500 text-white rounded text-xs font-semibold px-4 py-1.5 transition">重新命名</button>
-                        </div>
-
-                        <!-- 系統詳細資訊表 -->
-                        <div class="bg-zinc-850/40 p-4 rounded-lg border border-zinc-800 space-y-3.5">
-                            <div class="flex justify-between border-b border-zinc-800/50 pb-2">
-                                <span class="text-xs text-zinc-400 font-medium">裝置名稱</span>
-                                <span id="info-device-name" class="text-xs font-bold text-white">${systemDeviceName}</span>
-                            </div>
-                            <div class="flex justify-between border-b border-zinc-800/50 pb-2">
-                                <span class="text-xs text-zinc-400 font-medium">處理器 (CPU)</span>
-                                <span class="text-xs font-bold text-white">Intel(R) Core(TM) i9-2026K CPU @ 5.00GHz</span>
-                            </div>
-                            <div class="flex justify-between border-b border-zinc-800/50 pb-2">
-                                <span class="text-xs text-zinc-400 font-medium">安裝的記憶體 (RAM)</span>
-                                <span class="text-xs font-bold text-white">32.0 GB (31.8 GB 可用)</span>
-                            </div>
-                            <div class="flex justify-between border-b border-zinc-800/50 pb-2">
-                                <span class="text-xs text-zinc-400 font-medium">系統類型</span>
-                                <span class="text-xs font-bold text-white">64 位元作業系統，x64 處理器</span>
-                            </div>
-                            <div class="flex justify-between border-b border-zinc-800/50 pb-2">
-                                <span class="text-xs font-bold text-white">版本作業系統</span>
-                                <span class="text-xs font-bold text-white">Windows 11 專業網頁自製版</span>
-                            </div>
-                            <div class="flex justify-between pb-1">
-                                <span class="text-xs text-zinc-400 font-medium">容量使用狀況</span>
-                                <span class="text-xs font-bold text-white">已用 118 GB / 剩餘 138 GB (共 256 GB)</span>
-                            </div>
-                        </div>
-                    </div>
-                `;
-            } else if (tabKey === 'network') {
-                panel.innerHTML = `
-                    <div class="space-y-6 animate-fade-in text-zinc-100">
-                        <div class="flex items-center gap-2 pb-2 border-b border-zinc-800">
-                            <i class="fa-solid fa-wifi text-emerald-400 text-lg"></i>
-                            <h3 class="text-base font-bold">網路和網際網路狀態</h3>
-                        </div>
-                        <p class="text-xs text-zinc-400">管理這部虛擬本機的網際網路連線狀態。</p>
-
-                        <!-- Wi-Fi 物理連線實體開關 -->
-                        <div class="bg-zinc-850/30 p-4 rounded-lg border border-zinc-800 flex justify-between items-center">
-                            <div>
-                                <h4 class="text-xs font-bold text-white mb-0.5">無線網路連線 (Wi-Fi)</h4>
-                                <p id="settings-wifi-status-text" class="text-[10px] text-zinc-400">${virtualWifiConnected ? '已安全連線至網際網路' : '中斷連線'}</p>
-                            </div>
-                            <div class="flex items-center">
-                                <button onclick="toggleVirtualWifi()" id="settings-wifi-switch-btn" class="w-12 h-6 rounded-full p-0.5 transition-colors duration-200 focus:outline-none ${virtualWifiConnected ? 'bg-blue-600' : 'bg-zinc-700'} flex items-center">
-                                    <div class="w-5 h-5 bg-white rounded-full shadow transition-transform duration-200 transform ${virtualWifiConnected ? 'translate-x-6' : 'translate-x-0'}"></div>
-                                </button>
-                            </div>
-                        </div>
-
-                        <!-- 行網或飛航模式 -->
-                        <div class="bg-zinc-850/30 p-4 rounded-lg border border-zinc-800 flex justify-between items-center opacity-60">
-                            <div>
-                                <h4 class="text-xs font-bold text-white mb-0.5">飛航模式</h4>
-                                <p class="text-[10px] text-zinc-400">停止所有的無線連線</p>
-                            </div>
-                            <button class="bg-zinc-800 border border-zinc-700 text-zinc-500 rounded text-xs px-3 py-1 cursor-not-allowed">已停用</button>
-                        </div>
-                    </div>
-                `;
-            } else if (tabKey === 'update') {
-                panel.innerHTML = `
-                    <div class="space-y-6 animate-fade-in text-zinc-100">
-                        <div class="flex items-center gap-2 pb-2 border-b border-zinc-800">
-                            <i class="fa-solid fa-rotate text-purple-400 text-lg"></i>
-                            <h3 class="text-base font-bold">Windows 更新 (Windows Update)</h3>
-                        </div>
-
-                        <div class="bg-zinc-850/30 p-5 rounded-lg border border-zinc-800 flex items-center justify-between gap-4">
-                            <div class="flex items-center gap-4">
-                                <i id="settings-update-status-icon" class="fa-solid fa-circle-check text-emerald-400 text-3xl"></i>
-                                <div>
-                                    <h4 id="settings-update-title" class="text-sm font-bold text-white mb-0.5">您的系統已是最新版本</h4>
-                                    <p id="settings-update-subtitle" class="text-[10px] text-zinc-400">最後檢查時間：今天</p>
-                                </div>
-                            </div>
-                            <button onclick="triggerMockWindowsUpdate()" id="settings-update-check-btn" class="bg-blue-600 hover:bg-blue-500 text-white rounded text-xs font-bold px-4 py-2 transition flex items-center gap-1.5 shadow-md">
-                                <i class="fa-solid fa-arrows-rotate"></i>
-                                <span>檢查更新</span>
-                            </button>
-                        </div>
-
-                        <!-- 預估更新項目 -->
-                        <div id="settings-update-progress-container" class="hidden animate-fade-in bg-zinc-850/40 p-4 rounded-lg border border-zinc-800">
-                            <p class="text-xs text-white mb-2">正在安裝安全更新與功能更新套件...</p>
-                            <div class="w-full bg-zinc-800 rounded-full h-2.5 overflow-hidden">
-                                <div id="settings-update-progress-bar" class="bg-purple-500 h-2.5 rounded-full transition-all duration-300" style="width: 0%"></div>
-                            </div>
-                        </div>
-                    </div>
-                `;
-            } else if (tabKey === 'bluetooth') {
-                // 原版藍牙裝置內容生成器
-                renderBluetoothSettingsPage(panel);
-            }
-        }
-
-        // ==========================================
-        //         藍牙控制核心邏輯
-        // ==========================================
-        function renderBluetoothSettingsPage(panel) {
-            let devicesHtml = '';
-            
-            if (!virtualBluetoothConnected) {
-                devicesHtml = `
-                    <div class="flex flex-col items-center justify-center py-10 text-zinc-500">
-                        <i class="fa-solid fa-bluetooth text-5xl mb-3 text-zinc-600"></i>
-                        <p class="text-xs font-semibold">藍牙已關閉，無法顯示或偵測已連線的設備。</p>
-                    </div>
-                `;
-            } else {
-                devicesHtml = `
-                    <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
-                        ${bluetoothDevices.map(dev => `
-                            <div id="bt-card-${dev.id}" class="bg-zinc-850/40 border border-zinc-800/80 rounded-xl p-4 flex items-center justify-between hover:border-zinc-700 transition">
-                                <div class="flex items-center gap-4">
-                                    <div class="w-10 h-10 bg-zinc-800 rounded-lg flex items-center justify-center text-zinc-300 text-lg">
-                                        <i class="fa-solid ${dev.icon}"></i>
-                                    </div>
-                                    <div class="text-left">
-                                        <h4 class="text-xs font-bold text-white">${dev.name}</h4>
-                                        <p class="text-[10px] text-zinc-400" id="bt-status-${dev.id}">${dev.status}</p>
-                                    </div>
-                                </div>
-                                <div class="flex gap-2">
-                                    <button onclick="toggleBluetoothConnection('${dev.id}')" id="bt-connect-btn-${dev.id}" class="px-2.5 py-1 bg-zinc-800 hover:bg-zinc-700 text-white rounded text-[10px] font-semibold transition">
-                                        ${dev.status.includes('連線') ? '中斷連線' : '連線'}
-                                    </button>
-                                    <button onclick="removeBluetoothDevice('${dev.id}')" class="px-2.5 py-1 bg-red-950/40 hover:bg-red-900 border border-red-500/20 text-red-400 rounded text-[10px] font-semibold transition" title="移除此配對設備">
-                                        移除
-                                    </button>
-                                </div>
-                            </div>
-                        `).join('')}
-                    </div>
-                `;
-            }
-
-            panel.innerHTML = `
-                <div class="space-y-6 animate-fade-in text-zinc-100">
-                    <div class="flex items-center justify-between pb-2 border-b border-zinc-800">
-                        <div class="flex items-center gap-2">
-                            <i class="fa-solid fa-bluetooth text-blue-500 text-lg"></i>
-                            <h3 class="text-base font-bold">藍牙與裝置</h3>
-                        </div>
-                        <!-- 新增裝置按鈕 -->
-                        <button onclick="openAddBluetoothDeviceModal()" ${!virtualBluetoothConnected ? 'disabled' : ''} class="bg-blue-600 hover:bg-blue-500 disabled:bg-zinc-700 disabled:text-zinc-500 text-white rounded text-xs font-bold px-4 py-2 transition flex items-center gap-1.5 shadow-md">
-                            <i class="fa-solid fa-plus"></i>
-                            <span>新增裝置</span>
-                        </button>
-                    </div>
-
-                    <!-- 藍牙主開關 -->
-                    <div class="bg-zinc-850/30 p-4 rounded-lg border border-zinc-800 flex justify-between items-center">
-                        <div>
-                            <h4 class="text-xs font-bold text-white mb-0.5">藍牙功能開關</h4>
-                            <p class="text-[10px] text-zinc-400">目前您的藍牙功能：<span class="font-bold ${virtualBluetoothConnected ? 'text-blue-400' : 'text-zinc-500'}" id="settings-bluetooth-status-label">${virtualBluetoothConnected ? '已開啟' : '已關閉'}</span></p>
-                        </div>
-                        <div class="flex items-center">
-                            <button onclick="toggleVirtualBluetooth()" id="settings-bluetooth-switch-btn" class="w-12 h-6 rounded-full p-0.5 transition-colors duration-200 focus:outline-none ${virtualBluetoothConnected ? 'bg-blue-600' : 'bg-zinc-700'} flex items-center">
-                                <div class="w-5 h-5 bg-white rounded-full shadow transition-transform duration-200 transform ${virtualBluetoothConnected ? 'translate-x-6' : 'translate-x-0'}"></div>
-                            </button>
-                        </div>
-                    </div>
-
-                    <!-- 裝置列表 -->
-                    <div class="space-y-3">
-                        <h4 class="text-xs font-bold text-zinc-400">已配對與已儲存的裝置</h4>
-                        ${devicesHtml}
-                    </div>
-                </div>
-            `;
-        }
-
-        // 藍牙主開關
-        function toggleVirtualBluetooth() {
-            virtualBluetoothConnected = !virtualBluetoothConnected;
-            switchSettingsTab('bluetooth');
-            alert(`藍牙功能已成功${virtualBluetoothConnected ? '開啟' : '關閉'}！`);
-        }
-
-        // 切換單個藍牙裝置連線狀態
-        function toggleBluetoothConnection(id) {
-            const dev = bluetoothDevices.find(d => d.id === id);
-            if (!dev) return;
-
-            const btn = document.getElementById(`bt-connect-btn-${id}`);
-            const status = document.getElementById(`bt-status-${id}`);
-            
-            if (dev.status.includes('連線')) {
-                dev.status = "已配對";
-                if (btn) btn.textContent = "連線";
-                if (status) status.textContent = "已配對";
-                alert(`已成功中斷與 ${dev.name} 的連線。`);
-            } else {
-                dev.status = dev.name.includes("耳機") ? "已連線 音訊" : "已連線";
-                if (btn) btn.textContent = "中斷連線";
-                if (status) status.textContent = dev.status;
-                alert(`已與 ${dev.name} 建立安全連線！`);
-            }
-        }
-
-        // 移除藍牙裝置
-        function removeBluetoothDevice(id) {
-            const index = bluetoothDevices.findIndex(d => d.id === id);
-            if (index !== -1) {
-                const name = bluetoothDevices[index].name;
-                bluetoothDevices.splice(index, 1);
-                switchSettingsTab('bluetooth');
-                alert(`已安全移除並解除配對裝置：${name}。`);
-            }
-        }
-
-        // 開啟新增裝置對話框
-        function openAddBluetoothDeviceModal() {
-            if (!virtualBluetoothConnected) return;
-            const modal = document.getElementById('settings-add-device-modal');
-            if (modal) {
-                modal.classList.remove('hidden');
-                modal.classList.add('flex');
-                
-                // 重設步驟
-                document.getElementById('add-device-step1').classList.remove('hidden');
-                document.getElementById('add-device-step2').classList.add('hidden');
-                document.getElementById('add-device-step3').classList.add('hidden');
-            }
-        }
-
-        function closeAddBluetoothDeviceModal() {
-            const modal = document.getElementById('settings-add-device-modal');
-            if (modal) modal.classList.add('hidden');
-        }
-
-        // 開始掃描可用裝置
-        function startBluetoothScan() {
-            document.getElementById('add-device-step1').classList.add('hidden');
-            document.getElementById('add-device-step2').classList.remove('hidden');
-            
-            const list = document.getElementById('scanned-devices-list');
-            if (list) list.innerHTML = `<p class="text-xs text-zinc-500 py-4 animate-pulse">正在掃描附近的藍牙廣播設備...</p>`;
-
-            // 隨機選取 2 個裝置作為掃描結果
-            setTimeout(() => {
-                const shuffled = searchPoolDevices.sort(() => 0.5 - Math.random());
-                const selected = shuffled.slice(0, 2);
-
-                if (list) {
-                    list.innerHTML = selected.map((dev, idx) => `
-                        <div onclick="pairScannedDevice('${dev.name}', '${dev.icon}')" class="p-3 bg-zinc-800/80 hover:bg-zinc-700/80 border border-zinc-700 rounded-lg cursor-pointer flex items-center justify-between transition animate-fade-in">
-                            <div class="flex items-center gap-3">
-                                <i class="fa-solid ${dev.icon} text-blue-400 text-sm"></i>
-                                <span class="text-xs font-semibold text-white">${dev.name}</span>
-                            </div>
-                            <span class="text-[10px] text-zinc-500">點選以配對</span>
-                        </div>
-                    `).join('');
-                }
-            }, 1500);
-        }
-
-        // 配對選中的掃描裝置
-        function pairScannedDevice(name, icon) {
-            const list = document.getElementById('scanned-devices-list');
-            if (list) {
-                list.innerHTML = `
-                    <div class="flex flex-col items-center py-4 text-center">
-                        <div class="w-8 h-8 border-4 border-blue-500 border-t-transparent rounded-full animate-spin mb-3"></div>
-                        <p class="text-xs text-zinc-300">正在與 ${name} 建立配對金鑰...</p>
-                    </div>
-                `;
-            }
-
-            setTimeout(() => {
-                // 將其推入我們已連線的設備陣列
-                const newId = 'dev' + (bluetoothDevices.length + 1);
-                bluetoothDevices.push({
-                    id: newId,
-                    name: name,
-                    status: name.includes("耳機") || name.includes("喇叭") ? "已連線 音訊" : "已連線",
-                    icon: icon
-                });
-
-                // 跳轉至成功
-                document.getElementById('add-device-step2').classList.add('hidden');
-                document.getElementById('add-device-step3').classList.remove('hidden');
-                document.getElementById('paired-success-device-name').textContent = `「${name}」配對成功，所有功能皆已就緒。`;
-
-                // 重新載入主藍牙設定頁
-                switchSettingsTab('bluetooth');
-            }, 1800);
-        }
-
-        // 切換壁紙
-        function changeWallpaper(src) {
-            document.body.style.backgroundImage = `url('${src}'), url('https://images.unsplash.com/photo-1620121692029-d088224ddc74?auto=format&fit=crop&w=1920&q=80')`;
-            alert("桌布已成功即時變更！");
-        }
-
-        // 系統命名修改功能
-        function renameDevice() {
-            const newName = prompt("請輸入您的新裝置名稱：", systemDeviceName);
-            if (newName && newName.trim() !== '') {
-                systemDeviceName = newName.trim();
-                
-                // 同步更新設定介面文字與開始功能表用戶名
-                const label = document.getElementById('settings-device-label');
-                if (label) label.textContent = systemDeviceName;
-                const tblName = document.getElementById('info-device-name');
-                if (tblName) tblName.textContent = systemDeviceName;
-                
-                const startUserLabel = document.getElementById('start-menu-user-name');
-                if (startUserLabel) startUserLabel.textContent = systemDeviceName;
-
-                alert(`已成功將電腦名稱重新命名為：${systemDeviceName}！`);
-            }
-        }
-
-        // 切換深色與淺色模式主題
-        function toggleSystemTheme(mode) {
-            settingsTheme = mode;
-            const settingsWin = document.getElementById('win-settings');
-            const mainPanel = document.getElementById('settings-main-panel');
-            const sidebar = document.getElementById('settings-sidebar');
-
-            if (mode === 'light') {
-                if (settingsWin) {
-                    settingsWin.classList.remove('text-white');
-                    settingsWin.classList.add('text-zinc-900');
-                    settingsWin.style.background = "rgba(240, 240, 240, 0.88)";
-                    settingsWin.style.borderColor = "rgba(0,0,0,0.1)";
-                }
-                if (mainPanel) mainPanel.style.backgroundColor = "#ffffff";
-                if (sidebar) sidebar.style.backgroundColor = "#e4e4e7";
-            } else {
-                if (settingsWin) {
-                    settingsWin.classList.remove('text-zinc-900');
-                    settingsWin.classList.add('text-white');
-                    settingsWin.style.background = "rgba(30, 30, 30, 0.72)";
-                    settingsWin.style.borderColor = "rgba(255, 255, 255, 0.12)";
-                }
-                if (mainPanel) mainPanel.style.backgroundColor = "#202020";
-                if (sidebar) sidebar.style.backgroundColor = "#191919";
-            }
-            switchSettingsTab('personal');
-            alert(`已成功更換為「${mode === 'light' ? '淺色' : '深色'}」主題模式！`);
-        }
-
-        // 切換 Wi-Fi 連線開關
-        function toggleVirtualWifi() {
-            virtualWifiConnected = !virtualWifiConnected;
-            const switchBtn = document.getElementById('settings-wifi-switch-btn');
-            const wifiStatus = document.getElementById('settings-wifi-status-text');
-            const taskbarWifi = document.getElementById('taskbar-wifi-icon');
-
-            if (virtualWifiConnected) {
-                if (switchBtn) {
-                    switchBtn.classList.remove('bg-zinc-700');
-                    switchBtn.classList.add('bg-blue-600');
-                    switchBtn.querySelector('div').className = "w-5 h-5 bg-white rounded-full shadow transition-transform duration-200 transform translate-x-6";
-                }
-                if (wifiStatus) wifiStatus.textContent = "已安全連線至網際網路";
-                if (taskbarWifi) taskbarWifi.className = "fa-solid fa-wifi text-white";
-                alert("Wi-Fi 連線已開啟！");
-            } else {
-                if (switchBtn) {
-                    switchBtn.classList.remove('bg-blue-600');
-                    switchBtn.classList.add('bg-zinc-700');
-                    switchBtn.querySelector('div').className = "w-5 h-5 bg-white rounded-full shadow transition-transform duration-200 transform translate-x-0";
-                }
-                if (wifiStatus) wifiStatus.textContent = "中斷連線";
-                if (taskbarWifi) taskbarWifi.className = "fa-solid fa-wifi text-zinc-500";
-                alert("Wi-Fi 連線已斷開！");
-            }
-        }
-
-        // 觸發模擬 Windows 更新
-        function triggerMockWindowsUpdate() {
-            const progressContainer = document.getElementById('settings-update-progress-container');
-            const checkBtn = document.getElementById('settings-update-check-btn');
-            if (progressContainer) progressContainer.classList.remove('hidden');
-            if (checkBtn) {
-                checkBtn.disabled = true;
-                checkBtn.className = "bg-zinc-700 text-zinc-500 rounded text-xs font-bold px-4 py-2 cursor-not-allowed flex items-center gap-1.5";
-            }
-
-            // 更新文字狀態
-            const title = document.getElementById('settings-update-title');
-            const subtitle = document.getElementById('settings-update-subtitle');
-            const icon = document.getElementById('settings-update-status-icon');
-            if (title) title.textContent = "正在下載並安裝更新包...";
-            if (icon) icon.className = "fa-solid fa-circle-notch text-blue-400 animate-spin text-3xl";
-
-            let progress = 0;
-            const interval = setInterval(() => {
-                progress += Math.floor(Math.random() * 15) + 5;
-                if (progress >= 100) {
-                    progress = 100;
-                    clearInterval(interval);
-                    
-                    // 更新完畢
-                    setTimeout(() => {
-                        if (title) title.textContent = "您的系統已是最新版本";
-                        if (subtitle) subtitle.textContent = "最後檢查時間：今天 " + new Date().toLocaleTimeString();
-                        if (icon) icon.className = "fa-solid fa-circle-check text-emerald-400 text-3xl";
-                        if (progressContainer) progressContainer.classList.add('hidden');
-                        if (checkBtn) {
-                            checkBtn.disabled = false;
-                            checkBtn.className = "bg-blue-600 hover:bg-blue-500 text-white rounded text-xs font-bold px-4 py-2 transition flex items-center gap-1.5 shadow-md";
-                        }
-                        alert("🎉 Windows Update 已完成！所有本機核心功能已是最新狀態。");
-                    }, 500);
-                }
-                const bar = document.getElementById('settings-update-progress-bar');
-                if (bar) bar.style.width = progress + '%';
-            }, 250);
-        }
-
-        // ==========================================
-        //         🔥 垃圾桶 App 動態管理與清理功能
-        // ==========================================
-        let recycleBinFiles = [
-            { name: "Internet Explorer 快捷方式.lnk", size: "1 KB" },
-            { name: "微軟廣告推送通知.txt", size: "2 KB" },
-            { name: "Windows ME 系統漏洞補丁.exe", size: "148 MB" },
-            { name: "IE6 瀏覽器獨立安裝包.msi", size: "12 MB" }
-        ];
-
-        function renderRecycleBin() {
-            const container = document.getElementById('bin-content-area');
-            if (!container) return;
-            container.innerHTML = '';
-
-            if (recycleBinFiles.length === 0) {
-                container.innerHTML = `
-                    <div class="flex flex-col items-center justify-center h-full py-16 text-center text-zinc-500 select-none animate-fade-in">
-                        <i class="fa-solid fa-trash-arrow-up text-5xl mb-4 text-zinc-600"></i>
-                        <p class="text-sm font-semibold">資源回收筒目前是空的喔！</p>
-                        <p class="text-xs text-zinc-600 mt-1">這裡沒有任何被刪除的垃圾檔案。</p>
-                    </div>
-                `;
-                return;
-            }
-
-            const grid = document.createElement('div');
-            grid.className = "grid grid-cols-4 gap-4 p-1";
-
-            recycleBinFiles.forEach(item => {
-                const col = document.createElement('div');
-                col.className = "flex flex-col items-center p-3 rounded-lg hover:bg-zinc-800/60 cursor-pointer text-center select-none transition";
-                
-                col.innerHTML = `
-                    <div class="w-10 h-10 flex items-center justify-center mb-2 text-zinc-500 text-3xl">
-                        <i class="fa-regular fa-file"></i>
-                    </div>
-                    <span class="text-xs text-zinc-300 break-all font-medium leading-tight h-8 w-full overflow-hidden text-center block" style="display: -webkit-box; -webkit-line-clamp: 2; -webkit-box-orient: vertical;">${item.name}</span>
-                    <span class="text-[9px] text-zinc-500 mt-1">${item.size}</span>
-                `;
-                grid.appendChild(col);
-            });
-            container.appendChild(grid);
-        }
-
-        function emptyRecycleBin() {
-            if (recycleBinFiles.length === 0) {
-                alert("垃圾桶本來就是空的喔！");
-                return;
-            }
-            recycleBinFiles = [];
-            renderRecycleBin();
-            
-            // 變更桌面的垃圾桶圖示，讓它看起來像清空一樣！
-            const binIcon = document.getElementById('desktop-bin-icon');
-            if (binIcon) {
-                binIcon.src = "bin0.png";
-            }
-            alert("資源回收筒已成功安全清理完畢！");
-        }
-
-
-        // ==========================================
-        //  🔥 重磅更新：自訂匯入 HTML App 核心代碼連動機制 🔥
-        // ==========================================
+        // ---------------- 自訂 HTML App 匯入邏輯 (圖片圖示轉 Base64 處理) ----------------
         let importedAppCount = 0;
-        
-        // 1. 處理本地 HTML 檔案拖曳/上傳讀取
+
         function handleHtmlFileImport(event) {
             const file = event.target.files[0];
             if (!file) return;
@@ -3315,38 +1396,45 @@
             reader.onload = function(e) {
                 const codeArea = document.getElementById('import-app-code');
                 const nameInput = document.getElementById('import-app-name');
-                if (codeArea) {
-                    codeArea.value = e.target.result;
-                }
+                if (codeArea) codeArea.value = e.target.result;
                 if (nameInput && !nameInput.value.trim()) {
-                    // 自動帶入主檔案名稱（不含副檔名）
                     nameInput.value = file.name.replace(/\.[^/.]+$/, "");
                 }
             };
             reader.readAsText(file);
         }
 
-        // 2. 觸發匯入主邏輯 (動態產生 Window 視窗配置、桌面、工作列與開始功能表)
         function triggerImportApp() {
             const appNameInput = document.getElementById('import-app-name');
             const appCodeArea = document.getElementById('import-app-code');
+            const iconInput = document.getElementById('import-app-icon');
 
             if (!appNameInput || !appNameInput.value.trim()) {
                 alert("❌ 請輸入自訂應用程式的名稱！");
                 return;
             }
             if (!appCodeArea || !appCodeArea.value.trim()) {
-                alert("❌ 請貼上 HTML 程式碼或上傳 HTML 檔案！");
+                alert("❌ 請貼上 HTML 程式碼！");
                 return;
             }
 
             const appName = appNameInput.value.trim();
             const appCode = appCodeArea.value;
 
-            // 擷取名稱前兩個字作為自製圖示的文字
-            const iconText = appName.substring(0, 2);
+            // 如果玩家有選擇本地圖示，則轉成 Base64，否則採用前兩個字漸變fallback
+            if (iconInput && iconInput.files && iconInput.files[0]) {
+                const file = iconInput.files[0];
+                const reader = new FileReader();
+                reader.onload = function(e) {
+                    createImportedApp(appName, appCode, e.target.result, null);
+                };
+                reader.readAsDataURL(file);
+            } else {
+                createImportedApp(appName, appCode, null, appName.substring(0, 2));
+            }
+        }
 
-            // 產生唯一金鑰 id
+        function createImportedApp(appName, appCode, base64Icon, iconFallbackText) {
             importedAppCount++;
             const appKey = `imported_${importedAppCount}`;
             const windowId = `win-${appKey}`;
@@ -3355,26 +1443,49 @@
             const startAppId = `start-app-${appKey}`;
             const desktopAppId = `desktop-app-${appKey}`;
 
-            // A. 為全新的自訂 App 建立 100% 獨立的視窗 DOM 區塊 (內嵌安全 sandbox iframe)
+            // A. 新建視窗 DOM
             const newWindowDiv = document.createElement('div');
             newWindowDiv.id = windowId;
             newWindowDiv.className = "window-transition window-hidden absolute glass rounded-lg overflow-hidden win-shadow text-white flex flex-col border border-white/10";
-            // 預設寬高與隨機偏移位置
             newWindowDiv.style.width = "750px";
             newWindowDiv.style.height = "500px";
             newWindowDiv.style.top = `${15 + (importedAppCount * 2)}%`;
             newWindowDiv.style.left = `${18 + (importedAppCount * 2)}%`;
             newWindowDiv.style.zIndex = "10";
 
-            // 使用 Blob URL 載入 HTML 代碼，確保相容性與沙盒安全性
             const blob = new Blob([appCode], { type: 'text/html;charset=utf-8' });
             const blobUrl = URL.createObjectURL(blob);
+
+            // 設計漸變色背景
+            const gradients = [
+                "from-blue-500 to-indigo-600",
+                "from-emerald-400 to-teal-600",
+                "from-purple-500 to-pink-500",
+                "from-orange-400 to-rose-600",
+                "from-cyan-400 to-blue-600"
+            ];
+            const randomGradient = gradients[Math.floor(Math.random() * gradients.length)];
+
+            // 建置圖示 HTML 模板
+            let iconHtml = "";
+            let tbIconHtml = "";
+            let startIconHtml = "";
+
+            if (base64Icon) {
+                iconHtml = `<img src="${base64Icon}" class="w-10 h-10 object-cover rounded-xl shadow-md border border-white/10 scale-100 hover:scale-105 transition-transform duration-200">`;
+                tbIconHtml = `<img src="${base64Icon}" class="w-6 h-6 object-cover rounded shadow">`;
+                startIconHtml = `<img src="${base64Icon}" class="w-8 h-8 object-cover rounded-lg shadow mb-1">`;
+            } else {
+                iconHtml = `<div class="w-10 h-10 rounded-xl bg-gradient-to-br ${randomGradient} flex items-center justify-center text-xs font-black text-white shadow-md border border-white/10 scale-100 hover:scale-105 transition-transform duration-200">${iconFallbackText}</div>`;
+                tbIconHtml = `<div class="w-6 h-6 rounded bg-gradient-to-br ${randomGradient} flex items-center justify-center text-[9px] font-black text-white shadow">${iconFallbackText}</div>`;
+                startIconHtml = `<div class="w-8 h-8 rounded-lg bg-gradient-to-br ${randomGradient} flex items-center justify-center text-[10px] font-black text-white mb-1 shadow">${iconFallbackText}</div>`;
+            }
 
             newWindowDiv.innerHTML = `
                 <div class="h-10 bg-zinc-900 flex justify-between items-center px-4 cursor-move border-b border-zinc-800" onmousedown="dragStart(event, '${windowId}')">
                     <div class="flex items-center gap-2">
-                        <div class="w-5 h-5 rounded bg-gradient-to-br from-blue-500 to-indigo-600 flex items-center justify-center text-[9px] font-bold text-white select-none shadow">
-                            ${iconText}
+                        <div class="w-5 h-5 flex items-center justify-center">
+                            ${tbIconHtml}
                         </div>
                         <span class="text-xs font-semibold text-gray-200">${appName}</span>
                     </div>
@@ -3388,20 +1499,9 @@
                     <iframe src="${blobUrl}" class="w-full h-full border-none" allow="autoplay; fullscreen; keyboard; pointer-lock" allowfullscreen sandbox="allow-same-origin allow-scripts allow-popups allow-forms allow-pointer-lock"></iframe>
                 </div>
             `;
-            // 寫入主桌面 Body 中
-            document.getElementById('desktop-body').appendChild(newWindowDiv);
+            document.body.appendChild(newWindowDiv);
 
-            // B. 在桌面上動態新增精美圓角文字圖示
-            // 產生隨機亮麗漸層背景
-            const gradients = [
-                "from-blue-500 to-indigo-600",
-                "from-emerald-400 to-teal-600",
-                "from-purple-500 to-pink-500",
-                "from-orange-400 to-rose-600",
-                "from-cyan-400 to-blue-600"
-            ];
-            const randomGradient = gradients[Math.floor(Math.random() * gradients.length)];
-
+            // B. 在桌面上新增啟動圓角圖示
             const deskFilesContainer = document.getElementById('desktop-dynamic-files');
             if (deskFilesContainer) {
                 const newDeskIcon = document.createElement('div');
@@ -3409,47 +1509,47 @@
                 newDeskIcon.className = "w-20 h-22 flex flex-col items-center justify-center rounded hover:bg-white/10 active:bg-white/20 cursor-pointer transition p-1 text-center";
                 newDeskIcon.onclick = () => openWindow(appKey);
                 newDeskIcon.innerHTML = `
-                    <div class="w-10 h-10 rounded-xl bg-gradient-to-br ${randomGradient} flex items-center justify-center text-xs font-black text-white shadow-md border border-white/10 scale-100 hover:scale-105 transition-transform duration-200">
-                        ${iconText}
+                    <div class="w-10 h-10 flex items-center justify-center">
+                        ${iconHtml}
                     </div>
                     <span class="text-white text-xs text-center drop-shadow-md truncate w-full mt-1 select-none font-medium">${appName}</span>
                 `;
                 deskFilesContainer.appendChild(newDeskIcon);
             }
 
-            // C. 在工作列動態新增圖示與工作點指示燈
-            const taskbarContainer = document.querySelector('#taskbar div.flex.items-center.gap-2');
+            // C. 在下方工作列新增連動按鈕與指示小圓點
+            const taskbarContainer = document.getElementById('taskbar-icon-container');
             if (taskbarContainer) {
                 const newTaskbarBtn = document.createElement('button');
                 newTaskbarBtn.id = taskbarId;
                 newTaskbarBtn.onclick = () => toggleWindow(appKey);
                 newTaskbarBtn.className = "w-10 h-10 rounded flex justify-center items-center hover:bg-white/10 relative transition";
                 newTaskbarBtn.innerHTML = `
-                    <div class="w-6 h-6 rounded bg-gradient-to-br ${randomGradient} flex items-center justify-center text-[9px] font-black text-white shadow">
-                        ${iconText}
+                    <div class="w-6 h-6 flex items-center justify-center">
+                        ${tbIconHtml}
                     </div>
-                    <span id="${dotId}" class="absolute bottom-0.5 left-1/2 transform -translate-x-1/2 w-1.5 h-1.5 bg-zinc-300 rounded-full opacity-0 transition-opacity duration-200 shadow-md"></span>
+                    <span id="${dotId}" class="absolute bottom-0.5 left-1/2 transform -translate-x-1/2 w-1.5 h-1.5 bg-blue-400 rounded-full opacity-0 transition-opacity duration-200 shadow-md"></span>
                 `;
                 taskbarContainer.appendChild(newTaskbarBtn);
             }
 
-            // D. 在開始功能表釘選清單動態新增圖示
-            const startMenuGrid = document.querySelector('#start-menu grid');
+            // D. 在開始選單釘選欄中新增對應項
+            const startMenuGrid = document.getElementById('start-menu-grid');
             if (startMenuGrid) {
                 const newStartMenuBtn = document.createElement('div');
                 newStartMenuBtn.id = startAppId;
                 newStartMenuBtn.onclick = () => { openWindow(appKey); toggleStartMenu(); };
                 newStartMenuBtn.className = "flex flex-col items-center justify-center rounded hover:bg-white/10 p-2 cursor-pointer transition text-center";
                 newStartMenuBtn.innerHTML = `
-                    <div class="w-8 h-8 rounded-lg bg-gradient-to-br ${randomGradient} flex items-center justify-center text-[10px] font-black text-white mb-1 shadow">
-                        ${iconText}
+                    <div class="w-8 h-8 flex items-center justify-center">
+                        ${startIconHtml}
                     </div>
-                    <span class="text-[10px] text-center truncate w-full select-none">${appName}</span>
+                    <span class="text-[10px] text-center truncate w-full select-none font-medium text-white">${appName}</span>
                 `;
                 startMenuGrid.appendChild(newStartMenuBtn);
             }
 
-            // E. 將全新 App 的狀態寫入全域狀態管理器 (windows 字典中)
+            // E. 寫入全域狀態字典
             windows[appKey] = {
                 elementId: windowId,
                 taskbarId: taskbarId,
@@ -3459,48 +1559,32 @@
                 isMaximized: false
             };
 
-            // F. 為全新產生的視窗 DOM 加上點擊帶到最上層的監聽事件
+            // F. 加上視窗點擊焦點置頂事件
             newWindowDiv.addEventListener('mousedown', () => {
                 focusWindow(appKey);
                 document.getElementById('start-menu').classList.add('window-hidden');
             });
 
-            // 清空輸入欄
-            if (appNameInput) appNameInput.value = '';
-            if (appCodeArea) appCodeArea.value = '';
+            // 清空輸入框
+            document.getElementById('import-app-name').value = "";
+            document.getElementById('import-app-code').value = "";
+            document.getElementById('import-app-icon').value = "";
 
-            // 動態開啟它！
+            // 自動啟動應用程式
             openWindow(appKey);
             closeWindow('store');
 
             alert(`🎉 恭喜！自訂 HTML App「${appName}」已成功安全匯入！已為您在桌面、工作列與開始功能表建立獨立啟動圖示！`);
         }
 
-
-        // 提示訊息
-        function alert(msg) {
-            const alertText = document.getElementById('alert-text');
-            const alertModal = document.getElementById('alert-modal');
-            if (alertText && alertModal) {
-                alertText.textContent = msg;
-                alertModal.classList.remove('hidden');
-                alertModal.classList.add('flex');
+        // ---------------- 物理關閉設定對話盒 ----------------
+        document.addEventListener('click', (e) => {
+            const qSettings = document.getElementById('quick-settings-panel');
+            const quickBtn = document.querySelector('[onclick="toggleQuickSettings()"]');
+            if (qSettings && !qSettings.classList.contains('hidden') && !qSettings.contains(e.target) && quickBtn && !quickBtn.contains(e.target)) {
+                qSettings.classList.add('hidden');
             }
-        }
-        function closeAlert() {
-            const alertModal = document.getElementById('alert-modal');
-            if (alertModal) {
-                alertModal.classList.add('hidden');
-                alertModal.classList.remove('flex');
-            }
-        }
-
-        window.onload = function() {
-            openWindow('readme');
-            if (typeof initExcel === 'function') {
-                initExcel();
-            }
-        }
+        });
     </script>
 </body>
 </html>
